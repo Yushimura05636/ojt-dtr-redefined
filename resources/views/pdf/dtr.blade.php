@@ -138,7 +138,8 @@
         <p><strong>Position:</strong> Intern</p>
         <div style="position: relative;">
             <p><strong>Hours This Month:</strong> {{ $totalHoursPerMonth }} Hours</p>
-            <p style="position: absolute; right: 0; top: 0;"><strong>Approved By:</strong> ______________</p>
+            <p style="position: absolute; right: 0; top: 0;"><strong>Approved By:</strong><span class="capitalize">
+                {{$approved_by}}</span></p>
         </div>
     </div>
 

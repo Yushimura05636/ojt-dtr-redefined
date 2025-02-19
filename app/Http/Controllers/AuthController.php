@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -67,9 +68,7 @@ class AuthController extends Controller
             ]
         );
 
-        return back()->with([
-            'success' => 'Congratulations! You are now registered!',
-        ]);
+        return redirect()->route('show.login')->with('success','Congratulations! You are now registered!');
     }
 
     public function showLogin()
@@ -88,6 +87,7 @@ class AuthController extends Controller
         if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
             $request->session()->regenerate();
             $user = Auth::user();
+
 
             if ($data['type'] === 'admin') {
                 return $this->adminLogin($request, $user, $userController);
@@ -176,8 +176,22 @@ class AuthController extends Controller
         }
     }
 
-    public function showResetPassword()
+    public function showResetPassword(Request $request)
     {
+        $token = $request->query('token');
+        
+        // Ensure token is provided
+        if (!$token) {
+            return redirect()->route('show.login')->with('invalid', 'Invalid reset link!');
+        }
+    
+        // Retrieve the reset record by filtering with email
+        $reset_password = DB::table('password_reset_tokens')->whereNotNull('email')->first();
+
+        if (!$reset_password || !Hash::check($token, $reset_password->token)) {
+            return redirect()->route('show.login')->with('invalid', 'This link is expired or invalid!');
+        }
+
         return view('auth.reset-password');
     }
 
@@ -191,6 +205,7 @@ class AuthController extends Controller
 
         //validation here
         $user = User::where('email', $request->email)->first();
+
 
         //get the class of the Auth
         $authenticatedUser = Auth::class;
@@ -250,7 +265,7 @@ class AuthController extends Controller
                 'middlename' => $data['middlename'],
                 'lastname' => $data['lastname'],
                 'email' => $data['email'],
-                'password' => $data['password'],
+                'password' => Hash::make($data['password']),
                 'phone' => $data['phone'],
                 'gender' => $data['gender'],
                 'address' => $data['address'],

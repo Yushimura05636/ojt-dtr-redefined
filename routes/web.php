@@ -82,18 +82,18 @@ Route::middleware('auth')->group(function () {
     //admin user index page
     Route::get('/admin/users', [UserController::class, 'showAdminUsers'])->name('admin.users');
 
+    //admin user dtr page
+
+    Route::get('/admin/users/create', [AuthController::class, 'showAdminUsersCreate'])->name('admin.users.create');
+
+    Route::post('/admin/users/create', [AuthController::class, 'showAdminUsersCreatePost'])->name('admin.users.create.post');
+
     //users specific profile
     Route::get('/admin/users/{id}', [UserController::class, 'showUserDetails'])->name('admin.users.details');
 
     Route::get('/admin/users/{id}/edit', [UserController::class, 'showEditUsers'])->name('admin.users.details.edit');
 
     Route::post('/admin/users/{id}/edit', [UserController::class, 'showEditUsersPost'])->name('admin.users.details.edit.post');
-    
-    //admin user dtr page
-
-    Route::get('/admin/users/create', [AuthController::class, 'showAdminUsersCreate'])->name('admin.users.create');
-
-    Route::post('/admin/users/create', [AuthController::class, 'showAdminUsersCreatePost'])->name('admin.users.create.post');
 
     Route::get('/admin/users/{id}/dtr', [DtrSummaryController::class, 'showAdminUserDtr'])->name('admin.users.dtr');
 

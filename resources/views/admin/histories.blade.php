@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="app-url" content="{{ config('app.url') }}">
     <title>History Records</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -26,7 +27,7 @@
                 <div class="overflow-x-auto bg-white rounded-lg shadow-md">
                     <table id="recordsTable" class="w-full border-collapse border border-gray-300">
                         <thead>
-                            <tr class="*:px-6 *:py-3 *:text-left *:text-sm *:font-semibold *:bg-[#F57D11] *:text-white">
+                            <tr class="*:px-6 *:py-3 *:text-left *:text-sm *:font-semibold *:bg-[#F57D11] *:text-white *:text-nowrap">
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Description</th>
@@ -35,8 +36,8 @@
                         </thead>
                         <tbody id="recordsBody">
                             @foreach ($records as $record)
-                                <tr class="border hover:bg-gray-100 *:px-6 *:py-4">
-                                    <td>{{ $record['user']->firstname }}</td>
+                                <tr class="border hover:bg-gray-100 *:px-6 *:py-4 *:text-nowrap">
+                                    <td class="capitalize">{{ $record['user']->firstname }} {{ substr($record['user']->middlename, 0, 1 )}}. {{$record['user']->lastname}}</td>
                                     <td>{{ $record['user']->email }}</td>
                                     <td>
                                         <span class="{{ $record['history']->description === 'time in' ? 'text-sm font-semibold text-green-500' : 'text-sm font-semibold text-red-500' }}">
@@ -71,6 +72,9 @@
     </x-main-layout>
 
     <script>
+
+        const APP_URL = document.querySelector('meta[name="app-url"]').getAttribute("content");
+
         document.addEventListener("DOMContentLoaded", function () {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
@@ -81,7 +85,9 @@
             let totalRecords = 0;
 
             function fetchRecords(searchQuery = '', selectedMonth = '', page = 1) {
-                axios.post('/admin/history/search', {
+                let app_url = `{{ url('/admin/history/search') }}`;
+
+                axios.post(app_url, {
                         query: searchQuery,
                         date: selectedMonth,
                         page: page
@@ -111,12 +117,12 @@
                                 .toLocaleString('en-US', { month: 'long', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true });
 
                             row.innerHTML = `
-                                <td class="px-6 py-4">${record.user.firstname}</td>
-                                <td class="px-6 py-4">${record.user.email}</td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 capitalize text-nowrap">${record.user.firstname} ${(record.user.middlename).substring(0, 1)}. ${record.user.lastname}</td>
+                                <td class="px-6 py-4 text-nowrap">${record.user.email}</td>
+                                <td class="px-6 py-4 text-nowrap">
                                     <span class="${descriptionClass}">${record.history.description}</span>
                                 </td>
-                                <td class="px-6 py-4">${formattedDate}</td>
+                                <td class="px-6 py-4 text-nowrap">${formattedDate}</td>
                             `;
 
                             recordsBody.appendChild(row);

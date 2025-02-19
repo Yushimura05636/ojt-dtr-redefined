@@ -26,6 +26,8 @@ class PushNotificationEvent
 
     protected $pusher;
 
+    protected $role;
+
     /**
      * Create a new event instance.
      */
@@ -45,7 +47,7 @@ class PushNotificationEvent
                 $this->year = $request->year;
                 $this->message = $request->message;
                 $this->from_user_id = $request->from_user_id;
-                $this->to_user_id = $request->to_user_id;
+                $this->role = $request->role;
         
                 $this->sendDtrApprovalPushNotification();
                 break;
@@ -84,11 +86,20 @@ class PushNotificationEvent
     public function sendDtrApprovalPushNotification()
     {
 
-        // ✅ Send event to a PUBLIC CHANNEL
-        $this->pusher->trigger("public-notifications", "user-notification-{$this->to_user_id}", [
-            'message' => $this->message,
-            'success' => true,
-        ]);
+        //if the user has role admin and is more than 1 use forloop
+        $users = User::where('role', $this->role)->get();
+
+        if(isset($user) || $users != null)
+        {
+            foreach($users as $user){
+                // ✅ Send event to a PUBLIC CHANNEL
+                $this->pusher->trigger("public-notifications", "user-notification-{$user->id}", [
+                    'message' => $this->message,
+                    'success' => true,
+                ]);
+            }
+        }
+
 
         // // Send only to a private channel for user 1
         // $pusher->trigger('private-notifications.' . $this->user_id, 'form-submitted', $data);

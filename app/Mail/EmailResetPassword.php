@@ -12,6 +12,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Str;
 
@@ -29,12 +30,14 @@ class EmailResetPassword extends Mailable
         $this->user = $user;
 
         $this->token = Str::random(60);
-        
-        DB::table('password_reset_tokens')->insert([
-            'email' => $this->user->email,
-            'token' => $this->token,
-            'created_at' => Carbon::now()
-        ]);
+
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $this->user->email], // Check if email exists
+            [
+                'token' => Hash::make($this->token), // Store hashed token
+                'created_at' => Carbon::now(), // Update or insert with the current timestamp
+            ]
+        );
     }
 
     /**

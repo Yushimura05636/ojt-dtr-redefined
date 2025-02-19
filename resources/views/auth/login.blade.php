@@ -45,7 +45,7 @@
         <x-modal.confirmation-email id="confirmation-email-modal" />
 
         <x-form.container routeName="login" method="POST" className="w-full h-full">
-            <div class="w-full h-full flex flex-col items-center justify-center gap-7">
+            <div class="w-full flex flex-col items-center justify-center gap-7 overflow-x-hidden md:!p-10 p-5">
                 @if (session('success'))
                     <x-modal.flash-msg msg="success" />
                 @elseif ($errors->has('invalid'))
@@ -80,10 +80,88 @@
                     <div>
                         <x-button primary label="Login" submit big />
                     </div>
+
+                    <article class="wrapper py-10">
+                        <div class="marquee">
+                            <div class="marquee__group">
+                                @for ($i = 1; $i <= 3; $i++)
+                                    <x-image path="{{ asset('/resources/img/school-logo/rweb.png') }}" />
+                                    <x-image path="{{ asset('/resources/img/school-logo/sti.png') }}" />
+                                    <x-image path="{{ asset('/resources/img/school-logo/addu.png') }}" />
+                                    <x-image path="{{ asset('/resources/img/school-logo/hcdc.png') }}" />
+                                    <x-image path="{{ asset('/resources/img/school-logo/um.png') }}" />
+                                @endfor
+                            </div>
+
+                            <div aria-hidden="true" class="marquee__group">
+                                @for ($i = 1; $i <= 3; $i++)
+                                    <x-image path="{{ asset('/resources/img/school-logo/rweb.png') }}" />
+                                    <x-image path="{{ asset('/resources/img/school-logo/sti.png') }}" />
+                                    <x-image path="{{ asset('/resources/img/school-logo/addu.png') }}" />
+                                    <x-image path="{{ asset('/resources/img/school-logo/hcdc.png') }}" />
+                                    <x-image path="{{ asset('/resources/img/school-logo/um.png') }}" />
+                                @endfor
+                            </div>
+                        </div>
+                    </article>
                 </div>
 
-            </div>
+                <style>
+                    :root {
+                        --gap: 1rem;
+                        --duration: 120s;
+                        --scroll-start: 0;
+                        --scroll-end: -100%;
+                    }
 
+                    .marquee {
+                        display: flex;
+                        overflow: hidden;
+                        user-select: none;
+                        gap: var(--gap);
+                        mask-image: linear-gradient(to right,
+                                rgba(0, 0, 0, 0),
+                                rgba(0, 0, 0, 1) 20%,
+                                rgba(0, 0, 0, 1) 80%,
+                                rgba(0, 0, 0, 0));
+                    }
+
+                    .marquee__group {
+                        flex-shrink: 0;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-around;
+                        gap: var(--gap);
+                        min-width: 100%;
+                        animation: scroll-x var(--duration) linear infinite;
+                    }
+
+                    @keyframes scroll-x {
+                        from {
+                            transform: translateX(var(--scroll-start));
+                        }
+
+                        to {
+                            transform: translateX(var(--scroll-end));
+                        }
+                    }
+
+                    .marquee img {
+                        height: 60px;
+                        /* Adjust height as needed */
+                        width: auto;
+                    }
+
+                    /* Parent wrapper */
+                    .wrapper {
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--gap);
+                        margin: auto;
+                        max-width: 100vw;
+                    }
+                </style>
+            </div>
         </x-form.container>
     </x-main-layout>
 @endif

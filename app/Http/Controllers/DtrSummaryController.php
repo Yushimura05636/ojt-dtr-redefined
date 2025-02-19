@@ -114,7 +114,7 @@ class DtrSummaryController extends Controller
     //post function
     public function ShowUserDtrPagination(Request $request)
     {
-
+        
         $currentDate = Carbon::now();
         $selectedMonth = $request->input('month', $currentDate->month);
         $selectedYear = $request->input('year', $currentDate->year);
@@ -488,6 +488,7 @@ class DtrSummaryController extends Controller
     public function showUserRequestedDtr($id, Request $request, DtrSummaryController $dtrSummaryController)
     {
         $user = optional(DtrDownloadRequest::with('users')->where('id', $id)->first())->users;
+        $downloadRequest = DtrDownloadRequest::where('id', $id)->first();
         if (Auth::user()->role === 'admin') {
             return redirect()->route('admin.users.approvals.view', [
                 'id' => $id,
@@ -504,8 +505,11 @@ class DtrSummaryController extends Controller
 
         //get the user based on the id sent
         $currentDate = Carbon::now();
-        $selectedMonth = $request->input('month', $currentDate->month);
-        $selectedYear = $request->input('year', $currentDate->year);
+        $selectedMonth = $downloadRequest->month ?? $currentDate->format('m'); // Default to current month
+        $selectedYear = $downloadRequest->year ?? $currentDate->format('Y'); // Default to current year
+
+        // $selectedMonth = $request->input('month', $currentDate->month);
+        // $selectedYear = $request->input('year', $currentDate->year);
 
         $selectedDate = Carbon::createFromDate($selectedYear, $selectedMonth, 1);
         $previousMonth = (clone $selectedDate)->subMonth();
@@ -607,6 +611,17 @@ class DtrSummaryController extends Controller
         //I remove the user becausue its just redundant to Auth::user();
         $yearlyTotals = $dtrSummaryController->showUserDtrSummary()['yearlyTotals'];
         
+        $approved_by_user = null;
+        if($downloadRequest->approved_by != null && isset($downloadRequest->approved_by)){
+            $approved_by_user = User::with('downloadRequests')->where('id', $downloadRequest->approved_by)->first();
+            $approved_by_user = $approved_by_user->firstname . ' ' . substr($approved_by_user->middlename, 0, 1) . '. ' . $approved_by_user->lastname;
+        }
+
+        $declined_by_user = null;
+        if($downloadRequest->declined_by != null && isset($downloadRequest->declined_by)){
+            $declined_by_user = User::with('downloadRequests')->where('id', $downloadRequest->declined_by)->first();
+            $declined_by_user = $declined_by_user->firstname . ' ' . substr($declined_by_user->middlename, 0, 1) . '. ' . $declined_by_user->lastname;
+        }
         
         if ($request->type === 'download') {
             // Check if the request is approved
@@ -618,6 +633,8 @@ class DtrSummaryController extends Controller
             // Pass data to the view, which will submit a POST request
             return view('download-dtr', [
                 'user' => $user,
+                'declined_by' => $declined_by_user,
+                'approved_by' => $approved_by_user,
                 'type' => 'verified.download',
                 'yearlyTotals' => $yearlyTotals,
                 'records' => $records,
@@ -645,10 +662,13 @@ class DtrSummaryController extends Controller
                 ]
             ]);
         }
-        
 
         return view('users.request.show', [
+            'id' => $id,
             'user' => $user,
+            'status' => $downloadRequest->status,
+            'declined_by' => $declined_by_user,
+            'approved_by' => $approved_by_user,
             'yearlyTotals' => $yearlyTotals,
             'records' => $records,
             'totalHoursPerMonth' => $totalHoursPerMonth,
@@ -679,6 +699,7 @@ class DtrSummaryController extends Controller
     public function showAdminUserApprovalDtr($id, Request $request, DtrSummaryController $dtrSummaryController)
     {
         $user = optional(DtrDownloadRequest::with('users')->where('id', $id)->first())->users;
+        $downloadRequest = DtrDownloadRequest::where('id', $id)->first();
         if(Auth::user()->role != 'admin')
         {
             if(Auth::id() != $user->id)
@@ -689,8 +710,8 @@ class DtrSummaryController extends Controller
 
         //get the user based on the id sent
         $currentDate = Carbon::now();
-        $selectedMonth = $month ?? $currentDate->month;
-        $selectedYear = $year ?? $currentDate->year;
+        $selectedMonth = $downloadRequest->month ?? $currentDate->month;
+        $selectedYear = $downloadRequest->year ?? $currentDate->year;
 
         $selectedDate = Carbon::createFromDate($selectedYear, $selectedMonth, 1);
         $previousMonth = (clone $selectedDate)->subMonth();
@@ -793,6 +814,7 @@ class DtrSummaryController extends Controller
         $yearlyTotals = $dtrSummaryController->showUserDtrSummary()['yearlyTotals'];
 
         return view('admin.approvals.show', [
+            'id' => $id,
             'user' => $user,
             'yearlyTotals' => $yearlyTotals,
             'records' => $records,

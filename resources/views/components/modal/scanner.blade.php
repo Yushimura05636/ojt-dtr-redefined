@@ -47,9 +47,11 @@
 
     async function onScanSuccess(decodedText) {
         try {
-            //modal
 
-            const response = await axios.get(`/scanner/${decodedText}`);
+            //modal
+            let app_url  = `{{ url('/scanner/${decodedText}') }}`;
+
+            const response = await axios.get(app_url);
             console.log(response); // Access 'valid' from response data
             alert(response.data.user.firstname);
 

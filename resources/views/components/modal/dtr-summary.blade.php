@@ -57,7 +57,14 @@
                                     <h4
                                         class="md:text-base text-sm font-semibold bg-gray-100 p-3 rounded flex justify-between flex-wrap gap-2 items-center">
                                         <p>Year {{ $yearData['year'] }}</p>
-                                        <p class="float-right">Total of {{ floor((int) filter_var($yearData['total_hours'], FILTER_SANITIZE_NUMBER_INT) / 60) }} hours {{ round(((int) filter_var($yearData['total_hours'], FILTER_SANITIZE_NUMBER_INT) % 60)) }} minutes</p>
+                                        <p class="float-right">Total of
+                                            @if (floor((int) filter_var($yearData['total_hours'], FILTER_SANITIZE_NUMBER_INT) / 60) > 0)
+                                                {{ floor((int) filter_var($yearData['total_hours'], FILTER_SANITIZE_NUMBER_INT) / 60) }}
+                                                hours
+                                            @endif
+                                            {{ round((int) filter_var($yearData['total_hours'], FILTER_SANITIZE_NUMBER_INT) % 60) }}
+                                            minutes
+                                        </p>
                                     </h4>
 
                                     <table class="w-full text-left text-sm mt-2">
@@ -71,7 +78,14 @@
                                                     <td
                                                         class="px-4 py-3 flex justify-between w-full gap-2 flex-wrap items-center">
                                                         <p>{{ $monthData['month_name'] }}</p>
-                                                        <p>{{ floor((int) filter_var($monthData['total_hours'], FILTER_SANITIZE_NUMBER_INT) / 60) }} hours {{ round(((int) filter_var($monthData['total_hours'], FILTER_SANITIZE_NUMBER_INT) % 60)) }} minutes</p>
+                                                        <p class="float-right">Total of
+                                            @if (floor((int) filter_var($monthData['total_hours'], FILTER_SANITIZE_NUMBER_INT) / 60) > 0)
+                                                {{ floor((int) filter_var($monthData['total_hours'], FILTER_SANITIZE_NUMBER_INT) / 60) }}
+                                                hours
+                                            @endif
+                                            {{ round((int) filter_var($yearData['total_hours'], FILTER_SANITIZE_NUMBER_INT) % 60) }}
+                                            minutes
+                                        </p>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -83,8 +97,15 @@
                             <div class="mt-6 border-t pt-4">
                                 <div
                                     class="md:!text-lg text-base font-semibold flex flex-wrap gap-2 justify-between text-[#F53C11]">
-                                    <span>Overall Hours askldjsalkd</span>
-                                    <span>{{ floor((int) filter_var($totalHoursOverall, FILTER_SANITIZE_NUMBER_INT) / 60) }} hours {{ round(((int) filter_var($totalHoursOverall, FILTER_SANITIZE_NUMBER_INT) % 60)) }} minutes</span>
+                                    <span>Overall Hours</span>
+                                    <span>
+                                        @if (floor((int) filter_var($totalHoursOverall, FILTER_SANITIZE_NUMBER_INT) / 60) > 0)
+                                            {{ floor((int) filter_var($totalHoursOverall, FILTER_SANITIZE_NUMBER_INT) / 60) }}
+                                            hours
+                                        @endif
+                                        {{ round((int) filter_var($totalHoursOverall, FILTER_SANITIZE_NUMBER_INT) % 60) }}
+                                        minutes
+                                    </span>
                                 </div>
                             </div>
                         </div>

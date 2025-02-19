@@ -13,7 +13,7 @@
                         path="resources/img/default-male.png" />
                 </div>
                 <div class="text-center space-y-1">
-                    <h1 class="font-semibold text-xl" name="fullname">fullname_placeholder</h1>
+                    <h1 class="font-semibold text-xl capitalize" name="fullname">fullname_placeholder</h1>
                     <p class="text-[#F57D11]" name="email">email_placeholder</p>
                 </div>
 

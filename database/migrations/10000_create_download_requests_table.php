@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('month');
             $table->string('year');
             $table->string('status')->default('pending');
+            $table->date('date_approved')->nullable();
+            $table->foreignId('approved_by')->nullable()->constrained('users');
+            $table->date('date_declined')->nullable();
+            $table->foreignId('declined_by')->nullable()->constrained('users');
             $table->timestamps();
         });
     }

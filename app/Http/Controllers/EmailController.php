@@ -28,17 +28,24 @@ class EmailController extends Controller
         //create a request to send the email
 
         //check if db has the old email and token if not then create a new one
+        
         $DBtoken = DB::table('password_reset_tokens')->where('email', $user->email)->first();
-        if($DBtoken){
+
+        if ($DBtoken) {
+            // Check if created_at exists and parse it correctly
+            if (!isset($DBtoken->created_at)) {
+                return response()->json(['error' => 'created_at column missing or null'], 500);
+            }
+
             // Convert created_at to a Carbon instance
             $createdAt = Carbon::parse($DBtoken->created_at);
-            
-            if ($createdAt->addMinutes(15) < Carbon::now()) {
-                // Remove the old token
 
-                DB::table('password_reset_tokens')->where('email', $DBtoken->email)->delete();
+            if ($createdAt->addMinutes(15) < Carbon::now()) {
+                // Use $user->email instead of $DBtoken->email to delete
+                DB::table('password_reset_tokens')->where('email', $user->email)->delete();
             }
         }
+
 
         //dd($user->email);
         Mail::to($user->email)->send(new EmailResetPassword($user));
@@ -51,45 +58,50 @@ class EmailController extends Controller
         //show the user that the password has been reset
         //dd($request->all());
         
+        $error = back();
+
         if($request->email == null){
-            return response()->json(['message' => 'Email is required', 'valid' => false]);
+            return $error->with(['invalid' =>'Email is required!', 'valid' => false]);
         }
 
         if($request->_token == null){
-            return response()->json(['message' => 'Token is required', 'valid' => false]);
+            return $error->with(['invalid' =>'Error occured!', 'valid' => false]);
         }
 
         if($request->password == null){
-            return response()->json(['message' => 'Password is required', 'valid' => false]);
+            return $error->with(['invalid' =>'Password is required!', 'valid' => false]);
         }
         
         if($request->password_confirmation == null){
-            return response()->json(['message' => 'Password confirmation is required', 'valid' => false]);
+            return $error->with(['invalid' =>'Password Confirmation is required!', 'valid' => false]);
         }
         
         if($request->password != $request->password_confirmation){
-            return response()->json(['message' => 'Password and password confirmation do not match', 'valid' => false]);
+            return $error->with(['invalid' =>'Password does not matched!', 'valid' => false]);
         }
 
         //get the email from the request
         $email = $request->email;
         $token = $request->token;
-
+        
+        //@dd('hello');
         //check if the token is valid
         $DBtoken = DB::table('password_reset_tokens')->where('email', $email)->first();
         if (!$DBtoken) {
-            return response()->json(['message' => 'Invalid token', 'valid' => false]);
+            //return $error->with(['invalid' =>'Invalid token!', 'valid' => false]);
+            return redirect()->route('show.login')->with(['invalid' => 'Invalid token!', 'valid' => false]);
         }
 
         // Ensure $token->created_at is a Carbon instance
         if (Carbon::parse($DBtoken->created_at)->addMinutes(15) < Carbon::now()) {
-            return response()->json(['message' => 'Token expired', 'valid' => false]);
+            return redirect()->route('show.login')->with(['invalid' => 'Link is expired!', 'valid' => false]);
+        }
+        
+        if (!$DBtoken || !Hash::check($token, $DBtoken->token)) {
+            return redirect()->route('show.login')->with(['invalid' => 'Invalid token!', 'valid' => false]);
         }
 
-        //check if the token is valid
-        if ($DBtoken->token !== $token) {
-            return response()->json(['message' => 'Invalid token', 'valid' => false]);
-        }
+
 
         //reset password
         $user = User::where('email', $email)->first();
@@ -99,7 +111,7 @@ class EmailController extends Controller
         //delete the token
         DB::table('password_reset_tokens')->where('email', $email)->delete();
 
-        return response()->json(['message' => 'Password reset successfully', 'valid' => true]);
+        return redirect()->route('show.login')->with(['success' =>'Password reset successfully!', 'valid' => true]);
     }
 
     public function EmailShiftNotification(User $user, Histories $history)

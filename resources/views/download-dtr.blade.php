@@ -8,6 +8,7 @@
     <input type="hidden" name="selectedYear" value="{{ $selectedYear }}">
     <input type="hidden" name="pagination" value="{{ json_encode($pagination, true) }}">
     <input type="hidden" name="type" value="{{ json_encode($type) }}">
+    <input type="hidden" name="approved_by" value="{{$approved_by}}">
 </form>
 
 <script>

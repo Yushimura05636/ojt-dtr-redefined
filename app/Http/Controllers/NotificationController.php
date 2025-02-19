@@ -9,6 +9,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Pusher\Pusher;
 
@@ -27,11 +28,15 @@ class NotificationController extends Controller
 
     public function sendAdminNotification(Request $request)
     {
-
-        $from_user_id = Auth::id();
         
-        $message = "User " . User::where('id', $from_user_id)->first()->firstname . 
-        'has requested to download the dtr: ' . Carbon::createFromDate($request->year, $request->month, 1)->format('M Y');
+        $from_user_id = Auth::id();
+
+        $Fullname = User::where('id', $from_user_id)->first();
+
+        $dateMessage = Carbon::createFromDate($request->year, $request->month, 1)->format('M Y');
+        
+        $message = ucwords(strtolower($Fullname->firstname . ' ' . substr($Fullname->middlename, 0, 1) . '. ' . $Fullname->lastname)) .
+            ' has requested to download the DTR. ' . $dateMessage;
         
         $data = [
             "from_user_id" => $from_user_id,
@@ -39,18 +44,33 @@ class NotificationController extends Controller
             "month" => $request->month,
             "year" => $request->year,
             "message" => $message,
+            'role' => $request->to_user_role,
         ];
 
         $request = new Request($data);
 
         event(new PushNotificationEvent($request, 'send-download-approval-dtr'));
 
-        Notification::create([
-            'user_id' => $request->to_user_id,
-            'message' => $message,
-            'is_read' => false,
-            'is_archive' => false,
-        ]);
+        //@dd($request->all(), $dtr_download_request);
+        $users_role = User::where('role', $request->role)->get();
+
+        if(isset($users_role)){
+            foreach($users_role as $usr){
+                Notification::create([
+                    'user_id' => $usr->id,
+                    'message' => $message,
+                    'is_read' => false,
+                    'is_archive' => false,
+                ]);
+            }
+        }
+
+        // Notification::create([
+        //     'user_id' => $request->to_user_id,
+        //     'message' => $message,
+        //     'is_read' => false,
+        //     'is_archive' => false,
+        // ]);
 
         DtrDownloadRequest::create([
             'user_id' => $from_user_id,
@@ -106,18 +126,24 @@ class NotificationController extends Controller
 
     public function archiveAdminNotification($id)
     {
-        
-        $notification = Notification::where('id', $id)
-        ->first();
+        DB::beginTransaction();
 
-        if ($notification) {
+        try {
+            $notification = Notification::find($id);
+
+            if (!$notification) {
+                return response()->json(['error' => 'Notification not found'], 404);
+            }
+
             $notification->is_archive = 1;
-            $notification->is_read = 1;
-            $notification->save(); // Correct way to save changes
-        } else {
-            return response()->json(['error' => 'Notification not found'], 404);
+            $notification->save();
+
+            DB::commit();
+            return back()->with(['success' => 'The message has been archived!']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
         }
 
-        return back()->with(['success' => 'The message has been archived!']);
     }
 }

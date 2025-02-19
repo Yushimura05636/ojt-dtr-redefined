@@ -3,6 +3,7 @@
 
 {{-- time in modal --}}
 <x-modal.time-in-time-out-modal id="time-in-time-out-modal" />
+<meta name="app-url" content="{{ config('app.url') }}">
 
 
 <!-- HTML5 QR Code Scanner -->
@@ -228,6 +229,8 @@
 <script>
     let scannerInstance = null; // Store scanner instance globally
 
+    //const APP_URL = document.querySelector('meta[name="app-url"]').getAttribute("content");
+
     // swiper
     var swiper = new Swiper(".progress-slide-carousel", {
         loop: true,
@@ -271,7 +274,11 @@
 
     async function onScanSuccess(decodedText) {
         try {
-            const response = await axios.get(`/scanner/${encodeURIComponent(decodedText)}`);
+
+            let app_url = `{{ url('/scanner/${encodeURIComponent(decodedText)}') }}`;
+
+
+            const response = await axios.get(app_url);
             console.log(response.data); // Debugging log
 
             // Open modal
@@ -318,6 +325,10 @@
             const newButtonTimeOut = document.querySelector('[name="button_time_out"]');
 
 
+            //new config for the api route
+            app_url = `{{ url('/history/') }}`;
+
+
             // Add event listeners
             newButtonTimeIn.addEventListener('click', async function() {
                 try {
@@ -327,7 +338,8 @@
                     nameLoadingButton.classList.add('block');
                     nameLoadingButton.innerHTML =
                         "<div class='flex justify-center items-center w-full'><span class='line-md--loading-loop'></span><span> Time In </span></div>";
-                    const res = await axios.post('/history', {
+                    
+                        const res = await axios.post(app_url, {
                         qr_code: response.data.user.qr_code,
                         type: 'time_in',
                     });
@@ -353,12 +365,12 @@
                     nameLoadingButton.innerHTML =
                         "<div class='flex justify-center items-center w-full'><span class='line-md--loading-loop'></span><span> Time Out </span></div>";
 
-                    const res = await axios.post('/history', {
+                    const res = await axios.post(app_url, {
                         qr_code: response.data.user.qr_code,
                         type: 'time_out',
                     });
 
-                    if (res.data.success) {
+                    if (res.status === 200) {
                         toastr.success("Time Out checked successfully");
                     } else {
                         toastr.error("Failed to check Time Out");

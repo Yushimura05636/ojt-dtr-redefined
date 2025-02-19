@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DtrDownloadRequest;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -43,6 +44,7 @@ class PDFController extends Controller
                 'records' => $request->records,
                 'pagination' => $request->pagination,
                 'totalHoursPerMonth' => $request->totalHoursPerMonth,
+                'approved_by' => $request->approved_by,
             ]);
         }
         else {
@@ -51,6 +53,7 @@ class PDFController extends Controller
                 'records' => $request->records,
                 'pagination' => $request->pagination,
                 'totalHoursPerMonth' => $request->totalHoursPerMonth,
+                'approved_by' => $request->approved_by,
             ]);
         }
         return $pdf->download('DTR_Report.pdf');

@@ -179,9 +179,12 @@
     console.log(month, year);
 
     function requestPDF() {
+        console.log(month, year);
+
+        debugger;
 
         var user_id = "{{ auth()->id() }}"; // Get logged-in user's ID
-        
+
         if(count >= 1){
             toastr.error(`Please wait for 30 seconds to send request again!`);
             console.log(count);
@@ -196,13 +199,14 @@
                     "X-CSRF-TOKEN": "{{ csrf_token() }}" // CSRF protection
                 },
                 body: JSON.stringify({
-                    to_user_id: 1,
+                    to_user_role: 'admin',
                     month: month,
                     year: year,
                 })
             })
             .then(response => response.status)
             .then(data => {
+            debugger;
                 if (data === 200) {
                     toastr.success("Download request has been sent!");
                 } else {

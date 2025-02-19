@@ -314,6 +314,10 @@ class UserController extends Controller
             return back()->with('invalid', 'The invalid user!');
         }
 
+        if ($users->role === 'admin') {
+            return back()->with('invalid', 'This user does not exists!');
+        }
+
         try {
             //later if not admin
             //convert all the dateitme details
@@ -492,13 +496,13 @@ class UserController extends Controller
         $dtrDownloadRequest = collect($dtrDownloadRequest)->map(function ($user){
             return [
                 'id' => $user->id,
-                'name' => $user->users->firstname . ' ' . substr($user->users->firstname, 0, 1) . '. ' . $user->users->lastname,
+                'name' => $user->users->firstname . ' ' . substr($user->users->middlename, 0, 1) . '. ' . $user->users->lastname,
                 'title' => 'Request for DTR Approval',
                 'month' => $user->month,
                 'year' => $user->year,
                 'user_id' => $user->user_id,
                 'status' => $user->status,
-                'date_requested' => Carbon::parse($user->created_at)->format('Y-m-d'),
+                'date_requested' => Carbon::parse($user->created_at)->format('M d, Y'),
             ];
         })->sortByDesc('date_requested');
         

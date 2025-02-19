@@ -25,7 +25,7 @@
     $primaryClasses =
         'px-16 py-3 rounded-full relative overflow-hidden font-medium text-white flex items-center justify-center gap-2 animate-transition bg-gradient-to-r from-[#F57D11] via-[#F57D11]/70 to-[#F53C11] hover:bg-[#F53C11] disabled:opacity-50 lg:text-sm text-xs';
     $secondaryClasses =
-        'px-16 py-3 border rounded-full hover:bg-white border-white hover:text-[#F57D11] animate-transition flex items-center justify-center lg:text-sm text-xs';
+        'px-16 py-3 border rounded-full bg-white border-white font-semibold hover:bg-gray-200 text-[#F57D11] animate-transition flex items-center justify-center lg:text-sm text-xs';
     $tertiaryClasses =
         'px-16 py-3 border rounded-full text-[#F57D11] hover:border-[#F57D11] animate-transition flex items-center justify-center gap-2 lg:text-sm text-xs';
 
@@ -46,7 +46,9 @@
     @if ($routePath) onclick="window.location.href='{{ route($routePath, $params) }}'" @endif>
 
     @if ($leftIcon)
-        <span class="{{ $leftIcon }}"></span>
+        <div class="w-auto h-auto">
+            <span class="{{ $leftIcon }}"></span>
+        </div>
     @endif
 
     @if ($showLabel)
@@ -56,7 +58,9 @@
     @endif
 
     @if ($rightIcon)
-        <span class="{{ $rightIcon }}"></span>
+        <div class="w-auto h-auto">
+            <span class="{{ $rightIcon }}"></span>
+        </div>
     @endif
 
 

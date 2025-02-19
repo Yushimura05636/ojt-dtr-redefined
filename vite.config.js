@@ -11,9 +11,9 @@ export default defineConfig({
             refresh: true,
         }),
     ],
-    server: {
-        hmr: {
-            host: 'http://ojt-laravel-9.infy.uk', // Set your production domain here
-        },
-    },
+    // server: {
+    //     hmr: {
+    //         host: 'http://ojt-laravel-9.infy.uk', // Set your production domain here
+    //     },
+    // },
 });

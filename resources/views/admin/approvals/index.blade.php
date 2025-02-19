@@ -2,6 +2,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
+    <meta name="app-url" content="{{ config('app.url') }}">
+    
+
     <div class="h-auto w-full flex flex-col gap-5">
         <div class="flex justify-between items-center flex-wrap gap-5 w-full">
             <span class="lg:!w-1/2 w-full">
@@ -25,7 +28,7 @@
         <div class="overflow-x-auto bg-white rounded-lg shadow-md">
             <table id="recordsTable" class="w-full border-collapse border border-gray-300">
                 <thead>
-                    <tr class="*:px-6 *:py-3 *:text-left *:text-sm *:font-semibold *:bg-[#F57D11] *:text-white">
+                    <tr class="*:px-6 *:py-3 *:text-left *:text-sm *:font-semibold *:bg-[#F57D11] *:text-white *:text-nowrap">
                         <th><input type="checkbox" id="select-all" class="cursor-pointer"></th>
                         <th>Name</th>
                         <th>Title</th>
@@ -45,11 +48,11 @@
 
                     @forelse ($approvals as $approval)
                         @if($approval['status'] === 'pending')
-                            <tr class="border hover:bg-gray-50 *:px-6 *:py-4 row-item" data-id="{{ $approval['id'] }}">
-                                <td class="text-center">
+                            <tr class="border hover:bg-gray-50 *:px-6 *:py-4 row-item *:text-nowrap" data-id="{{ $approval['id'] }}">
+                                <td>
                                     <input type="checkbox" class="row-checkbox cursor-pointer" value="{{ $approval['id'] }}">
                                 </td>
-                                <td>{{ $approval['name'] }}</td>
+                                <td class="capitalize">{{ $approval['name'] }}</td>
                                 <td>{{ $approval['title'] }}</td>
                                 <td>{{ $approval['date_requested'] }}</td>
                                 <td class="hidden">{{ $approval['month'] }}</td>
@@ -102,6 +105,8 @@
     <script>
 
         let action = '';
+
+        const APP_URL = document.querySelector('meta[name="app-url"]').getAttribute("content");
 
         document.addEventListener("DOMContentLoaded", function () {
             const selectAllCheckbox = document.getElementById("select-all");
@@ -201,7 +206,10 @@
         console.log("👤 To User ID:", toUserId);
 
         let actionType = "";
-        let apiUrl = "/admin-dtr-"; // Adjust this to your actual Laravel API route
+        
+        //let apiUrl = `/public/admin-dtr-`; // Adjust this to your actual Laravel API route
+        let app_url = `{{ url('/admin-dtr-') }}`;
+        
         let requestData = {
             id: requestId,
             name: name,
@@ -214,10 +222,10 @@
         };
 
         if (this.classList.contains("approve-btn")) {
-            actionType = "Approved";
+            actionType = "approve";
             requestData.status = "approved";
 
-            axios.post(apiUrl+'approve', requestData)
+            axios.post(app_url+actionType, requestData)
                 .then(response => {
                     console.log("✅ Approval Success:", response.data);
                     alert("Request approved successfully!");
@@ -228,10 +236,10 @@
                 });
 
         } else if (this.classList.contains("decline-btn")) {
-            actionType = "Declined";
+            actionType = "decline";
             requestData.status = "declined";
 
-            axios.post(apiUrl+'decline', requestData)
+            axios.post(app_url+actionType, requestData)
                 .then(response => {
                     console.log("✅ Decline Success:", response.data);
                     alert("Request declined successfully!");
@@ -242,14 +250,17 @@
                 });
 
         } else if (this.classList.contains("view-btn")) {
-            actionType = "Viewed";
-            window.location.href = `/admin/approvals/${requestId}?&type=view`; // Change the URL as needed
+            actionType = "view";
+            app_url = `{{ url('/admin/approvals/${requestId}?&type=${actionType}') }}`;
+            window.location.href = app_url; // Change the URL as needed
         }
 
         console.log("🆔 Button Clicked:", actionType);
     });
 });
 
+
+    let app_url = `{{ url('/admin-dtr-batch-') }}`;
 
             // Approve All Function
             approveButton.addEventListener("click", function () {
@@ -258,11 +269,15 @@
                     console.log("Approving all selected IDs:", selectedIds);
 
                     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                    const url = '/admin-dtr-batch-approve';
+                    
+                    //const url = '/public/admin-dtr-batch-approve';
+                    //let app_url = `{{ url('/admin/-dtr-batch-approve') }}`;
 
                     action = 'approve';
 
-                    fetch(url, {
+                    console.log(app_url+action);
+
+                    fetch(app_url+action, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -273,6 +288,7 @@
                         }),
                     })
                     .then(response => {
+                        debugger;
                         if (response.status === 200) {
                             toastr.success(`DTR request ${action}d successfully.`);
                         } else {
@@ -294,11 +310,11 @@
                     console.log("Declining all selected IDs:", selectedIds);
 
                     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                    const url = '/admin-dtr-batch-decline';
+                    //const url = '/public/admin-dtr-batch-decline';
 
                     action = 'decline';
 
-                    fetch(url, {
+                    fetch(app_url+action, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -350,13 +366,17 @@ function searchApprovals(searchTerm, approvals) {
         approval.name.toLowerCase().includes(searchTerm) ||
         approval.title.toLowerCase().includes(searchTerm) ||
         approval.date_requested.toLowerCase().includes(searchTerm)
-    );
+    );  
+
+    let app_url = `{{ url('/admin-dtr-') }}`;
     
 
     //this is the handle request function for approval and denial
     function handleDtrRequest(action, toUserId, month, year) {
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-        const url = action === 'accept' ? "/admin-dtr-approve" : "/admin-dtr-decline"; // Change to your actual endpoints
+        const url = action === 'accept' ? app_url+action : app_url+decline; // Change to your actual endpoints
+
+        debugger;
 
         fetch(url, {
             method: "POST",

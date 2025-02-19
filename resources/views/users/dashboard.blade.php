@@ -77,7 +77,7 @@
                 <div class="space-y-2">
                     <section class="flex md:flex-row flex-col items-start flex-wrap text-wrap sm:gap-5 gap-x-2">
                         <h1 class="text-base font-semibold">Phone No.</h1>
-                        <p class=" text-base">{{ $user->phone }}</p>
+                        <p class=" text-base">+63 {{ $user->phone }}</p>
                     </section>
                     <section class="flex md:flex-row flex-col items-start flex-wrap text-wrap sm:gap-5 gap-x-2">
                         <h1 class="text-base font-semibold">Address</h1>
@@ -156,7 +156,7 @@
                             </div>
                         @endif
                         <div>
-                            <p class="text-sm font-semibold text-gray-600">Feb 5, 2025</p>
+                            <p class="text-sm font-semibold text-gray-600">{{Carbon\Carbon::parse($request['created_at'])->format('M d, Y')}}</p>
                         </div>
                     </a>
                 @endforeach

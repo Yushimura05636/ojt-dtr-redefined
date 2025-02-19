@@ -1,6 +1,6 @@
 <x-main-layout>
     <x-form.container routeName="register" className="w-full h-full">
-        <div class="w-full h-full flex flex-col items-center gap-7 pb-10">
+        <div class="w-full h-full flex flex-col items-center gap-7 md:!p-10 p-5">
 
             @if (session('success'))
                 <x-modal.flash-msg msg="success" />
@@ -13,7 +13,7 @@
             <x-page-title title="create intern account" titleClass="lg:!text-3xl md:!text-2xl !text-lg"
                 vectorClass="lg:!h-6 md:!h-4 !h-3" />
 
-            <div class="w-full flex flex-col gap-7 md:pb-10">
+            <div class="w-full flex flex-col gap-7">
                 <section class="space-y-5 w-full">
                     <x-form.section-title title="Personal Information" vectorClass="lg:h-5 h-3" />
                     <div class="grid sm:grid-cols-3 w-full gap-5">
