@@ -42,27 +42,36 @@
                     <h1 class="font-semibold">Logged History</h1>
                 </div>
                 <div class="md:!h-full !h-60 w-full bg-white overflow-auto rounded-b-lg border">
-                    <div class=" text-black flex flex-col items-start justify-start">
-                        @foreach ($histories as $history)
-                        <section class="px-7 py-5 w-full flex justify-between items-center border-b border-gray-200">
-                            <div>
-                                <section class="font-bold text-lg">{{ $history['timeFormat'] }}</section>
-                                <p class="text-sm font-medium text-gray-700">{{ $history['datetime'] }}</p>
+                    <div class=" text-black flex flex-col items-start justify-start h-full">
+                        @forelse ($histories as $history)
+                            <section
+                                class="px-7 py-5 w-full flex justify-between items-center border-b border-gray-200">
+                                <div>
+                                    <section class="font-bold text-lg">{{ $history['timeFormat'] }}</section>
+                                    <p class="text-sm font-medium text-gray-700">{{ $history['datetime'] }}</p>
+                                </div>
+                                @if ($history['description'] === 'time in')
+                                    <div class="flex items-center gap-1 select-none text-sm font-semibold">
+                                        <p
+                                            class="{{ isset($history['extra_description']) && $history['extra_description'] === 'late' ? 'text-red-500 font-bold' : 'text-green-500' }}">
+                                            Time
+                                            in{{ isset($history['extra_description']) && $history['extra_description'] === 'late' ? ' | Late' : '' }}
+                                        </p>
+                                    </div>
+                                @else
+                                    <div class="text-red-500 flex items-center gap-1 select-none text-sm font-semibold">
+                                        <p>Time out</p>
+                                    </div>
+                                @endif
+                            </section>
+                        @empty
+                            <div
+                                class="w-full h-full flex justify-center items-center gap-2 text-sm font-semibold text-gray-600">
+                                Go <span class="text-green-500">Time in</span> / <span class="text-red-500">Time
+                                    out</span>
+                                to reflect.
                             </div>
-                            @if ($history['description'] === 'time in')
-                                <div class="flex items-center gap-1 select-none text-sm font-semibold">
-                                    <p class="{{ isset($history['extra_description']) && $history['extra_description'] === 'late' ? 'text-red-500 font-bold' : 'text-green-500' }}">
-                                        Time in{{ isset($history['extra_description']) && $history['extra_description'] === 'late' ? ' | Late' : '' }}
-                                    </p>
-                                </div>
-                            @else
-                                <div class="text-red-500 flex items-center gap-1 select-none text-sm font-semibold">
-                                    <p>Time out</p>
-                                </div>
-                            @endif
-                        </section>
-                        
-                        @endforeach
+                        @endforelse
                     </div>
                 </div>
             </section>
@@ -116,16 +125,18 @@
         <div class="p-7 rounded-lg border border-gray-200 bg-white w-full">
             <div class="flex w-full justify-between gap-2 items-end mb-3">
                 <x-page-title title="Request Status" />
-                <a href="{{ route('users.request') }}"
-                    class="lg:!text-sm text-xs text-[#F53C11] hover:underline underline-offset-4 cursor-pointer font-semibold">
-                    View All
-                </a>
+                @if ($downloadRequest->count() != 0)
+                    <a href="{{ route('users.request') }}"
+                        class="lg:!text-sm text-xs text-[#F53C11] hover:underline underline-offset-4 cursor-pointer font-semibold">
+                        View All
+                    </a>
+                @endif
             </div>
             <hr>
 
             {{-- dummy data | sort from latest --}}
             <div class="overflow-auto h-[250px] w-full">
-                @foreach ($downloadRequest as $request)
+                @forelse ($downloadRequest as $request)
                     <a href="{{ route('users.request') }}"
                         class="px-5 py-3 hover:bg-gray-100 border-b border-gray-300 w-full flex items-center justify-between gap-5">
 
@@ -148,17 +159,24 @@
                         @endif
                         @if ($request['status'] === 'pending')
                             <div class="w-1/2">
-                                <p class="lg:!text-sm text-xs font-semibold text-blue-500 truncate">Waiting for approval...
+                                <p class="lg:!text-sm text-xs font-semibold text-blue-500 truncate">Waiting for
+                                    approval...
                                 </p>
                                 {{-- <p class="lg:!text-sm text-xs font-semibold text-green-500 truncate">Ready to download</p>
                                 <p class="lg:!text-sm text-xs font-semibold text-red-500 truncate">Declined approval</p> --}}
                             </div>
                         @endif
                         <div>
-                            <p class="text-sm font-semibold text-gray-600">{{Carbon\Carbon::parse($request['created_at'])->format('M d, Y')}}</p>
+                            <p class="text-sm font-semibold text-gray-600">
+                                {{ Carbon\Carbon::parse($request['created_at'])->format('M d, Y') }}</p>
                         </div>
                     </a>
-                @endforeach
+                @empty
+                    <div class="flex items-center justify-center h-full w-full text-gray-600 font-semibold text-sm">You
+                        don't have DTR request yet. <a href="{{ route('users.dtr') }}"
+                            class="underline underline-offset-4 hover:text-[#F53C11] cursor-pointer ml-2">Request
+                            Now.</a></div>
+                @endforelse
 
                 {{-- <p class="flex items-center justify-center h-full w-full font-semibold text-gray-500">You don't have
                     request yet.</p> --}}
@@ -169,27 +187,29 @@
 
 <style>
     body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-            flex-direction: column;
-        }
-        #qr-container {
-            background-color: white;
-            padding: 20px;
-            border: 10px solid white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f4f4f4;
+        flex-direction: column;
+    }
+
+    #qr-container {
+        background-color: white;
+        padding: 20px;
+        border: 10px solid white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
 </style>
 
 <script>
@@ -241,11 +261,11 @@
                 const ctx = newCanvas.getContext("2d");
                 newCanvas.width = qrCanvas.width + 40; // Extra padding
                 newCanvas.height = qrCanvas.height + 40;
-                
+
                 // Fill white background
                 ctx.fillStyle = "white";
                 ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
-                
+
                 // Draw QR code in center
                 ctx.drawImage(qrCanvas, 20, 20);
 

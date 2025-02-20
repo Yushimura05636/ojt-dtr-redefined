@@ -16,8 +16,9 @@
                         <span class="text-green-500 font-semibold text-sm">
                             Ready to Download
                         </span>
-                        <button class="px-2 py-1 rounded-md bg-green-500 text-white" onclick="window.location.href=`/request/{{$id}}?type=download`">
-                            <span class="material-symbols--download-rounded !w-6 !h-6"></span>
+                        <button class="px-2 flex py-1 rounded-md bg-green-500 text-white"
+                            onclick="window.location.href=`/request/{{ $id }}?type=download`">
+                            <div class="material-symbols--download-rounded !w-6 !h-6"></div>
                         </button>
                     @elseif ($status === 'declined')
                         <span class="text-red-500 font-semibold text-sm">
@@ -35,11 +36,9 @@
                 </section>
             </div>
 
-            <div class="xl:w-[75%] lg:w-[85%] md:w-[95%] w-[100%] h-auto mt-8 border @if ($declined_by) border-red-300 
-            @endif @if ($approved_by)
-                border-green-300
-            @else border-blue-300
-            @endif ">
+            <div
+                class="xl:w-[75%] lg:w-[85%] md:w-[95%] w-[100%] h-auto mt-8 border-t-8 @if ($declined_by) border-red-500 @endif @if ($approved_by) border-green-500
+            @else border-blue-500 @endif ">
                 <div
                     class="w-auto h-auto border bg-white border-gray-100 shadow-md resize-none p-8 space-y-5 select-none">
                     <section class="flex items-start justify-between">
@@ -66,20 +65,19 @@
                                     hours
                                     {{ round((int) filter_var($totalHoursPerMonth, FILTER_SANITIZE_NUMBER_INT) % 60) }}
                                     minutes</span></p>
-                                    @if ($approved_by === null || !isset($approved_by))
-                                        @if ($declined_by != null || isset($declined_by))
-                                            <p class="lg:text-sm text-xs font-semibold text-red-500">Declined by: 
-                                                <span
-                                                class="font-normal lg:text-base text-sm capitalize">{{$declined_by}}</span>
-                                            </p>
-                                        @else
-                                        @endif
-                                    @else
-                                        <p class="lg:text-sm text-xs font-semibold">Approved by: 
-                                            <span
-                                            class="font-normal lg:text-base text-sm capitalize">{{$approved_by}}</span>
-                                        </p>
-                                    @endif
+                            @if ($approved_by === null || !isset($approved_by))
+                                @if ($declined_by != null || isset($declined_by))
+                                    <p class="lg:text-sm text-xs font-semibold text-red-500">Declined by:
+                                        <span
+                                            class="font-normal lg:text-base text-sm capitalize">{{ $declined_by }}</span>
+                                    </p>
+                                @else
+                                @endif
+                            @else
+                                <p class="lg:text-sm text-xs font-semibold">Approved by:
+                                    <span class="font-normal lg:text-base text-sm capitalize">{{ $approved_by }}</span>
+                                </p>
+                            @endif
                         </div>
                     </section>
 

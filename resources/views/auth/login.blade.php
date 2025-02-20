@@ -44,7 +44,7 @@
         <x-modal.forgot-password id="forgot-password-modal" />
         <x-modal.confirmation-email id="confirmation-email-modal" />
 
-        <x-form.container routeName="login" method="POST" className="w-full h-full">
+        <x-form.container routeName="login" method="POST" className="w-full h-auto bg-white">
             <div class="w-full flex flex-col items-center justify-center gap-7 overflow-x-hidden md:!p-10 p-5">
                 @if (session('success'))
                     <x-modal.flash-msg msg="success" />

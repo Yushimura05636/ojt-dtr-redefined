@@ -1,7 +1,7 @@
-
 <x-main-layout>
     <div class="w-full pb-5">
-        <h1 class="lg:!text-2xl md:text-lg text-base mb-5 font-semibold">Requests ({{count($downloadRequest)}})</h1>
+        <div class="lg:!text-2xl md:text-lg text-base mb-5 font-semibold">Requests ({{ count($downloadRequest) }})
+        </div>
 
         <!-- Tabs & Search Bar -->
         <div class="flex lg:!flex-row flex-col justify-between gap-5 items-center">
@@ -89,9 +89,8 @@
                                 <td class="flex items-center gap-2">
                                     <!-- View Button -->
                                     <div class="relative group">
-                                        <button
-                                            class="px-2 py-1 bg-blue-500 text-white rounded flex items-center gap-1"
-                                            onclick="viewRequest({{$request['id']}}, {{$request['month']}}, {{$request['year']}})">
+                                        <button class="px-2 py-1 bg-blue-500 text-white rounded flex items-center gap-1"
+                                            onclick="viewRequest({{ $request['id'] }}, {{ $request['month'] }}, {{ $request['year'] }})">
                                             <span class="basil--eye-solid w-6 h-6"></span>
                                         </button>
                                         <span
@@ -103,9 +102,9 @@
                                     <!-- Download Button (Only if Approved) -->
                                     @if ($request['statusKey'] === 'approved')
                                         <div class="relative group">
-                                            <button 
+                                            <button
                                                 class="px-2 py-1 bg-green-500 text-white rounded flex items-center gap-1"
-                                                onclick="downloadRequest({{$request['id']}}, {{$request['month']}}, {{$request['year']}})">
+                                                onclick="downloadRequest({{ $request['id'] }}, {{ $request['month'] }}, {{ $request['year'] }})">
                                                 <span class="material-symbols--download-rounded w-6 h-6"></span>
                                             </button>
                                             <span
@@ -117,6 +116,7 @@
                                 </td>
                             </tr>
                         @endif
+                        <p>Nothing to see here.</p>
                     @endforeach
                 </tbody>
 
@@ -157,7 +157,6 @@
             app_url = `{{ url('dtr-view/${requestId}?month=${month}&year=${year}&type=${action}') }}`
             window.location.href = app_url;
         }
-
     </script>
 
 </x-main-layout>

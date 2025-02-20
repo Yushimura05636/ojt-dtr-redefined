@@ -1,5 +1,5 @@
 <x-main-layout>
-    <x-form.container routeName="register" className="w-full h-full">
+    <x-form.container routeName="register" className="w-full h-auto bg-white">
         <div class="w-full h-full flex flex-col items-center gap-7 md:!p-10 p-5">
 
             @if (session('success'))

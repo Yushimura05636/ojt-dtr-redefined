@@ -31,7 +31,9 @@
                             <x-image path="resources/img/default-male.png"
                                 className="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 border border-[#F57D11] shadow rounded-full" />
                         </div>
-                        <x-button tertiary button leftIcon="bx--image" label="Change" className="px-6" />
+
+                        <x-button tertiary leftIcon="bx--image" label="Change" className="px-6" />
+                        <x-form.input id="image" type="file" hidden name_id="image" />
                     </div>
                     <x-form.section-title title="Personal Information" />
                     <div class="grid md:grid-cols-3 w-full gap-5">
@@ -69,8 +71,8 @@
                             value="{{ $user->starting_date }}" placeholder="MMM DD, YYY"
                             labelClass="text-lg font-medium" small />
                         <x-form.input disabled="true" label="Expiry Date" type="date" name_id="expiry_date"
-                            value="{{ $user->expiry_date }}" placeholder="MMM DD, YYY" labelClass="text-lg font-medium"
-                            small />
+                            value="{{ $user->expiry_date }}" placeholder="MMM DD, YYY"
+                            labelClass="text-lg font-medium" small />
                     </div>
                 </section>
 
