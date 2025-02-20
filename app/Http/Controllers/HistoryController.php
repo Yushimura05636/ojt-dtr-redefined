@@ -118,6 +118,7 @@ class HistoryController extends Controller
                     'id' => $daily->user_id,
                     'name' => User::where('id', $daily->user_id)->first()->firstname .' ' . substr(User::where('id', $daily->user_id)->first()->middlename, 0, 1) . '. ' . User::where('id', $daily->user_id)->first()->lastname,   
                     'description' => $daily->description,
+                    'extra_description' => $daily->extra_description,
                     'datetime' => Carbon::parse($daily->datetime)->format('F j, Y'),
                     'timeFormat' => Carbon::parse($daily->datetime)->format('g:i A'),
                 ];

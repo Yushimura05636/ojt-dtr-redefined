@@ -37,59 +37,77 @@ class UserController extends Controller
     public function AdminScannerTimeCheck(Request $request, EmailController $emailController)
 {
     try {
-        // initialized the success text
+        // Initialized the success text
         $success_text = "";
-
-        // get the user data from the qr code
+    
+        // Get the user data from the QR code
         $userData = User::where('qr_code', $request->qr_code)->first();
-
+    
         // Check if the user exists
         if (!$userData) {
             return back()->with('error', 'User not found.');
         }
-
-        // initialized the histories object(table)
+    
+        // Initialize the histories object (table)
         $timeCheck = new Histories();
-
-        // set the user id
+    
+        // Set the user ID
         $timeCheck->user_id = $userData->id;
-
-        // set the datetime
-        // internet global time
+    
+        // Set the datetime (Internet global time)
         $timeCheck->datetime = Carbon::now()->timezone('Asia/Manila');
-
+    
         // Validate the type of time check
         if (!in_array($request->type, ['time_in', 'time_out'])) {
             return response()->json(['success' => false, 'message' => 'Invalid time check type']);
         }
+    
+        // Define allowed time-ins per day
+        $allowedTimes = [
+            'Monday'    => '9:15 AM',
+            'Tuesday'   => '8:15 AM',
+            'Wednesday' => '8:15 AM',
+            'Thursday'  => '8:15 AM',
+            'Friday'    => '8:15 AM',
+            'Saturday'  => '8:15 AM',
+        ];
 
-        // it will be depends if time in or time out
+        // Get current day and allowed time-in
+        $currentDay = Carbon::now()->timezone('Asia/Manila')->format('l'); // Full day name (e.g., Monday)
+        $allowedTimeIn = $allowedTimes[$currentDay] ?? '8:00 AM';
+
+        // Convert allowed time-in to Carbon
+        $allowedTime = Carbon::parse($allowedTimeIn, 'Asia/Manila');
+
         if ($request->type == 'time_in') {
-            // this will set the description to time in
             $timeCheck->description = 'time in';
+
+            // Clone allowedTime before adding minutes
+            if ($timeCheck->datetime->greaterThan($allowedTime->copy()->addMinutes(15))) {
+                $timeCheck->extra_description = 'late';
+            }
+
             $success_text = "Time in checked successfully";
-        } else if ($request->type == 'time_out') {
-            // this will set the description to time out
+        } elseif ($request->type == 'time_out') {
             $timeCheck->description = 'time out';
             $success_text = "Time out checked successfully";
         }
-
-        // save the data to the database
+    
+        // Save the data to the database
         $timeCheck->save();
-
-        // send the shift notification email
+    
+        // Send the shift notification email
         try {
             $sendShiftNotification = $emailController->EmailShiftNotification($userData, $timeCheck);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
-
-        // return the success text
-        // return back()->with('success', $success_text);
+    
+        // Return the success text
         return response()->json(['success' => true, 'message' => $success_text]);
     } catch (\Exception $e) {
         return response()->json(['success' => false, 'message' => 'Something went wrong.']);
-    }
+    }   
 }
 
 
@@ -325,6 +343,7 @@ class UserController extends Controller
                 return [
                     'user' => $history->firstname . ' ' . $history->lastname,
                     'description' => $history->description,
+                    'extra_description' => $history->extra_description,
                     'datetime' => Carbon::parse($history->datetime)->format('F j, Y'),
                     'timeFormat' => Carbon::parse($history->datetime)->format('g:i A'),
                 ];
@@ -411,14 +430,17 @@ class UserController extends Controller
 
     }
 
-    public function showUserDetails($id, DtrSummaryController $dtrSummaryController)
+    public function showUserDetails($id, DtrSummaryController $dtrSummaryController, DtrDownloadRequestController $dtrDownloadRequestController)
     {
         $user = User::find($id);
+
+        $downloadRequest = $dtrDownloadRequestController->UserdownloadRequestPage();
 
         $histories = $user->history()->latest()->get()->map(function ($history) {
             return [
                 'user' => $history->firstname . ' ' . $history->lastname,
                 'description' => $history->description,
+                'extra_description' => $history->extra_description,
                 'datetime' => Carbon::parse($history->datetime)->format('F j, Y'),
                 'timeFormat' => Carbon::parse($history->datetime)->format('g:i A'),
             ];
@@ -440,6 +462,7 @@ class UserController extends Controller
         return view('admin.users.show', [
             'user' => $user,
             'histories' => $histories,
+            'downloadRequest' => $downloadRequest,
             //'yearlyTotals' => $yearlyTotals,
         ]);
     }

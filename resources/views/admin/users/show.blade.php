@@ -110,35 +110,38 @@
                 // ];
             @endphp
 
-            <div class="h-60 w-full bg-white overflow-auto rounded-b-lg">
-                <div class="text-black flex flex-col h-full items-start justify-start">
-                    @forelse ($histories as $history)
-                        <section
-                            class="px-7 py-5 w-full h-fit border-b border-gray-200 hover:bg-gray-100 flex flex-wrap gap-2 justify-between items-center">
-                            <div>
-                                <section class="font-bold">{{ $history['timeFormat'] ?? 'N/A' }}</section>
-                                <p class="text-sm font-medium text-gray-700">
-                                    {{ $history['datetime'] ?? 'No date available' }}
-                                </p>
-                            </div>
-                            @if (!empty($history['description']) && $history['description'] === 'time in')
-                                <div class="text-green-500 flex items-center gap-1 select-none text-sm font-semibold">
-                                    <p>Time in</p>
-                                </div>
-                            @else
-                                <div class="text-red-500 flex items-center gap-1 select-none text-sm font-semibold">
-                                    <p>Time out</p>
-                                </div>
-                            @endif
-                        </section>
-                    @empty
-                        <div class=" h-full w-full flex items-center justify-center ">
-                            <p class="text-center font-semibold text-gray-600">
-                                User has no logged history.</p>
-                        </div>
-                    @endforelse
+<div class="h-60 w-full bg-white overflow-auto rounded-b-lg">
+    <div class="text-black flex flex-col h-full items-start justify-start">
+        @forelse ($histories as $history)
+            <section class="px-7 py-5 w-full h-fit border-b border-gray-200 hover:bg-gray-100 flex flex-wrap gap-2 justify-between items-center">
+                <div>
+                    <section class="font-bold">{{ $history['timeFormat'] ?? 'N/A' }}</section>
+                    <p class="text-sm font-medium text-gray-700">
+                        {{ $history['datetime'] ?? 'No date available' }}
+                    </p>
                 </div>
+                @if (!empty($history['description']) && $history['description'] === 'time in')
+                    <div class="flex items-center gap-1 select-none text-sm font-semibold">
+                        <p class="{{ isset($history['extra_description']) && $history['extra_description'] === 'late' ? 'text-red-500 font-bold' : 'text-green-500' }}">
+                            Time in{{ isset($history['extra_description']) && $history['extra_description'] === 'late' ? ' | Late' : '' }}
+                        </p>
+                    </div>
+                @else
+                    <div class="text-red-500 flex items-center gap-1 select-none text-sm font-semibold">
+                        <p>Time out</p>
+                    </div>
+                @endif
+            </section>
+        @empty
+            <div class="h-full w-full flex items-center justify-center">
+                <p class="text-center font-semibold text-gray-600">
+                    User has no logged history.
+                </p>
             </div>
+        @endforelse
+    </div>
+</div>
+
 
         </section>
     </div>

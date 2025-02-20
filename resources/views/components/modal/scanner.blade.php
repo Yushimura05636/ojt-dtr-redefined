@@ -52,7 +52,7 @@
             let app_url  = `{{ url('/scanner/${decodedText}') }}`;
 
             const response = await axios.get(app_url);
-            console.log(response); // Access 'valid' from response data
+
             alert(response.data.user.firstname);
 
             // ✅ Update HTML content dynamically

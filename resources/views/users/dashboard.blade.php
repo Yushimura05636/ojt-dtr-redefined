@@ -44,25 +44,24 @@
                 <div class="md:!h-full !h-60 w-full bg-white overflow-auto rounded-b-lg border">
                     <div class=" text-black flex flex-col items-start justify-start">
                         @foreach ($histories as $history)
-                            <section
-                                class="px-7 py-5 w-full flex justify-between items-center border-b border-gray-200">
-                                <div class="">
-                                    <section class="font-bold text-lg">{{ $history['timeFormat'] }}
-                                    </section>
-                                    <p class="text-sm font-medium text-gray-700">
-                                        {{ $history['datetime'] }}</p>
+                        <section class="px-7 py-5 w-full flex justify-between items-center border-b border-gray-200">
+                            <div>
+                                <section class="font-bold text-lg">{{ $history['timeFormat'] }}</section>
+                                <p class="text-sm font-medium text-gray-700">{{ $history['datetime'] }}</p>
+                            </div>
+                            @if ($history['description'] === 'time in')
+                                <div class="flex items-center gap-1 select-none text-sm font-semibold">
+                                    <p class="{{ isset($history['extra_description']) && $history['extra_description'] === 'late' ? 'text-red-500 font-bold' : 'text-green-500' }}">
+                                        Time in{{ isset($history['extra_description']) && $history['extra_description'] === 'late' ? ' | Late' : '' }}
+                                    </p>
                                 </div>
-                                @if ($history['description'] === 'time in')
-                                    <div
-                                        class="text-green-500 flex items-center gap-1 select-none text-sm font-semibold">
-                                        <p>Time in</p>
-                                    </div>
-                                @else
-                                    <div class="text-red-500 flex items-center gap-1 select-none text-sm font-semibold">
-                                        <p>Time out</p>
-                                    </div>
-                                @endif
-                            </section>
+                            @else
+                                <div class="text-red-500 flex items-center gap-1 select-none text-sm font-semibold">
+                                    <p>Time out</p>
+                                </div>
+                            @endif
+                        </section>
+                        
                         @endforeach
                     </div>
                 </div>
@@ -168,33 +167,96 @@
     </main>
 </x-main-layout>
 
+<style>
+    body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            flex-direction: column;
+        }
+        #qr-container {
+            background-color: white;
+            padding: 20px;
+            border: 10px solid white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+</style>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Generate the small QR code when the page loads
         const qrCodeText = document.getElementById("hidden-data-qr-text").innerText;
 
-        new QRCode(document.getElementById("small-qr-code-img"), {
+        // new QRCode(document.getElementById("small-qr-code-img"), {
+        //     text: qrCodeText,
+        //     width: 120,
+        //     height: 120
+        // });
+
+        // // Add event listener to download QR image
+        // document.getElementById("download-qr-small-btn").addEventListener("click", function() {
+
+        //     const qrCanvas = document.getElementById("small-qr-code-img").querySelector("canvas");
+        //     if (qrCanvas) {
+        //         // Get the image data URL (base64 format)
+        //         const qrImage = qrCanvas.toDataURL("image/png");
+
+        //         // Create an <a> tag dynamically for downloading the image
+        //         const downloadLink = document.createElement("a");
+        //         downloadLink.href = qrImage;
+        //         downloadLink.download = "QR_Code.png"; // Set the default filename for download
+        //         document.body.appendChild(downloadLink);
+        //         downloadLink.click(); // Trigger the download
+        //         document.body.removeChild(
+        //             downloadLink); // Clean up the link after triggering the download
+        //     } else {
+        //         console.error("QR code not found in the container!");
+        //     }
+        // });
+
+        // Generate QR Code
+        const qr = new QRCode(document.getElementById("small-qr-code-img"), {
             text: qrCodeText,
-            width: 120,
-            height: 120
+            width: 200,
+            height: 200,
+            correctLevel: QRCode.CorrectLevel.H
         });
 
         // Add event listener to download QR image
         document.getElementById("download-qr-small-btn").addEventListener("click", function() {
-
-            const qrCanvas = document.getElementById("small-qr-code-img").querySelector("canvas");
+            const qrCanvas = document.querySelector("#small-qr-code-img canvas");
             if (qrCanvas) {
-                // Get the image data URL (base64 format)
-                const qrImage = qrCanvas.toDataURL("image/png");
+                // Create a new canvas with white background
+                const newCanvas = document.createElement("canvas");
+                const ctx = newCanvas.getContext("2d");
+                newCanvas.width = qrCanvas.width + 40; // Extra padding
+                newCanvas.height = qrCanvas.height + 40;
+                
+                // Fill white background
+                ctx.fillStyle = "white";
+                ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+                
+                // Draw QR code in center
+                ctx.drawImage(qrCanvas, 20, 20);
 
-                // Create an <a> tag dynamically for downloading the image
+                // Convert to image and download
+                const qrImage = newCanvas.toDataURL("image/png");
                 const downloadLink = document.createElement("a");
                 downloadLink.href = qrImage;
-                downloadLink.download = "QR_Code.png"; // Set the default filename for download
+                downloadLink.download = "QR_Code.png";
                 document.body.appendChild(downloadLink);
-                downloadLink.click(); // Trigger the download
-                document.body.removeChild(
-                    downloadLink); // Clean up the link after triggering the download
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
             } else {
                 console.error("QR code not found in the container!");
             }

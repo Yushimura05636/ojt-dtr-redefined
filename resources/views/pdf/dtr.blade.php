@@ -122,9 +122,10 @@
     </div>
 
     @php
-        $pagination = json_decode($pagination, true);
-        $records = json_decode($records, true);
+        $pagination = is_string($pagination) ? json_decode($pagination, true) : $pagination;
+        $records = is_string($records) ? json_decode($records, true) : $records;
     @endphp
+
 
     <div class="header" style="margin-top: 70px;">
         <h4>OJT Daily Time Record</h4>
@@ -137,10 +138,21 @@
         <p class="capitalize"><strong>Name:</strong> {{ $user->firstname }} {{ $user->middlename }} {{ $user->lastname }}</p>
         <p><strong>Position:</strong> Intern</p>
         <div style="position: relative;">
-            <p><strong>Hours This Month:</strong> {{ $totalHoursPerMonth }} Hours</p>
-            <p style="position: absolute; right: 0; top: 0;"><strong>Approved By:</strong><span class="capitalize">
-                {{$approved_by}}</span></p>
+            <p>
+                <strong>Hours This Month:</strong> 
+                {{ floor((int) filter_var($totalHoursPerMonth, FILTER_SANITIZE_NUMBER_INT) / 60) }} hours 
+                {{ round(((int) filter_var($totalHoursPerMonth, FILTER_SANITIZE_NUMBER_INT) % 60)) }} minutes
+            </p>
+            <p style="position: absolute; right: 0; top: 0;">
+                @if (!empty($approved_by))
+                    <strong>Approved By:</strong> 
+                    <span class="capitalize">{{ $approved_by }}</span>
+                @endif
+
+
+            </p>
         </div>
+        
     </div>
 
     <table>
@@ -153,40 +165,47 @@
             </tr>
         </thead>
         <tbody>
-            {{-- @foreach ($records as $record)
-                <tr>
-                    <td>{{ \Carbon\Carbon::parse($record['date'])->format(' j') }}</td>
-                    <td>{{ $record['time_in'] }}</td>
-                    <td>{{ $record['time_out'] }}</td>
-                    <td>{{ $record['hours_worked'] }} Hours</td>
-                </tr>
-            @endforeach --}}
             @if(isset($records) && count($records) > 0)
                 @foreach($records as $date => $data)
-                    <tr>
-                        {{-- <td class="border border-gray-300 px-4 py-2">{{ \Carbon\Carbon::parse($date)->format('F j, Y') }}</td> --}}
-                        <td>{{ \Carbon\Carbon::parse($data['date'])->format(' j') }}</td>
-                        <td>{{ $data['time_in'] }}</td>
-                        <td>{{ $data['time_out'] }}</td>
+                    <tr style="text-align: center; border: 1px solid gray;">
+                        <td style="padding: 8px; border: 1px solid gray;">
+                            {{ \Carbon\Carbon::parse($data['date'])->format('j') }}
+                        </td>
+                        <td style="padding: 8px; border: 1px solid gray;">
+                            {{ $data['time_in'] }}
+                        </td>
+                        <td style="padding: 8px; border: 1px solid gray;">
+                            {{ $data['time_out'] }}
+                        </td>
                         @if($data['hours_worked'] == '—')
-                            <td>—</td>
+                            <td style="padding: 8px; border: 1px solid gray;">—</td>
                         @else
-                            @if($data['hours_worked'] < 0)
-                                <td>Less than 1 hour</td>
-                            @elseif($data['hours_worked'] <= 1)
-                                <td>{{ $data['hours_worked'] }} hour</td>
-                            @elseif($data['hours_worked'] > 1)
-                                <td>{{ $data['hours_worked'] }} hours</td>
-                            @endif
+                            @php
+                                $totalMinutes = (int) filter_var($data['hours_worked'], FILTER_SANITIZE_NUMBER_INT);
+                                $hours = floor($totalMinutes / 60);
+                                $minutes = $totalMinutes % 60;
+                            @endphp
+                            <td style="padding: 8px; border: 1px solid gray;">
+                                @if ($hours < 1)
+                                    {{ $minutes }} minutes
+                                @elseif ($hours == 1)
+                                    {{ $hours }} hour {{ $minutes > 0 ? $minutes . ' minutes' : '' }}
+                                @else
+                                    {{ $hours }} hours {{ $minutes > 0 ? $minutes . ' minutes' : '' }}
+                                @endif
+                            </td>
                         @endif
                     </tr>
                 @endforeach
             @else
                 <tr>
-                    <td colspan="4">No records found</td>
+                    <td colspan="4" style="padding: 8px; border: 1px solid gray; text-align: center;">
+                        No records found
+                    </td>
                 </tr>
             @endif
         </tbody>
+        
     </table>
 </body>
 

@@ -54,11 +54,11 @@
                 <section class="flex items-center gap-3 col-span-1 justify-end w-full h-auto">
                     <!-- Fix alignment and padding for DTR Summary -->
                     <x-button tertiary label="DTR Summary" openModal="dtr-summary-modal"
-                        className="text-xs lg:px-8 px-4 modal-button" />
+                        className="text-xs lg:px-8 px-4 !py-4 modal-button" />
                 
                     <!-- Request PDF Button (With onClick Event) -->
                     <x-button primary label="Request a PDF" showLabel="{{ true }}"
-                        leftIcon="ph--hand-deposit" className="text-xs lg:px-8 px-4"
+                        leftIcon="ph--hand-deposit lg:!w-6 lg:!h-6 !w-4 !h-4" className="text-xs lg:px-8 px-4"
                         onClick="requestPDF()" />
                 </section>
             </div>
@@ -181,8 +181,6 @@
     function requestPDF() {
         console.log(month, year);
 
-        debugger;
-
         var user_id = "{{ auth()->id() }}"; // Get logged-in user's ID
 
         if(count >= 1){
@@ -206,7 +204,7 @@
             })
             .then(response => response.status)
             .then(data => {
-            debugger;
+
                 if (data === 200) {
                     toastr.success("Download request has been sent!");
                 } else {

@@ -157,15 +157,13 @@
     let requestId = document.querySelector("[name='requestId']").value;
     let count = 0;
 
-    console.log(month, year);
-
     function requestPDF() {
 
         var user_id = "{{ auth()->id() }}"; // Get logged-in user's ID
 
         if (count >= 1) {
             toastr.error(`Please wait for 30 seconds to send request again!`);
-            console.log(count);
+
             setTimeout(function() {
                 count = 0;
             }, 30000);

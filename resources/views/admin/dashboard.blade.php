@@ -110,18 +110,17 @@
                                             {{ $daily['name'] }}</p>
                                     </div>
                                     @if ($daily['description'] === 'time in')
-                                        <div
-                                            class="text-green-500 flex items-center gap-1 select-none text-sm font-semibold">
+    <div class="flex items-center gap-1 select-none text-sm font-semibold">
+        <p class="{{ $daily['extra_description'] === 'late' ? 'text-red-500 font-bold' : 'text-green-500' }}">
+            Time in{{ $daily['extra_description'] === 'late' ? ' | Late' : '' }}
+        </p>
+    </div>
+@else
+    <div class="text-red-500 flex items-center gap-1 select-none text-sm font-semibold">
+        <p>Time out</p>
+    </div>
+@endif
 
-                                            <p>Time in</p>
-                                        </div>
-                                    @else
-                                        <div
-                                            class="text-red-500 flex items-center gap-1 select-none text-sm font-semibold">
-
-                                            <p>Time out</p>
-                                        </div>
-                                    @endif
                                 </div>
                             </div>
                         </a>
@@ -279,7 +278,6 @@
 
 
             const response = await axios.get(app_url);
-            console.log(response.data); // Debugging log
 
             // Open modal
             const modalButton = document.querySelector('[name="showTimeShift"]');

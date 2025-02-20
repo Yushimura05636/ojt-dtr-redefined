@@ -57,29 +57,8 @@ Route::middleware('guest')->group(function () {
 
 //register post method
 
-Route::middleware('auth')->group(function () {
-
-    Route::post('/download-pdf', [PDFController::class, 'download'])->name('download.pdf');
-
-    //user dashboard
-    Route::get('/dashboard', [UserController::class, 'showUserDashboard'])->name('users.dashboard');
-
-    //user settings
-    Route::get('/settings', [UserController::class, 'showSettings'])->name('users.settings');
-
+Route::middleware(['auth', 'user_role:admin'])->group(function (){
     Route::get('/admin/dashboard', [UserController::class, 'showAdminDashboard'])->name('admin.dashboard');
-
-    //user index page
-    Route::get('/users', [UserController::class, 'index'])->name('users.profile.index');
-
-
-    //scanner user validation data
-    Route::get('scanner/{qr_code}', [UserController::class, 'AdminScannerValidation'])->name('admin.scanner.validation');
-
-
-    //admin scanner
-    //Route::get('/admin/scanner', [UserController::class, 'showAdminScanner'])->name('admin.scanner');
-    //admin user index page
     Route::get('/admin/users', [UserController::class, 'showAdminUsers'])->name('admin.users');
 
     //admin user dtr page
@@ -106,6 +85,41 @@ Route::middleware('auth')->group(function () {
     //admin profile
     Route::get('/admin/profile', [UserController::class, 'showAdminProfile'])->name('admin.profile');
 
+    Route::get('/admin/approvals', [UserController::class, 'showAdminApprovals'])->name('admin.approvals');
+
+    Route::get('/admin/approvals/{id}', [DtrSummaryController::class, 'showAdminUserApprovalDtr'])->name('admin.approvals.show');
+
+    Route::post('/admin-dtr-approve', [DtrDownloadRequestController::class, 'approve'])->name('admin.dtr.approve');
+    
+    Route::post('/admin-dtr-batch-approve', [DtrDownloadRequestController::class, 'batchApprove'])->name('admin.dtr.batch.approve');
+    Route::post('/admin-dtr-decline', [DtrDownloadRequestController::class, 'decline'])->name('admin.dtr.decline');
+    Route::post('/admin-dtr-batch-decline', [DtrDownloadRequestController::class, 'batchDecline'])->name('admin.dtr.batch.decline');
+
+    Route::get('/read-notifications-index', [NotificationController::class, 'readAdminNotification'])->name('admin.recieve.notification');
+    Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'readAdminNotification'])->name('user.recieve.notification');
+
+    //scanner user validation data
+    Route::get('scanner/{qr_code}', [UserController::class, 'AdminScannerValidation'])->name('admin.scanner.validation');
+    Route::post('/history', [UserController::class, 'AdminScannerTimeCheck'])->name('admin.history.time.check');
+    Route::post('admin/history/search', [SearchController::class, 'searchHistory'])->name('admin.history.search');
+});
+
+Route::middleware(['auth', 'user_role:user'])->group(function () {
+
+    //user dashboard
+    Route::get('/dashboard', [UserController::class, 'showUserDashboard'])->name('users.dashboard');
+
+    //user settings
+    Route::get('/settings', [UserController::class, 'showSettings'])->name('users.settings');
+
+    //user index page
+    // Route::get('/users', [UserController::class, 'index'])->name('users.profile.index');
+
+
+    //admin scanner
+    //Route::get('/admin/scanner', [UserController::class, 'showAdminScanner'])->name('admin.scanner');
+    //admin user index page
+
 
     //admin profile
     //Route::get('/profile/{id}', [UserController::class, 'showProfile'])->name('user.profile');
@@ -115,37 +129,29 @@ Route::middleware('auth')->group(function () {
 
     //dtr page
     Route::get('/dtr', [DtrSummaryController::class, 'showUserDtr'])->name('users.dtr');
-
-    
-
-    //dtr summary page
     Route::get('/dtr/summary', [DtrSummaryController::class, 'showUserDtrSummary'])->name('users.dtr.summary');
-
     Route::post('/dtr/post', [DtrSummaryController::class, 'ShowUserDtrPagination'])->name('users.dtr.post');
 
-    //admin history post method
-    Route::post('/history', [UserController::class, 'AdminScannerTimeCheck'])->name('admin.history.time.check');
-
-    //logout post method
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-    //update user post method
-    Route::put('/update', [UserController::class, 'update'])->name('users.settings.update');
-
     Route::get('/request', [UserController::class, 'showRequest'])->name('users.request');
-
     Route::get('/request/{id}', [DtrSummaryController::class, 'showUserRequestedDtr'])->name('users.request.show');
-    
-    Route::get('/admin/approvals', [UserController::class, 'showAdminApprovals'])->name('admin.approvals');
-
-    Route::get('/admin/approvals/{id}', [DtrSummaryController::class, 'showAdminUserApprovalDtr'])->name('admin.approvals.show');
 
     //gdrive test api page
     Route::get('/apiTest', function () {
         return view('gdrive.files');
     });
+
+    
 });
 
+//update user post method
+Route::put('/update', [UserController::class, 'update'])->name('users.settings.update');
+
+Route::post('/send-notification', [NotificationController::class, 'sendAdminNotification'])->name('user.send.request.download.notification');
+ //logout post method
+ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+//admin history post method
+Route::post('/download-pdf', [PDFController::class, 'download'])->name('download.pdf');
 
 //forgot-password page transition
 Route::get('/reset-password', [AuthController::class, 'showResetPassword'])->name('show.reset-password');
@@ -167,25 +173,17 @@ Route::get('/admin/login', function () {
 
 // })->name('search');
 
-Route::post('admin/history/search', [SearchController::class, 'searchHistory'])->name('admin.history.search');
+//test routes
 
-Route::post('/admin-dtr-approve', [DtrDownloadRequestController::class, 'approve'])->name('admin.dtr.approve');
-Route::post('/admin-dtr-batch-approve', [DtrDownloadRequestController::class, 'batchApprove'])->name('admin.dtr.batch.approve');
-Route::post('/admin-dtr-decline', [DtrDownloadRequestController::class, 'decline'])->name('admin.dtr.decline');
-Route::post('/admin-dtr-batch-decline', [DtrDownloadRequestController::class, 'batchDecline'])->name('admin.dtr.batch.decline');
 
 //test routes
-Route::get('/read-notifications-index', [NotificationController::class, 'readAdminNotification'])->name('admin.recieve.notification');
 
-//test routes
 Route::get('/notification-page', [NotificationController::class, 'readUserNotification'])->name('user.recieve.notification');
 
-Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'readAdminNotification'])->name('user.recieve.notification');
 
 Route::post('/notifications/{id}/archive', [NotificationController::class, 'archiveAdminNotification'])->name('user.recieve.notification');
 
 //test routes
-Route::post('/send-notification', [NotificationController::class, 'sendAdminNotification'])->name('user.send.request.download.notification');
 
 //test routes
 Route::get('/notification-index-test', [NotificationController::class, 'receiveNotificationIndex'])->name('receive.notification');
@@ -220,3 +218,5 @@ Route::post("/pusher/auth", function (Request $request) {
     return response()->json(["message" => "Forbidden"], 403);
 });
 
+
+Route::view('/forbidden', 'forbidden')->name('forbidden');

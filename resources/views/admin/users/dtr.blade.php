@@ -15,14 +15,9 @@
                         value="{{ \Carbon\Carbon::parse($pagination['currentMonth']['name'])->format('Y-m') }}"
                         onchange="this.form.submit()">
                 </form>
-                <form
-                    action="{{ route('download.pdf', ['records' => $records, 'pagination' => $pagination, 'totalHoursPerMonth' => $totalHoursPerMonth]) }}"
-                    method="POST">
-                    @csrf
-                    @method('POST')
-                    <x-button primary label="Download PDF" showLabel="{{ true }}"
-                        leftIcon="material-symbols--download-rounded" submit className="text-xs lg:px-8 px-3" />
-                </form>
+                <x-button id="download-pdf-btn" primary label="Download PDF" name="download-pdf-btn" showLabel="{{ true }}"
+                 leftIcon="material-symbols--download-rounded" className="text-xs lg:px-8 px-3" />
+
             </div>
         </section>
 
@@ -52,9 +47,8 @@
                                     class="font-normal lg:text-base text-sm">Intern</span>
                             </p>
                             <div class="flex items-center justify-between gap-3">
-                                <p class="lg:text-sm text-xs font-semibold">Hours This Month: <span
-                                        class="font-normal lg:text-base text-sm">{{ $totalHoursPerMonth }}
-                                        Hours</span></p>
+                                <p class="lg:text-sm text-xs font-semibold">Total Time This Month: <span
+                                        class="font-normal lg:text-base text-sm">{{ floor((int) filter_var($totalHoursPerMonth, FILTER_SANITIZE_NUMBER_INT) / 60) }} hours {{ round(((int) filter_var($totalHoursPerMonth, FILTER_SANITIZE_NUMBER_INT) % 60)) }} minutes</span></p>
                             </div>
                         </section>
 
@@ -75,15 +69,15 @@
                                         </th>
                                         <th
                                             class="border lg:text-sm sm:text-xs text-[10px] text-white bg-[#F57D11] border-[#F57D11]/80 px-4 py-2">
-                                            Total Hours
+                                            Total Time
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @if (isset($records) && count($records) > 0)
                                         @foreach ($records as $date => $data)
-                                            <tr class="text-center">
-                                                <td
+                                        <tr class="text-center">
+                                            <td
                                                     class="border border-gray-300 px-4 py-2 lg:text-base sm:text-sm text-[10px]">
                                                     {{ \Carbon\Carbon::parse($data['date'])->format(' j') }}</td>
                                                 <td
@@ -95,23 +89,24 @@
                                                 </td>
                                                 @if ($data['hours_worked'] == '—')
                                                     <td
-                                                        class="border border-gray-300 px-4 py-2 lg:text-base sm:text-sm text-[10px]">
-                                                        —
-                                                    </td>
+                                                    class="border border-gray-300 px-4 py-2 lg:text-base sm:text-sm text-[10px]">
+                                                    —
+                                                </td>
                                                 @else
-                                                    @if ($data['hours_worked'] <= 0)
+                                                @if (((int) filter_var($data['hours_worked'], FILTER_SANITIZE_NUMBER_INT) / 60) < 1)
+                                                <td
+                                                class="border border-gray-300 px-4 py-2 lg:text-base sm:text-sm text-[10px]">
+                                                {{ (int) filter_var($data['hours_worked'], FILTER_SANITIZE_NUMBER_INT) }} minutes
+                                            </td>
+                                            @elseif(((int) filter_var($data['hours_worked'], FILTER_SANITIZE_NUMBER_INT) / 60) == 1)
+                                            <td
+                                            class="border border-gray-300 px-4 py-2 lg:text-base sm:text-sm text-[10px]">
+                                            {{ ((int) filter_var($data['hours_worked'], FILTER_SANITIZE_NUMBER_INT) / 60) }} hour</td>
+                                            @elseif(((int) filter_var($data['hours_worked'], FILTER_SANITIZE_NUMBER_INT) / 60) > 1)
                                                         <td
                                                             class="border border-gray-300 px-4 py-2 lg:text-base sm:text-sm text-[10px]">
-                                                            Less than 1 hour
+                                                            {{ floor((int) filter_var($data['hours_worked'], FILTER_SANITIZE_NUMBER_INT) / 60) }} hours {{ round(((int) filter_var($data['hours_worked'], FILTER_SANITIZE_NUMBER_INT) % 60)) }} minutes
                                                         </td>
-                                                    @elseif($data['hours_worked'] <= 1)
-                                                        <td
-                                                            class="border border-gray-300 px-4 py-2 lg:text-base sm:text-sm text-[10px]">
-                                                            {{ $data['hours_worked'] }} hour</td>
-                                                    @elseif($data['hours_worked'] > 1)
-                                                        <td
-                                                            class="border border-gray-300 px-4 py-2 lg:text-base sm:text-sm text-[10px]">
-                                                            {{ $data['hours_worked'] }} hours</td>
                                                     @endif
                                                 @endif
                                             </tr>
@@ -135,3 +130,34 @@
         </section>
     </main>
 </x-main-layout>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("[name='download-pdf-btn']").forEach(button => {
+        button.addEventListener('click', function () {  
+                fetch("{{ route('download.pdf') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    body: JSON.stringify({
+                        records: @json($records), // Send entire records collection
+                        pagination: @json($pagination),
+                        totalHoursPerMonth: @json($totalHoursPerMonth)
+                    })
+                })
+                .then(response => response.blob())  // Expecting a PDF response
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = "Time_Report.pdf"; // Set desired file name
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                })
+                .catch(error => console.error("Error downloading PDF:", error));
+        })
+    })
+});
+</script>

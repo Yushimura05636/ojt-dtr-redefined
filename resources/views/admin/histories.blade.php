@@ -40,10 +40,18 @@
                                     <td class="capitalize">{{ $record['user']->firstname }} {{ substr($record['user']->middlename, 0, 1 )}}. {{$record['user']->lastname}}</td>
                                     <td>{{ $record['user']->email }}</td>
                                     <td>
-                                        <span class="{{ $record['history']->description === 'time in' ? 'text-sm font-semibold text-green-500' : 'text-sm font-semibold text-red-500' }}">
-                                            {{ $record['history']->description }}
+                                        <span class="text-sm font-semibold 
+                                            {{ $record['history']->description === 'time in' ? 
+                                                (isset($record['history']->extra_description) && $record['history']->extra_description === 'late' ? 'text-red-500 font-bold' : 'text-green-500') 
+                                                : 'text-red-500' }}">
+                                                
+                                            {{ $record['history']->description }} 
+                                            @if(isset($record['history']->extra_description)) 
+                                                ({{ $record['history']->extra_description }}) 
+                                            @endif
                                         </span>
                                     </td>
+                                    
                                     <td>
                                         {{ \Carbon\Carbon::parse($record['history']->datetime)->format('F d - h:i A') }}
                                     </td>
@@ -106,27 +114,40 @@
                         recordsBody.innerHTML = '';
 
                         for (let record of data.records) {
-                            let row = document.createElement('tr');
-                            row.classList.add('border', 'hover:bg-gray-100');
+    let row = document.createElement('tr');
+    row.classList.add('border', 'hover:bg-gray-100');
 
-                            let descriptionClass = record.history.description === 'time in' ?
-                                'text-sm font-semibold text-green-500' :
-                                'text-sm font-semibold text-red-500';
+    // Check if the user was late
+    let isLate = record.history.extra_description && record.history.extra_description === 'late';
 
-                            let formattedDate = new Date(record.history.datetime)
-                                .toLocaleString('en-US', { month: 'long', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true });
+    // Determine the display text for the status
+    let descriptionText = record.history.description;
+    if (isLate && record.history.description === 'time in') {
+        descriptionText += ' | Late';
+    }
 
-                            row.innerHTML = `
-                                <td class="px-6 py-4 capitalize text-nowrap">${record.user.firstname} ${(record.user.middlename).substring(0, 1)}. ${record.user.lastname}</td>
-                                <td class="px-6 py-4 text-nowrap">${record.user.email}</td>
-                                <td class="px-6 py-4 text-nowrap">
-                                    <span class="${descriptionClass}">${record.history.description}</span>
-                                </td>
-                                <td class="px-6 py-4 text-nowrap">${formattedDate}</td>
-                            `;
+    // Assign the appropriate class for styling
+    let descriptionClass = record.history.description === 'time in'
+        ? (isLate ? 'text-red-500 font-bold' : 'text-green-500')
+        : 'text-red-500';
 
-                            recordsBody.appendChild(row);
-                        }
+    // Format the date
+    let formattedDate = new Date(record.history.datetime)
+        .toLocaleString('en-US', { month: 'long', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true });
+
+    // Generate row content
+    row.innerHTML = `
+        <td class="px-6 py-4 capitalize text-nowrap">${record.user.firstname} ${(record.user.middlename).substring(0, 1)}. ${record.user.lastname}</td>
+        <td class="px-6 py-4 text-nowrap">${record.user.email}</td>
+        <td class="px-6 py-4 text-nowrap">
+            <span class="${descriptionClass}">${descriptionText}</span>
+        </td>
+        <td class="px-6 py-4 text-nowrap">${formattedDate}</td>
+    `;
+
+    recordsBody.appendChild(row);
+}
+
 
                         paginationInfo.textContent =
                             `Showing ${((currentPage - 1) * perPage) + 1} - ${Math.min(currentPage * perPage, totalRecords)} of ${totalRecords}`;

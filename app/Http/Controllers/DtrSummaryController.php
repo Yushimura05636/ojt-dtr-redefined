@@ -890,7 +890,7 @@ class DtrSummaryController extends Controller
 
                     // Only calculate hours if time out is after time in
                     if ($timeOut->gt($timeIn)) {
-                        $hoursWorked = floor($timeIn->diffInHours($timeOut));
+                        $hoursWorked = $timeIn->diffInMinutes($timeOut);
 
                         $groupedData[$dateKey] = [
                             'time_in' => $timeIn->format('h:i A'),
@@ -945,8 +945,6 @@ class DtrSummaryController extends Controller
                 'hours_worked' => $data['hours_worked']
             ];
         }
-
-
 
         return view('admin.users.dtr', [
             'ranking' => $rankingController->getRankings(),

@@ -166,21 +166,13 @@
     button.addEventListener("click", function () {
         let row = this.closest("tr"); // Find the nearest <tr>
 
-        console.log("🔍 Clicked Button:", this);
-        console.log("📌 Found Row:", row);
-
         if (!row) {
             console.error("❌ No <tr> found! Check your table structure.");
             return;
         }
 
-        // Debugging: Print the full row's inner HTML
-        console.log("🔎 Full Row HTML:", row.innerHTML);
-
         // Get <td> elements by index
         let cells = row.querySelectorAll("td");
-
-        console.log("📊 All Cells:", cells); // Debug all cells
 
         if (cells.length < 3) {
             console.warn("⚠ Expected at least 3 columns, but found:", cells.length);
@@ -194,16 +186,10 @@
         let year = cells[5] ? cells[5].textContent.trim() : "N/A";
         let user_id = cells[6] ? cells[6].textContent.trim() : "N/A";
 
-        console.log("📛 Name Column:", name);
-        console.log("📜 Request Type Column:", requestType);
-        console.log("📅 Date Column:", date);
-
         // Get ID from data attributes (assuming it's stored in <td> or <tr>)
         let requestId = row.dataset.id || this.dataset.id; 
         let toUserId = row.dataset.to_user_id || this.dataset.to_user_id; 
 
-        console.log("🆔 Request ID:", requestId);
-        console.log("👤 To User ID:", toUserId);
 
         let actionType = "";
         
@@ -227,7 +213,6 @@
 
             axios.post(app_url+actionType, requestData)
                 .then(response => {
-                    console.log("✅ Approval Success:", response.data);
                     alert("Request approved successfully!");
                 })
                 .catch(error => {
@@ -241,7 +226,6 @@
 
             axios.post(app_url+actionType, requestData)
                 .then(response => {
-                    console.log("✅ Decline Success:", response.data);
                     alert("Request declined successfully!");
                 })
                 .catch(error => {
@@ -255,7 +239,6 @@
             window.location.href = app_url; // Change the URL as needed
         }
 
-        console.log("🆔 Button Clicked:", actionType);
     });
 });
 
@@ -266,7 +249,6 @@
             approveButton.addEventListener("click", function () {
                 const selectedIds = getSelectedIds();
                 if (selectedIds.length > 0) {
-                    console.log("Approving all selected IDs:", selectedIds);
 
                     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
                     
@@ -274,8 +256,6 @@
                     //let app_url = `{{ url('/admin/-dtr-batch-approve') }}`;
 
                     action = 'approve';
-
-                    console.log(app_url+action);
 
                     fetch(app_url+action, {
                         method: "POST",
@@ -288,7 +268,6 @@
                         }),
                     })
                     .then(response => {
-                        debugger;
                         if (response.status === 200) {
                             toastr.success(`DTR request ${action}d successfully.`);
                         } else {
@@ -307,7 +286,6 @@
             declineButton.addEventListener("click", function () {
                 const selectedIds = getSelectedIds();
                 if (selectedIds.length > 0) {
-                    console.log("Declining all selected IDs:", selectedIds);
 
                     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
                     //const url = '/public/admin-dtr-batch-decline';
@@ -325,7 +303,6 @@
                         }),
                     })
                     .then(response => {
-                        console.log(response);
                         if (response.status === 200) {
                             toastr.success(`DTR request ${action}d successfully.`);
                         } else {
@@ -376,8 +353,6 @@ function searchApprovals(searchTerm, approvals) {
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
         const url = action === 'accept' ? app_url+action : app_url+decline; // Change to your actual endpoints
 
-        debugger;
-
         fetch(url, {
             method: "POST",
             headers: {
@@ -406,6 +381,5 @@ function searchApprovals(searchTerm, approvals) {
 }
 
 const filteredApprovals = searchApprovals(searchTerm, approvals);
-console.log(filteredApprovals);
     </script>
 </x-main-layout>

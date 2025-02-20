@@ -68,16 +68,13 @@
         channel.bind(`user-notification-${user_id}`, function(data) {
             let audio = new Audio('/resources/sfx/notification_sound_sfx.ogg');
             audio.play();
-            console.log(data);
-            console.log(data.message);
-            console.log(data.status);
-            console.log(data.success);
+
             if (/declined/i.test(data.message)) {
                 toastr.error(data.message);
             } else if (/approved/i.test(data.message)) {
                 toastr.success(data.message);
             } else {
-                console.log(data);
+
                 toastr.success(data.message);
             }
         });
@@ -639,6 +636,8 @@
 
 </head>
 
+
+
 <body class="hedvig-letters-sans-regular tracking-wide overflow-hidden">
 
     {{-- guest layout --}}
@@ -1006,8 +1005,8 @@
                                     class="dropdown-notification w-10 h-10 relative text-gray-500 p-2 rounded-full hover:bg-gray-100 cursor-pointer">
                                     <span class="mi--notification w-full h-full relative"></span>
                                     @if ($notifications->where('is_read', 0)->count())
-                                        <div class="absolute top-0 right-0 w-5 h-5 rounded-full bg-[#F53C11] p-1 text-center text-white">
-                                            <p class="text-[10px] font-semibold m-auto w-full h-full">{{ $notifications->where('is_read', 0)->count()}}</p>
+                                        <div class="absolute top-0 right-0 w-5 h-5 rounded-full bg-[#F53C11] p-1 text-center flex items-center justify-center text-white">
+                                            <span class="text-[10px] font-semibold m-auto">{{ $notifications->where('is_read', 0)->count()}}</span>
                                         </div>
                                     @endif
                                 </button>
@@ -1371,7 +1370,6 @@
 
 //     function openNotificationModal(id, message, isRead, tab) {
 
-//         debugger;
 //     if (!tab) {
 //         console.error("Tab is undefined!");
 //         return;
@@ -1421,7 +1419,7 @@
 // }
 
 function openAllNotificationModal(notificationId, message, isRead, tab) {
-    debugger;
+    
     const modal = document.getElementById("AllNotificationModal");
     const messageElement = document.getElementById("allNotificationMessage");
     const dateElement = document.getElementById("DateNotificationMessage");
@@ -1439,7 +1437,6 @@ function openAllNotificationModal(notificationId, message, isRead, tab) {
     // Find the last occurrence of "DTR." and extract the message
     let lastIndex = text.lastIndexOf("DTR.");
 
-    debugger;
     if (lastIndex !== -1) {
         msgText = text.substring(0, lastIndex + 4); // Extracts from first word to "DTR."
         dateText = text.substring(lastIndex + 5).trim(); // Extracts everything after "DTR."
@@ -1458,7 +1455,7 @@ function openAllNotificationModal(notificationId, message, isRead, tab) {
 }
 
 function openUnreadNotificationModal(notificationId, message, isRead, tab) {
-    debugger;
+    
     const modal = document.getElementById("UnreadNotificationModal");
     const messageElement = document.getElementById("unreadNotificationMessage");
     const dateElement = document.getElementById("UnreadDateNotificationMessage");
@@ -1476,7 +1473,7 @@ function openUnreadNotificationModal(notificationId, message, isRead, tab) {
     // Find the last occurrence of "DTR." and extract the message
     let lastIndex = text.lastIndexOf("DTR.");
 
-    debugger;
+    
     if (lastIndex !== -1) {
         msgText = text.substring(0, lastIndex + 4); // Extracts from first word to "DTR."
         dateText = text.substring(lastIndex + 5).trim(); // Extracts everything after "DTR."
@@ -1495,7 +1492,7 @@ function openUnreadNotificationModal(notificationId, message, isRead, tab) {
 }
 
 function openArchiveNotificationModal(notificationId, message, isRead, tab) {
-    debugger;
+    
     const modal = document.getElementById("ArchiveNotificationModal");
     const messageElement = document.getElementById("archiveNotificationMessage");
     const dateElement = document.getElementById("ArchiveDateNotificationMessage");
@@ -1513,7 +1510,6 @@ function openArchiveNotificationModal(notificationId, message, isRead, tab) {
     // Find the last occurrence of "DTR." and extract the message
     let lastIndex = text.lastIndexOf("DTR.");
 
-    debugger;
     if (lastIndex !== -1) {
         msgText = text.substring(0, lastIndex + 4); // Extracts from first word to "DTR."
         dateText = text.substring(lastIndex + 5).trim(); // Extracts everything after "DTR."
@@ -1562,8 +1558,8 @@ function closeArchiveNotificationModal() {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
     function markAsRead(notificationId) {
-        
-        fetch(`/notifications/${notificationId}/mark-as-read`, {
+        app_url = `{{ url('/notifications/${notificationId}/mark-as-read') }}`;
+        fetch(app_url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1572,7 +1568,7 @@ function closeArchiveNotificationModal() {
             body: JSON.stringify({})
         })
         .then(response => {
-            debugger
+
             if (response.status === 200) {
                 const notificationCount = document.getElementById('notification-count');
                 if (notificationCount) {
@@ -1585,9 +1581,9 @@ function closeArchiveNotificationModal() {
     let app_url = '';
 
     function archiveNotification(notificationId) {
-        debugger;
+
         app_url = `{{ url('/notifications/${notificationId}/archive') }}`;
-        console.log(app_url);
+
         fetch(app_url, {
             method: 'POST',
             headers: {
@@ -1597,7 +1593,7 @@ function closeArchiveNotificationModal() {
             body: JSON.stringify({})
         })
         .then(response => {
-            debugger;
+
             if (response.status === 200) {
                 location.reload();
             }
