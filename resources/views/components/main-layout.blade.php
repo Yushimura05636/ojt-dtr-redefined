@@ -128,6 +128,20 @@
     </style>
 
     <style>
+        .material-symbols--school-outline-rounded {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M6.05 17.775q-.5-.275-.775-.737T5 16v-4.8L2.6 9.875q-.275-.15-.4-.375T2.075 9t.125-.5t.4-.375l8.45-4.6q.225-.125.463-.188T12 3.275t.488.063t.462.187l9.525 5.2q.25.125.388.363T23 9.6V16q0 .425-.288.713T22 17t-.712-.288T21 16v-5.9l-2 1.1V16q0 .575-.275 1.038t-.775.737l-5 2.7q-.225.125-.462.188t-.488.062t-.488-.062t-.462-.188zM12 12.7L18.85 9L12 5.3L5.15 9zm0 6.025l5-2.7V12.25l-4.025 2.225q-.225.125-.475.188t-.5.062t-.5-.062t-.475-.188L7 12.25v3.775zm0-3'/%3E%3C/svg%3E");
+            background-color: currentColor;
+            -webkit-mask-image: var(--svg);
+            mask-image: var(--svg);
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+        }
+
         .ph--hand-deposit {
             display: inline-block;
             width: 24px;
@@ -664,78 +678,6 @@
             Request::routeIs('users.settings*') ||
             Request::routeIs('users.dtr*') ||
             Request::routeIs('users.request*'))
-        {{-- <div class="w-full h-auto">
-            <nav class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
-                <div class="lg:hidden flex items-center justify-between gap-5 px-5 py-3">
-                    <x-logo width="w-[200px]" />
-                    <button id="intern-menu-toggle" class="p-2 border rounded-md">
-                        ☰
-                    </button>
-                </div>
-
-                <div class="hidden lg:grid grid-cols-3 text-nowrap h-auto px-10 border shadow-md">
-                    <section class="flex items-center justify-start">
-                        <x-logo />
-                    </section>
-                    <section class="flex items-center justify-center">
-                        <a href="{{ route('users.dashboard') }}"
-                            class="{{ Request::routeIs('users.dashboard*') ? 'border-[#F53C11] text-[#F53C11] py-10 px-7 border-b-4 flex items-center gap-2 font-semibold' : 'text-gray-600 border-white cursor-pointer font-semibold py-8 px-7 border-b-4 flex items-center gap-2' }}">
-                            <span class="akar-icons--dashboard"></span>
-                            <p>Dashboard</p>
-                        </a>
-                        <a href="{{ route('users.dtr') }}"
-                            class="{{ Request::routeIs('users.dtr*') ? 'border-[#F53C11] text-[#F53C11] py-10 px-7 border-b-4 flex items-center gap-2 font-semibold' : 'text-gray-600 border-white cursor-pointer font-semibold py-8 px-7 border-b-4 flex items-center gap-2' }}">
-                            <span class="mingcute--paper-line"></span>
-                            <p>DTR</p>
-                        </a>
-                        <a href="{{ route('users.settings') }}"
-                            class="{{ Request::routeIs('users.settings') ? 'border-[#F53C11] text-[#F53C11] py-10 px-7 border-b-4 flex items-center gap-2 font-semibold' : 'text-gray-600 border-white cursor-pointer font-semibold py-8 px-7 border-b-4 flex items-center gap-2' }}">
-                            <span class="solar--settings-linear"></span>
-                            <p>Settings</p>
-                        </a>
-                    </section>
-                    <x-form.container routeName="logout" className="flex items-center justify-end">
-                        @csrf
-                        <button
-                            class="flex items-center opacity-100 gap-1 w-fit px-8 py-3 rounded-lg font-semibold bg-[#F53C11] hover:bg-[#F53C11]/80 text-white animate-transition"><span
-                                class="material-symbols--logout-rounded"></span>Logout</button>
-                    </x-form.container>
-                </div>
-            </nav>
-
-            <aside id="mobile-menu"
-                class="fixed top-[69px] right-0 mt-1 w-64 h-[calc(100vh-3rem)] bg-white shadow-md transform translate-x-full transition-transform lg:hidden overflow-auto z-50 flex flex-col justify-between">
-                <nav>
-                    <a href="{{ route('users.dashboard') }}"
-                        class="{{ Request::routeIs('users.dashboard*') ? 'border-[#F53C11] text-[#F53C11] py-5 px-7 border-l-4 flex items-center gap-2 font-semibold' : 'text-gray-600 border-white cursor-pointer font-semibold py-5 px-7 border-l-4 flex items-center gap-2' }}">
-                        <span class="akar-icons--dashboard"></span>
-                        <p>Dashboard</p>
-                    </a>
-                    <a href="{{ route('users.dtr') }}"
-                        class="{{ Request::routeIs('users.dtr*') ? 'border-[#F53C11] text-[#F53C11] py-5 px-7 border-l-4 flex items-center gap-2 font-semibold' : 'text-gray-600 border-white cursor-pointer font-semibold py-5 px-7 border-l-4 flex items-center gap-2' }}">
-                        <span class="mingcute--paper-line"></span>
-                        <p>DTR</p>
-                    </a>
-                    <a href="{{ route('users.settings') }}"
-                        class="{{ Request::routeIs('users.settings*') ? 'border-[#F53C11] text-[#F53C11] py-5 px-7 border-l-4 flex items-center gap-2 font-semibold' : 'text-gray-600 border-white cursor-pointer font-semibold py-5 px-7 border-l-4 flex items-center gap-2' }}">
-                        <span class="solar--settings-linear"></span>
-                        <p>Settings</p>
-                    </a>
-                </nav>
-
-                <x-form.container routeName="logout" className="flex items-center justify-center">
-                    @csrf
-                    <button
-                        class="flex items-center opacity-100 gap-1 w-full px-8 py-5 font-semibold bg-[#F53C11] hover:bg-[#F53C11]/80 text-white animate-transition"><span
-                            class="material-symbols--logout-rounded"></span>Logout</button>
-                </x-form.container>
-            </aside>
-
-            <main class="lg:!mt-[110px] mt-[73px] bg-gray-100">
-                {{ $slot }}
-            </main>
-        </div> --}}
-
         <main class="container max-w-screen-xl mx-auto">
             <div class="h-full w-full lg:grid lg:grid-cols-12">
                 <section class="sticky lg:hidden top-0 w-full bg-white shadow-md h-auto py-4 z-50">
@@ -905,6 +847,7 @@
             Request::routeIs('admin.users*') ||
             Request::routeIs('admin.histories*') ||
             Request::routeIs('admin.profile*') ||
+            Request::routeIs('admin.schools*') ||
             Request::routeIs('admin.approvals*'))
         @props(['array_daily' => '', 'ranking' => ''])
 
@@ -974,6 +917,11 @@
                                     class="material-symbols--history-rounded w-6 h-6"></span></div>
                             <p>History</p>
                         </x-sidebar-menu>
+                        <x-sidebar-menu route="admin.schools">
+                            <div class="w-auto h-auto flex items-center"><span
+                                    class="material-symbols--school-outline-rounded !w-6 !h-6"></span></div>
+                            <p>Schools</p>
+                        </x-sidebar-menu>
                         <x-sidebar-menu route="admin.profile">
                             <div class="w-auto h-auto flex items-center"><span class="cuida--user-outline"></span>
                             </div>
@@ -998,6 +946,8 @@
                                     <x-page-title title="Users" />
                                 @elseif (Request::routeIs('admin.histories*'))
                                     <x-page-title title="History" />
+                                @elseif (Request::routeIs('admin.schools*'))
+                                    <x-page-title title="Schools" />
                                 @elseif (Request::routeIs('admin.profile*'))
                                     <x-page-title title="Profile" />
                                 @endif
@@ -1415,56 +1365,6 @@
 </html>
 <script>
     let notification_id = 0;
-
-    //     function openNotificationModal(id, message, isRead, tab) {
-
-    //     if (!tab) {
-    //         console.error("Tab is undefined!");
-    //         return;
-    //     }
-
-    //     let msgText = message;
-    //     let dateText = "";
-
-    //     let lastIndex = message.lastIndexOf("DTR.");
-    //     if (lastIndex !== -1) {
-    //         msgText = message.substring(0, lastIndex + 4);
-    //         dateText = message.substring(lastIndex + 5).trim();
-    //     }
-
-    //     console.log(`Tab: ${tab}`); // Debugging
-
-    //     // Find the modal container
-    //     const modal = document.getElementById(`${tab}NotificationModal`);
-    //     if (!modal) {
-    //         console.error(`Modal ${tab}NotificationModal not found!`);
-    //         return;
-    //     }
-
-    //     // Find the <p> elements inside the nested divs
-    //     const messageElement = modal.querySelector(`#${tab}NotificationMessage`);
-    //     const dateElement = modal.querySelector(`#${tab}DateNotificationMessage`);
-
-    //     if (messageElement) {
-    //         messageElement.innerText = msgText;
-    //     } else {
-    //         console.error(`Element ${tab}NotificationMessage not found!`);
-    //     }
-
-    //     if (dateElement) {
-    //         dateElement.innerText = dateText;
-    //     } else {
-    //         console.error(`Element ${tab}DateNotificationMessage not found!`);
-    //     }
-
-    //     // Show the modal
-    //     modal.classList.remove("hidden");
-
-    //     // Mark as read if needed
-    //     if (!isRead) {
-    //         markAsRead(id);
-    //     }
-    // }
 
     function openAllNotificationModal(notificationId, message, isRead, tab) {
 

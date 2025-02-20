@@ -23,7 +23,7 @@
     @if ($type === 'select')
         <!-- Dropdown Selection -->
         <select id="{{ $name_id }}" name="{{ $name_id }}" @class([
-            'border border-gray-300 w-full tracking-wider focus:ring-2 focus:ring-[#F57D11] focus:outline-none bg-white',
+            'border border-gray-300 w-full tracking-wider focus:ring-2 focus:ring-[#F57D11] focus:outline-none focus:border-[#F57D11] bg-white',
             '!border-[#F53C11]' => $errors->has($name_id),
             'px-4 py-2 rounded-lg' => $small,
             'px-5 py-4 rounded-xl' => $big,
@@ -42,7 +42,7 @@
         <!-- Normal Input Field -->
         <input type="{{ $type }}" id="{{ $name_id }}" name="{{ $name_id }}"
             value="{{ old($name_id, $value) }}" placeholder="{{ $placeholder }}" @class([
-                'border border-gray-300 w-full tracking-wider focus:ring-2 focus:ring-[#F57D11] focus:outline-none lg:text-base text-sm',
+                'border border-gray-300 w-full tracking-wider focus:ring-2 focus:ring-[#F57D11] focus:outline-none focus:border-[#F57D11] lg:text-base text-sm',
                 '!border-[#F53C11]' => $errors->has($name_id),
                 'px-4 py-2 rounded-lg' => $small,
                 'px-5 py-4 rounded-xl' => $big,

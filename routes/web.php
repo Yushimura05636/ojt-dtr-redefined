@@ -57,7 +57,7 @@ Route::middleware('guest')->group(function () {
 
 //register post method
 
-Route::middleware(['auth', 'user_role:admin'])->group(function (){
+Route::middleware(['auth', 'user_role:admin'])->group(function () {
     Route::get('/admin/dashboard', [UserController::class, 'showAdminDashboard'])->name('admin.dashboard');
     Route::get('/admin/users', [UserController::class, 'showAdminUsers'])->name('admin.users');
 
@@ -90,7 +90,7 @@ Route::middleware(['auth', 'user_role:admin'])->group(function (){
     Route::get('/admin/approvals/{id}', [DtrSummaryController::class, 'showAdminUserApprovalDtr'])->name('admin.approvals.show');
 
     Route::post('/admin-dtr-approve', [DtrDownloadRequestController::class, 'approve'])->name('admin.dtr.approve');
-    
+
     Route::post('/admin-dtr-batch-approve', [DtrDownloadRequestController::class, 'batchApprove'])->name('admin.dtr.batch.approve');
     Route::post('/admin-dtr-decline', [DtrDownloadRequestController::class, 'decline'])->name('admin.dtr.decline');
     Route::post('/admin-dtr-batch-decline', [DtrDownloadRequestController::class, 'batchDecline'])->name('admin.dtr.batch.decline');
@@ -102,6 +102,23 @@ Route::middleware(['auth', 'user_role:admin'])->group(function (){
     Route::get('scanner/{qr_code}', [UserController::class, 'AdminScannerValidation'])->name('admin.scanner.validation');
     Route::post('/history', [UserController::class, 'AdminScannerTimeCheck'])->name('admin.history.time.check');
     Route::post('admin/history/search', [SearchController::class, 'searchHistory'])->name('admin.history.search');
+
+    Route::view('/admin/schools', 'admin.schools')->name('admin.schools');
+    Route::view('/admin/schools/create', 'admin.schools.create')->name('admin.schools.create');
+
+    Route::get('/admin/schools/{id}', function ($id) {
+        $schools = [
+            1 => ['id' => 1, 'name' => 'STI College Davao', 'image' => 'resources/img/school-logo/sti.png', 'is_featured' => true],
+            2 => ['id' => 2, 'name' => 'Ateneo De Davao University', 'image' => 'resources/img/school-logo/addu.png', 'is_featured' => true],
+            3 => ['id' => 3, 'name' => 'Holy Cross of Davao College', 'image' => 'resources/img/school-logo/hcdc.png', 'is_featured' => true],
+            4 => ['id' => 4, 'name' => 'University of Mindanao', 'image' => 'resources/img/school-logo/um.png', 'is_featured' => true],
+        ];
+        if (!isset($schools[$id])) {
+            abort(404, 'School not found');
+        }
+
+        return view('admin.schools.show', ['school' => $schools[$id]]);
+    })->name('admin.schools.show');
 });
 
 Route::middleware(['auth', 'user_role:user'])->group(function () {
@@ -140,15 +157,15 @@ Route::middleware(['auth', 'user_role:user'])->group(function () {
         return view('gdrive.files');
     });
 
-    
+
 });
 
 //update user post method
 Route::put('/update', [UserController::class, 'update'])->name('users.settings.update');
 
 Route::post('/send-notification', [NotificationController::class, 'sendAdminNotification'])->name('user.send.request.download.notification');
- //logout post method
- Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+//logout post method
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 //admin history post method
 Route::post('/download-pdf', [PDFController::class, 'download'])->name('download.pdf');
