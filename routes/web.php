@@ -220,3 +220,5 @@ Route::post("/pusher/auth", function (Request $request) {
 
 
 Route::view('/forbidden', 'forbidden')->name('forbidden');
+
+Route::view('/admin/schools', 'admin.schools.index')->name('admin.schools');
