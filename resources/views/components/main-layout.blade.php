@@ -1304,7 +1304,10 @@
                             <div class="dropdown relative inline-flex">
                                 <button type="button" id="dropdown-profile" data-target="dropdown-show-profile"
                                     class="dropdown-profile items-center gap-2 hover:bg-gray-100 rounded-lg py-2 px-3 overflow-hidden inline-flex">
-                                    <x-image path="resources/img/default-male.png"
+                                    <x-image path="{{
+                                        optional(\App\Models\File::find(optional(\App\Models\Profile::find(Auth::user()->profile_id))->file_id))->path
+                                        ?? 'resources/img/default-male.png'
+                                    }}"
                                         className="w-10 h-auto rounded-full shadow border border-[#F53C11]" />
                                     <p class="lg:block hidden capitalize">{{ Auth::user()->firstname }}</p>
                                     <span class="iconamoon--arrow-down-2"></span>

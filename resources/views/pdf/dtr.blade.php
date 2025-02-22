@@ -10,9 +10,9 @@
 @php
     $pagination = is_string($pagination) ? json_decode($pagination, true) : $pagination;
     $records = is_string($records) ? json_decode($records, true) : $records;
-    $profile = \App\Models\Profile::where('id', $user->profile_id)->first();
-    $file = \App\Models\File::where('id', $profile->file_id)->first();
-    $fileId = $file->description;
+    // $profile = \App\Models\Profile::where('id', $user->profile_id)->first();
+    // $file = \App\Models\File::where('id', $profile->file_id)->first();
+    // $fileId = $file->description;
 @endphp
 
 <body style="font-family: Arial, sans-serif; margin: 20px; padding: 0;">

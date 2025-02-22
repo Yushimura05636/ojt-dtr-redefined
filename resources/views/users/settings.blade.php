@@ -30,7 +30,7 @@
                                 src="{{$image_url . '?t=' . time()}}" alt="Profile Image"
                                 class="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 border border-[#F57D11] shadow rounded-full" />
                         </div>
-                        <input type="file" id="uploadButton" name="file" class="hidden">
+                        <input type="file" id="uploadButton" name="file" class="hidden" accept="image/*">
                         <label for="uploadButton" class="px-16 py-3 border rounded-full text-[#F57D11] hover:border-[#F57D11] animate-transition flex items-center justify-center gap-2 lg:text-sm text-xs cursor-pointer">Upload</label>
                         
                     </div>

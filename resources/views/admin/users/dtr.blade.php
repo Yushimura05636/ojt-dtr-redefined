@@ -145,7 +145,7 @@
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll("[name='download-pdf-btn']").forEach(button => {
             button.addEventListener('click', function() {
-                fetch("{{ route('download.pdf') }}", {
+                fetch("{{ route('admin.download.pdf') }}", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -154,7 +154,9 @@
                         body: JSON.stringify({
                             records: @json($records), // Send entire records collection
                             pagination: @json($pagination),
-                            totalHoursPerMonth: @json($totalHoursPerMonth)
+                            totalHoursPerMonth: @json($totalHoursPerMonth),
+                            user: @json($user),
+                            'type' : 'admin_download',
                         })
                     })
                     .then(response => response.blob()) // Expecting a PDF response

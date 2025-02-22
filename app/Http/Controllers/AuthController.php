@@ -153,6 +153,78 @@ class AuthController extends Controller
         return redirect()->route('show.login')->with('success', 'Congratulations! You are now registered!');
     }
 
+    public function adminRegister(Request $request, FileController $fileController)
+    {
+        $data = $request->validate([
+            'firstname' => 'required|string|max:255',
+            'middlename' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'phone' => 'required|string|max:255',
+            'gender' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'school' => 'nullable|string|max:255',
+            'student_no' => 'required|string|max:255',
+            'role' => 'nullable|string|max:255',
+
+            'emergency_contact_fullname' => 'required|string|max:255',
+            'emergency_contact_number' => 'required|string|max:255',
+            'emergency_contact_address' => 'required|string|max:255',
+
+            'password' => 'required|string|min:8|confirmed',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image file
+        ]);
+
+        // Generate QR Code
+        $qr_code = 'QR_' . Str::random(10) . '_' . Str::random(10);
+
+        // Check if a file is uploaded
+        if ($request->hasFile('profile_image')) {
+            $image = $request->file('profile_image');
+            $imagePath = $image->store('profile_images', 'public'); // Store in storage/app/public/profile_images
+            $profile_image = asset('storage/' . $imagePath); // Convert to accessible URL
+        } else {
+            // Use external image links based on gender
+            $profile_image = ($data['gender'] === 'male')
+                ? 'https://png.pngtree.com/png-vector/20240413/ourmid/pngtree-korean-boy-in-black-blazer-png-image_12283322.png'
+                : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqzYMdHwJiHq6iFDbvbPctwcS1j1bcLe16NQ&s';
+        }
+
+        $request->merge([
+            'image_url' => $profile_image,
+        ]);
+
+        //send the image link to the controller
+        $file_records = $fileController->store($request);
+
+        $file_id = $file_records->original['file']->id;
+
+        $profile_record = Profile::create([
+            'description' => 'User ' . $data['lastname'] . ' ' . substr($data['firstname'], 0, 1) . '. \'s profile',
+            'file_id' => $file_id,
+        ]);
+
+        $user = User::create([
+            'role' => $data['role'],
+            'firstname' => $data['firstname'],
+            'middlename' => $data['middlename'],
+            'lastname' => $data['lastname'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'phone' => $data['phone'],
+            'gender' => $data['gender'],
+            'address' => $data['address'],
+            'student_no' => $data['student_no'],
+            'emergency_contact_fullname' => $data['emergency_contact_fullname'],
+            'emergency_contact_number' => $data['emergency_contact_number'],
+            'emergency_contact_address' => $data['emergency_contact_address'],
+            'qr_code' => $qr_code,
+            'profile_id' => $profile_record->id, // Save external image URL or uploaded image URL
+        ]);
+
+        return redirect()->route('show.login')->with('success', 'Congratulations! You are now registered!');
+    }
+
 
     public function showLogin()
     {
@@ -226,7 +298,7 @@ class AuthController extends Controller
             $user->save();
             Auth::logout();
 
-            return back()->with('invalid', 'This account does not belong here.');
+            return back()->with('invalid', 'The account is either expired or inactive please contact the administrator for more information.');
         }
 
         $isStarted = !is_null($user->starting_date) && $user->starting_date <= Carbon::now();

@@ -100,7 +100,9 @@
                             class="px-7 py-5 w-full flex flex-wrap justify-between border-b border-gray-200 bg-white hover:bg-gray-100 items-center cursor-pointer">
                             <div class="flex items-start gap-5 w-full">
                                 <x-image className="w-12 h-12 rounded-full border border-[#F57D11]"
-                                    path="resources/img/default-male.png" />
+                                    path="{{
+                                        \App\Models\File::where('id', $daily['profiles']['file_id'])->first()->path
+                                    }}" />
                                 <div class="flex items-center flex-wrap justify-between w-full gap-x-2">
                                     <div class="w-1/2 ">
                                         <section class="font-bold text-black text-lg truncate">
@@ -162,7 +164,9 @@
                                                         {{ $user['hours_worked'] }} hours
                                                     </p>
                                                 </div>
-                                                <x-image path="resources/img/default-male.png"
+                                                <x-image path="{{
+                                                    \App\Models\File::where('id', $user['profiles']['file_id'])->first()->path
+                                                }}"
                                                     className="absolute inset-0 mx-auto h-full scale-125 w-auto opacity-20 z-0" />
                                             </section>
                                         </div>
@@ -181,7 +185,10 @@
                                                         ???
                                                     </p>
                                                 </div>
-                                                <x-image path="resources/img/default-male.png"
+                                                <x-image path="{{
+                                                    optional(\App\Models\File::find(id: $user['profiles']['file_id']))->path
+                                                    ?? 'resources/img/default-male.png'
+                                                }}"
                                                     className="absolute inset-0 mx-auto h-full scale-125 w-auto opacity-20 z-0" />
                                             </section>
                                         </div>
@@ -235,7 +242,9 @@
                                 class="px-7 py-5 w-full flex justify-between items-center border-b border-gray-200 hover:bg-gray-100 cursor-pointer">
                                 <div class="flex items-center gap-5 w-1/2">
                                     <x-image className="w-12 h-12 rounded-full border border-[#F57D11]"
-                                        path="resources/img/default-male.png" />
+                                        path="{{
+                                            \App\Models\File::where('id', $user['profiles']['file_id'])->first()->path
+                                        }}" />
                                     <h1 class="font-semibold capitalize truncate">{{ $user['fullname'] }}</h1>
                                 </div>
                                 <p>{{ $user['ago'] }}</p>
@@ -332,10 +341,11 @@
             const nameButtonTimeIn = document.querySelector('[name="button_time_in"]');
             const nameButtonTimeOut = document.querySelector('[name="button_time_out"]');
             const nameLoadingButton = document.querySelector('[name="loading_button"]');
+            const nameProfilePicture = document.querySelector('[name="profile_picture"]');
 
             // Ensure all elements exist
             if (!nameStudentNo || !namePhone || !nameQrCode || !nameTotalHours ||
-                !nameButtonTimeIn || !nameButtonTimeOut) {
+                !nameButtonTimeIn || !nameButtonTimeOut || !nameProfilePicture) {
                 console.error("One or more elements were not found in the DOM.");
                 return;
             }
@@ -348,6 +358,9 @@
             namePhone.textContent = response.data.user.phone;
             nameQrCode.textContent = response.data.user.qr_code;
             nameTotalHours.textContent = "0 Hours";
+
+            //profile pciture
+            nameProfilePicture.src = response.data.profile_image;
 
             // Remove old event listeners
             nameButtonTimeIn.replaceWith(nameButtonTimeIn.cloneNode(true));
@@ -435,6 +448,11 @@
     //load all functions if the page is loaded
     // Ensure DOM is fully loaded before initializing scanner
     document.addEventListener('DOMContentLoaded', () => {
+
+        if (window.history.replaceState) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
         //initialize scanner
         initScanner();
 
@@ -442,3 +460,4 @@
         document.getElementById("closeButton").addEventListener("click", closeCamera);
     });
 </script>
+
