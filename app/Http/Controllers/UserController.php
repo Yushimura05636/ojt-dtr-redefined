@@ -611,6 +611,89 @@ class UserController extends Controller
         }
     }
 
+    public function adminUpdate(Request $request, FileController $fileController)
+    {
+        try {
+            DB::beginTransaction();
+
+
+            $data = $request->validate([
+                'file' => 'nullable|image|max:5120',
+            ]);
+
+            $user = User::find($request->user_id);
+            if (!$user) {
+                return back()->with('invalid', 'The input is invalid. Please try again!');
+            }
+
+            $image_url = null;
+            $image_description = null;
+
+
+            if ($request->hasFile('file')) {
+                $file = $request['file'];
+
+                // Fetch the profile record
+                $profile = Profile::where('id', $user->profile_id)->first();
+                if (!$profile) {
+                    return response()->json(['error' => 'Profile not found'], 404);
+                }
+
+                // Fetch the associated file record
+                $file_id = $profile->file_id;
+                $fileRecord = File::find($file_id);
+                if (!$fileRecord) {
+                    return response()->json(['error' => 'File not found'], 404);
+                }
+
+                try {
+                    // Process the file (ensure your fileController->edit() method handles this correctly)
+                    $fileFormat = $fileController->edit($request, $fileRecord->description);
+                    $image_url = $fileFormat->original['data']['preview_url'] ?? null;
+                    $image_description = $fileFormat->original['data']['id'] ?? null;
+                } catch (\Exception $e) {
+                    // Log the error or handle it gracefully
+                    return response()->json(['error' => 'File processing failed: ' . $e->getMessage()], 500);
+                }
+
+                // Update the file record with new data
+                $fileRecord->update([
+                    'description' => $image_description,
+                    'path' => $image_url,
+                ]);
+            }
+
+            //@dd($request->all(), Profile::find($user->profile_id)?->files->path);
+
+            // $user->update($request->only([
+            //     'firstname', 'lastname', 'middlename', 'email', 'phone', 'gender',
+            //     'address', 'student_no', 'emergency_contact_fullname',
+            //     'emergency_contact_number', 'emergency_contact_address'
+            // ]));
+
+            $updateData = [
+                'firstname' => $request['firstname'],
+                'lastname' => $request['lastname'],
+                'middlename' => $request['middlename'],
+                'email' => $request['email'],
+                'phone' => $request['phone'],
+                'gender' => $request['gender'],
+                'address' => $request['address'],
+            ];
+            
+            $user->update($updateData);            
+            $user->save();
+
+            DB::commit();
+            return redirect()->back()->with('update', 'Updated Successfully! If you uploaded an image, the Admin will review it first.');
+            //return back()->with('update', 'Updated Successfully!')->with(['image_url' => $image_url]);
+        } catch (\Exception $ex) {
+            // @dd($ex->getMessage());
+            DB::rollBack();
+            return back()->with('invalid', $ex->getMessage());
+        }
+    }
+
     public function destroy($id)
     {
         $user = User::find($id);

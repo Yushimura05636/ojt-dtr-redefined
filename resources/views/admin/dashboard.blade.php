@@ -448,6 +448,11 @@
     //load all functions if the page is loaded
     // Ensure DOM is fully loaded before initializing scanner
     document.addEventListener('DOMContentLoaded', () => {
+
+        if (window.history.replaceState) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
         //initialize scanner
         initScanner();
 
@@ -455,3 +460,4 @@
         document.getElementById("closeButton").addEventListener("click", closeCamera);
     });
 </script>
+

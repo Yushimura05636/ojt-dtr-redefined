@@ -37,7 +37,7 @@ return new class extends Migration
             $table->string('address');
             
             //school name
-            $table->string('school');
+            $table->string('school')->nullable();
 
             //student number
             $table->string('student_no')->unique();

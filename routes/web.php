@@ -157,6 +157,9 @@ Route::middleware(['auth', 'user_role:user'])->group(function () {
 //update user post method
 Route::put('/update', [UserController::class, 'update'])->name('users.settings.update');
 
+//update admin post method
+Route::put('/admin/update', [UserController::class, 'adminUpdate'])->name('admin.settings.update');
+
 Route::post('/send-notification', [NotificationController::class, 'sendAdminNotification'])->name('user.send.request.download.notification');
 
 //logout post method

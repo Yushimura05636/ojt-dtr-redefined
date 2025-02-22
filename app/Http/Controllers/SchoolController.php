@@ -40,7 +40,6 @@ class SchoolController extends Controller
      */
     public function create(): View
     {
-        @dd('test');
         return view('admin.schools.create');
     }
 
