@@ -115,6 +115,8 @@ class HistoryController extends Controller
 
             $DailyAttendance = Histories::whereDate('datetime', $Today)->orderBy('datetime', 'desc')->get()->map(function ($daily){
                 return [
+                    'profiles' => User::where('id', $daily->user_id)->first()->profiles,
+                    'schools' => User::where('id', $daily->user_id)->first()->schools,
                     'id' => $daily->user_id,
                     'name' => User::where('id', $daily->user_id)->first()->firstname .' ' . substr(User::where('id', $daily->user_id)->first()->middlename, 0, 1) . '. ' . User::where('id', $daily->user_id)->first()->lastname,   
                     'description' => $daily->description,
@@ -145,6 +147,8 @@ class HistoryController extends Controller
             ->get()
             ->map(function ($user) {
                 return [
+                    'schools' => $user->schools,
+                    'profiles' => $user->profiles,
                     'role' => $user->role,
                     'id' => $user->id,
                     'fullname' => $user->firstname . ' ' . substr($user->middlename, 0, 1). '. ' . $user->lastname,

@@ -32,7 +32,10 @@
                             <div class="w-auto h-auto">
                                 <x-image
                                     className="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 rounded-full border border-[#F57D11]"
-                                    path="resources/img/default-male.png" />
+                                    path="{{
+                                        optional(\App\Models\File::find(optional(\App\Models\Profile::find($user->profile_id))->file_id))->path
+                                        ?? 'resources/img/default-male.png'
+                                    }}" />
                             </div>
                             <x-button tertiary leftIcon="bx--image" label="Change" button className="px-10" />
                         </div>

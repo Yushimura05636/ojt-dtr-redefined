@@ -20,7 +20,10 @@
 
                         <div class="w-auto h-auto">
                             <x-image className="w-24 h-24 rounded-full border border-[#F57D11]"
-                                path="resources/img/default-male.png" />
+                            path="{{
+                                optional(\App\Models\File::find(optional(\App\Models\Profile::find($user->profile_id))->file_id))->path
+                                ?? 'resources/img/default-male.png'
+                            }}" />
                         </div>
                         <div class="text-center mx-auto w-full">
                             <h1

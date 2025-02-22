@@ -284,6 +284,7 @@ class UserController extends Controller
 
             return response()->json([
                 'user' => $users,
+                'profile_image' => File::where('id', $users->profiles->file_id)->first()->path,
                 'valid' => true
             ], Response::HTTP_OK);
 

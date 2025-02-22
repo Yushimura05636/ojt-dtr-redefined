@@ -9,8 +9,8 @@
             <div class="flex flex-col items-center w-full p-10 gap-5 bg-white rounded-2xl">
                 <x-page-title title="User Details Found" titleClass="text-xl" />
                 <div class="w-fit">
-                    <x-image className="w-40 h-40 rounded-full border border-[#F57D11]"
-                        path="resources/img/default-male.png" />
+                    <img name="profile_picture" class="w-40 h-40 rounded-full border border-[#F57D11]"
+                        src="resources/img/default-male.png" />
                 </div>
                 <div class="text-center space-y-1">
                     <h1 class="font-semibold text-xl capitalize" name="fullname">fullname_placeholder</h1>
