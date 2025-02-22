@@ -82,6 +82,8 @@ class RankingController extends Controller
 
             // Store the total hours worked for each user
             $groupedData[$user->id] = [
+                'schools' => $user->schools,
+                'profiles' => $user->profiles,
                 'role' => $user->role,
                 'name' => $firstname,
                 'user_id' => $user->id,

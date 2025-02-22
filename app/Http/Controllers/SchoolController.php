@@ -40,7 +40,6 @@ class SchoolController extends Controller
      */
     public function create(): View
     {
-        @dd('test');
         return view('admin.schools.create');
     }
 
@@ -161,8 +160,6 @@ public function show($id): View
         if (!$school) {
             return back()->with('invalid', 'The input is invalid. Please try again!');
         }
-
-        
         
         // Handle file upload if present
         if ($request->hasFile('file')) {
@@ -196,7 +193,6 @@ public function show($id): View
         return redirect()->route('admin.schools')->with('update', 'Updated Successfully! If you uploaded an image, the Admin will review it first.');
 
     } catch (\Exception $ex) {
-        @dd($ex->getMessage());
         DB::rollBack();
         return back()->with('invalid', $ex->getMessage());
     }

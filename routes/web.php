@@ -157,6 +157,9 @@ Route::middleware(['auth', 'user_role:user'])->group(function () {
 //update user post method
 Route::put('/update', [UserController::class, 'update'])->name('users.settings.update');
 
+//update admin post method
+Route::put('/admin/update', [UserController::class, 'adminUpdate'])->name('admin.settings.update');
+
 Route::post('/send-notification', [NotificationController::class, 'sendAdminNotification'])->name('user.send.request.download.notification');
 
 //logout post method
@@ -164,6 +167,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 //admin history post method
 Route::post('/download-pdf', [PDFController::class, 'download'])->name('download.pdf');
+Route::post('/admin/download-pdf', [PDFController::class, 'admin_download'])->name('admin.download.pdf');
 
 //forgot-password page transition
 Route::get('/reset-password', [AuthController::class, 'showResetPassword'])->name('show.reset-password');

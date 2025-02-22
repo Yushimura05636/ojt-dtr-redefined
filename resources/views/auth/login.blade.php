@@ -168,6 +168,11 @@
         </x-form.container>
     </x-main-layout>
 @endif
+<script>
 
+if (window.history.replaceState) {
+window.history.replaceState({}, document.title, window.location.pathname);
+}
+</script>
 
 {{-- <x-button tertiary label="Click here." className="modal-button" openModal="forgot-password-modal" button /> --}}
