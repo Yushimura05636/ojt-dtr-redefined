@@ -23,11 +23,11 @@
 
 @php
     $primaryClasses =
-        'px-16 py-3 rounded-full relative overflow-hidden font-medium text-white flex items-center justify-center gap-2 animate-transition bg-gradient-to-r from-[#F57D11] via-[#F57D11]/70 to-[#F53C11] hover:bg-[#F53C11] disabled:opacity-50 lg:text-sm text-xs';
+        'px-16 py-3 rounded-full relative overflow-hidden font-medium text-white flex items-center justify-center gap-2 animate-transition bg-gradient-to-r from-[#F57D11] via-[#F57D11]/70 to-[#F53C11] hover:bg-[#F53C11] disabled:opacity-50 lg:text-sm text-xs cursor-pointer';
     $secondaryClasses =
-        'px-16 py-3 border rounded-full bg-white border-white font-semibold hover:bg-gray-200 text-[#F57D11] animate-transition flex items-center justify-center lg:text-sm text-xs';
+        'px-16 py-3 border rounded-full bg-white border-white font-semibold hover:bg-gray-200 text-[#F57D11] animate-transition flex items-center justify-center lg:text-sm text-xs cursor-pointer';
     $tertiaryClasses =
-        'px-16 py-3 border rounded-full text-[#F57D11] hover:border-[#F57D11] animate-transition flex items-center justify-center gap-2 lg:text-sm text-xs';
+        'px-16 py-3 border rounded-full text-[#F57D11] hover:border-[#F57D11] animate-transition flex items-center justify-center gap-2 lg:text-sm text-xs cursor-pointer';
 
     // Assign correct classes based on button type
     $buttonClass = $primary ? $primaryClasses : ($secondary ? $secondaryClasses : ($tertiary ? $tertiaryClasses : ''));

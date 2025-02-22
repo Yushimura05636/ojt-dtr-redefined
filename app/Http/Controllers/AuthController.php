@@ -103,7 +103,7 @@ class AuthController extends Controller
 
         // Generate QR Code
         $qr_code = 'QR_' . Str::random(10) . '_' . Str::random(10);
-        
+
         // Check if a file is uploaded
         if ($request->hasFile('profile_image')) {
             $image = $request->file('profile_image');
@@ -111,25 +111,25 @@ class AuthController extends Controller
             $profile_image = asset('storage/' . $imagePath); // Convert to accessible URL
         } else {
             // Use external image links based on gender
-            $profile_image = ($data['gender'] === 'male') 
-            ? 'https://t3.ftcdn.net/jpg/04/43/94/64/360_F_443946404_7GUoIGZeyx7R7ymCicI3k0xPnrMoKDek.jpg' 
-            : 'https://fuuastisb.edu.pk/Business%20Administration/Default-Profile-Female.jpg';
+            $profile_image = ($data['gender'] === 'male')
+                ? 'https://t3.ftcdn.net/jpg/04/43/94/64/360_F_443946404_7GUoIGZeyx7R7ymCicI3k0xPnrMoKDek.jpg'
+                : 'https://fuuastisb.edu.pk/Business%20Administration/Default-Profile-Female.jpg';
         }
-        
+
         $request->merge([
             'image_url' => $profile_image,
         ]);
-        
+
         //send the image link to the controller
         $file_records = $fileController->store($request);
 
         $file_id = $file_records->original['file']->id;
 
         $profile_record = Profile::create([
-            'description' => 'User ' . $data['lastname'] . ' ' . substr($data['firstname'], 0, 1) .  '. \'s profile',
+            'description' => 'User ' . $data['lastname'] . ' ' . substr($data['firstname'], 0, 1) . '. \'s profile',
             'file_id' => $file_id,
         ]);
-        
+
         $user = User::create([
             'firstname' => $data['firstname'],
             'middlename' => $data['middlename'],
@@ -139,7 +139,7 @@ class AuthController extends Controller
             'phone' => $data['phone'],
             'gender' => $data['gender'],
             'address' => $data['address'],
-            'school' => \App\Models\School::where('id', $data['school']+1)->first()->description,
+            'school' => \App\Models\School::where('id', $data['school'] + 1)->first()->description,
             'student_no' => $data['student_no'],
             'emergency_contact_fullname' => $data['emergency_contact_fullname'],
             'emergency_contact_number' => $data['emergency_contact_number'],
@@ -225,7 +225,7 @@ class AuthController extends Controller
             $user->status = 'inactive';
             $user->save();
             Auth::logout();
-            
+
             return back()->with('invalid', 'This account does not belong here.');
         }
 
@@ -262,12 +262,12 @@ class AuthController extends Controller
     public function showResetPassword(Request $request)
     {
         $token = $request->query('token');
-        
+
         // Ensure token is provided
         if (!$token) {
             return redirect()->route('show.login')->with('invalid', 'Invalid reset link!');
         }
-    
+
         // Retrieve the reset record by filtering with email
         $reset_password = DB::table('password_reset_tokens')->whereNotNull('email')->first();
 

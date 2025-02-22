@@ -43,12 +43,12 @@ class UserController extends Controller
         // $file_id = $matches[1] ?? null;
 
         // echo $file_id; // Outputs: 1xe5yHio0kSRdKOhwMxMxIJ_Z4AhcG_ln
-        $image_url = isset($image_url) 
-        ? (str_contains($image_url, 'drive.google.com/uc?id=') 
-            ? preg_replace('/drive\.google\.com\/uc\?id=([a-zA-Z0-9_-]+)/', 'lh3.googleusercontent.com/d/$1=s220?t=' . time(), $image_url) 
-            : $image_url
-        ) 
-        : asset('resources/img/default-male.png');
+        $image_url = isset($image_url)
+            ? (str_contains($image_url, 'drive.google.com/uc?id=')
+                ? preg_replace('/drive\.google\.com\/uc\?id=([a-zA-Z0-9_-]+)/', 'lh3.googleusercontent.com/d/$1=s220?t=' . time(), $image_url)
+                : $image_url
+            )
+            : asset('resources/img/default-male.png');
 
         //https://drive.google.com/thumbnail?id=1zSM0Y_I9m5YcYwLZS-J63la5uLjxd4xQ&timestamp=12345
 
@@ -59,80 +59,80 @@ class UserController extends Controller
     }
 
     public function AdminScannerTimeCheck(Request $request, EmailController $emailController)
-{
-    try {
-        // Initialized the success text
-        $success_text = "";
-    
-        // Get the user data from the QR code
-        $userData = User::where('qr_code', $request->qr_code)->first();
-    
-        // Check if the user exists
-        if (!$userData) {
-            return back()->with('error', 'User not found.');
-        }
-    
-        // Initialize the histories object (table)
-        $timeCheck = new Histories();
-    
-        // Set the user ID
-        $timeCheck->user_id = $userData->id;
-    
-        // Set the datetime (Internet global time)
-        $timeCheck->datetime = Carbon::now()->timezone('Asia/Manila');
-    
-        // Validate the type of time check
-        if (!in_array($request->type, ['time_in', 'time_out'])) {
-            return response()->json(['success' => false, 'message' => 'Invalid time check type']);
-        }
-    
-        // Define allowed time-ins per day
-        $allowedTimes = [
-            'Monday'    => '9:15 AM',
-            'Tuesday'   => '8:15 AM',
-            'Wednesday' => '8:15 AM',
-            'Thursday'  => '8:15 AM',
-            'Friday'    => '8:15 AM',
-            'Saturday'  => '8:15 AM',
-        ];
+    {
+        try {
+            // Initialized the success text
+            $success_text = "";
 
-        // Get current day and allowed time-in
-        $currentDay = Carbon::now()->timezone('Asia/Manila')->format('l'); // Full day name (e.g., Monday)
-        $allowedTimeIn = $allowedTimes[$currentDay] ?? '8:00 AM';
+            // Get the user data from the QR code
+            $userData = User::where('qr_code', $request->qr_code)->first();
 
-        // Convert allowed time-in to Carbon
-        $allowedTime = Carbon::parse($allowedTimeIn, 'Asia/Manila');
-
-        if ($request->type == 'time_in') {
-            $timeCheck->description = 'time in';
-
-            // Clone allowedTime before adding minutes
-            if ($timeCheck->datetime->greaterThan($allowedTime->copy()->addMinutes(15))) {
-                $timeCheck->extra_description = 'late';
+            // Check if the user exists
+            if (!$userData) {
+                return back()->with('error', 'User not found.');
             }
 
-            $success_text = "Time in checked successfully";
-        } elseif ($request->type == 'time_out') {
-            $timeCheck->description = 'time out';
-            $success_text = "Time out checked successfully";
-        }
-    
-        // Save the data to the database
-        $timeCheck->save();
-    
-        // Send the shift notification email
-        try {
-            $sendShiftNotification = $emailController->EmailShiftNotification($userData, $timeCheck);
+            // Initialize the histories object (table)
+            $timeCheck = new Histories();
+
+            // Set the user ID
+            $timeCheck->user_id = $userData->id;
+
+            // Set the datetime (Internet global time)
+            $timeCheck->datetime = Carbon::now()->timezone('Asia/Manila');
+
+            // Validate the type of time check
+            if (!in_array($request->type, ['time_in', 'time_out'])) {
+                return response()->json(['success' => false, 'message' => 'Invalid time check type']);
+            }
+
+            // Define allowed time-ins per day
+            $allowedTimes = [
+                'Monday' => '9:15 AM',
+                'Tuesday' => '8:15 AM',
+                'Wednesday' => '8:15 AM',
+                'Thursday' => '8:15 AM',
+                'Friday' => '8:15 AM',
+                'Saturday' => '8:15 AM',
+            ];
+
+            // Get current day and allowed time-in
+            $currentDay = Carbon::now()->timezone('Asia/Manila')->format('l'); // Full day name (e.g., Monday)
+            $allowedTimeIn = $allowedTimes[$currentDay] ?? '8:00 AM';
+
+            // Convert allowed time-in to Carbon
+            $allowedTime = Carbon::parse($allowedTimeIn, 'Asia/Manila');
+
+            if ($request->type == 'time_in') {
+                $timeCheck->description = 'time in';
+
+                // Clone allowedTime before adding minutes
+                if ($timeCheck->datetime->greaterThan($allowedTime->copy()->addMinutes(15))) {
+                    $timeCheck->extra_description = 'late';
+                }
+
+                $success_text = "Time in checked successfully";
+            } elseif ($request->type == 'time_out') {
+                $timeCheck->description = 'time out';
+                $success_text = "Time out checked successfully";
+            }
+
+            // Save the data to the database
+            $timeCheck->save();
+
+            // Send the shift notification email
+            try {
+                $sendShiftNotification = $emailController->EmailShiftNotification($userData, $timeCheck);
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => $e->getMessage()]);
+            }
+
+            // Return the success text
+            return response()->json(['success' => true, 'message' => $success_text]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Something went wrong.']);
         }
-    
-        // Return the success text
-        return response()->json(['success' => true, 'message' => $success_text]);
-    } catch (\Exception $e) {
-        return response()->json(['success' => false, 'message' => 'Something went wrong.']);
-    }   
-}
+    }
 
 
     // public function showDTR(DtrSummaryController $dtrSummaryController, Request $request)
@@ -286,7 +286,7 @@ class UserController extends Controller
                 'user' => $users,
                 'valid' => true
             ], Response::HTTP_OK);
-            
+
             // return back()->with('success', 'User validated successfully')->with('user', $users);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage(), 'valid' => false], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -502,36 +502,36 @@ class UserController extends Controller
         try {
             DB::beginTransaction();
 
-            
+
             $data = $request->validate([
                 'file' => 'nullable|image|max:5120',
             ]);
-            
+
             $user = User::find($request->user_id);
             if (!$user) {
                 return back()->with('invalid', 'The input is invalid. Please try again!');
             }
-            
+
             $image_url = null;
             $image_description = null;
 
-            
+
             if ($request->hasFile('file')) {
                 $file = $request['file'];
-            
+
                 // Fetch the profile record
                 $profile = Profile::where('id', $user->profile_id)->first();
                 if (!$profile) {
                     return response()->json(['error' => 'Profile not found'], 404);
                 }
-            
+
                 // Fetch the associated file record
                 $file_id = $profile->file_id;
-                $fileRecord = File::find($file_id); 
+                $fileRecord = File::find($file_id);
                 if (!$fileRecord) {
                     return response()->json(['error' => 'File not found'], 404);
                 }
-            
+
                 try {
                     // Process the file (ensure your fileController->edit() method handles this correctly)
                     $fileFormat = $fileController->edit($request, $fileRecord->description);
@@ -541,43 +541,43 @@ class UserController extends Controller
                     // Log the error or handle it gracefully
                     return response()->json(['error' => 'File processing failed: ' . $e->getMessage()], 500);
                 }
-            
+
                 // Update the file record with new data
                 $fileRecord->update([
                     'description' => $image_description,
                     'path' => $image_url,
                 ]);
-            }            
-            
-            //@dd($request->all(), Profile::find($user->profile_id)?->files->path);
-            
-            // $user->update($request->only([
-                //     'firstname', 'lastname', 'middlename', 'email', 'phone', 'gender',
-                //     'address', 'student_no', 'emergency_contact_fullname',
-                //     'emergency_contact_number', 'emergency_contact_address'
-            // ]));
-            
-            $user->update([
-                'firstname' => $request['firstname'],  
-                'lastname' => $request['lastname'],  
-                'middlename' => $request['middlename'],  
-                'email' => $request['email'],  
-                'phone' => $request['phone'],  
-                'gender' => $request['gender'],  
-                'address' => $request['address'],    
-                'student_no' => $request['student_no'],  
-                'starting_date' => $request['starting_date'],  
-                'emergency_contact_number' => $request['emergency_contact_number'],  
-                'emergency_contact_fullname' => $request['emergency_contact_fullname'],  
-                'emergency_contact_address' => $request['emergency_contact_address'],  
-                'expiry_date' => $request['expiry_date'],  
-                'status' => $request['status'] ?? 'active',
-            ]);            
+            }
 
-            
+            //@dd($request->all(), Profile::find($user->profile_id)?->files->path);
+
+            // $user->update($request->only([
+            //     'firstname', 'lastname', 'middlename', 'email', 'phone', 'gender',
+            //     'address', 'student_no', 'emergency_contact_fullname',
+            //     'emergency_contact_number', 'emergency_contact_address'
+            // ]));
+
+            $user->update([
+                'firstname' => $request['firstname'],
+                'lastname' => $request['lastname'],
+                'middlename' => $request['middlename'],
+                'email' => $request['email'],
+                'phone' => $request['phone'],
+                'gender' => $request['gender'],
+                'address' => $request['address'],
+                'student_no' => $request['student_no'],
+                'starting_date' => $request['starting_date'],
+                'emergency_contact_number' => $request['emergency_contact_number'],
+                'emergency_contact_fullname' => $request['emergency_contact_fullname'],
+                'emergency_contact_address' => $request['emergency_contact_address'],
+                'expiry_date' => $request['expiry_date'],
+                'status' => $request['status'] ?? 'active',
+            ]);
+
+
             if (!empty($request['school'])) {
                 $school = School::where('id', $request['school'])->first();
-                
+
                 if ($school) {
                     $user->update([
                         'school' => $school->description,
@@ -587,17 +587,17 @@ class UserController extends Controller
                     return back()->withErrors(['school' => 'Selected school does not exist.']);
                 }
             }
-            
+
             $user->save();
-            
+
             DB::commit();
             return redirect()->back()->with('update', 'Updated Successfully! If you uploaded an image, the Admin will review it first.');
             //return back()->with('update', 'Updated Successfully!')->with(['image_url' => $image_url]);
         } catch (\Exception $ex) {
-            @dd($ex->getMessage());
+            // @dd($ex->getMessage());
             DB::rollBack();
             return back()->with('invalid', $ex->getMessage());
-        }        
+        }
     }
 
     public function destroy($id)
@@ -628,7 +628,7 @@ class UserController extends Controller
     {
         $dtrDownloadRequest = DtrDownloadRequest::with('users')->get();
 
-        $dtrDownloadRequest = collect($dtrDownloadRequest)->map(function ($user){
+        $dtrDownloadRequest = collect($dtrDownloadRequest)->map(function ($user) {
             return [
                 'id' => $user->id,
                 'name' => $user->users->firstname . ' ' . substr($user->users->middlename, 0, 1) . '. ' . $user->users->lastname,
@@ -640,7 +640,7 @@ class UserController extends Controller
                 'date_requested' => Carbon::parse($user->created_at)->format('M d, Y'),
             ];
         })->sortByDesc('date_requested');
-        
+
         return view('admin.approvals.index', [
             'approvals' => $dtrDownloadRequest,
         ]);
