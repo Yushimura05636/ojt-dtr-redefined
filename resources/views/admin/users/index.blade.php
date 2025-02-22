@@ -29,7 +29,7 @@
                             <h1
                                 class="text-sm font-semibold group-hover:text-[#F57D11] animate-transition truncate capitalize">
                                 {{ $user->firstname }} {{ substr($user->middlename, 0, 1) }}. {{ $user->lastname }}</h1>
-                            <p class="text-gray-500 truncate">{{ \App\Models\School::where('id', $user->school)->first()->description ?? 'No school' }}</p>
+                            <p class="text-gray-500 truncate">{{ \App\Models\School::where('id', $user->school_id)->first()->description ?? 'No school' }}</p>
                         </div>
                     </a>
                 @endif
