@@ -226,7 +226,7 @@ class AuthController extends Controller
             $user->save();
             Auth::logout();
 
-            return back()->with('invalid', 'This account does not belong here.');
+            return back()->with('invalid', 'The account is either expired or inactive please contact the administrator for more information.');
         }
 
         $isStarted = !is_null($user->starting_date) && $user->starting_date <= Carbon::now();

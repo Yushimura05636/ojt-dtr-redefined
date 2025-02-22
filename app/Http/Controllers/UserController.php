@@ -558,7 +558,7 @@ class UserController extends Controller
             //     'emergency_contact_number', 'emergency_contact_address'
             // ]));
 
-            $user->update([
+            $updateData = [
                 'firstname' => $request['firstname'],
                 'lastname' => $request['lastname'],
                 'middlename' => $request['middlename'],
@@ -567,13 +567,23 @@ class UserController extends Controller
                 'gender' => $request['gender'],
                 'address' => $request['address'],
                 'student_no' => $request['student_no'],
-                'starting_date' => $request['starting_date'],
                 'emergency_contact_number' => $request['emergency_contact_number'],
                 'emergency_contact_fullname' => $request['emergency_contact_fullname'],
                 'emergency_contact_address' => $request['emergency_contact_address'],
-                'expiry_date' => $request['expiry_date'],
                 'status' => $request['status'] ?? 'active',
-            ]);
+            ];
+            
+            // Only update starting_date if it exists in the request
+            if (!empty($request['starting_date'])) {
+                $updateData['starting_date'] = $request['starting_date'];
+            }
+            
+            // Only update expiry_date if it exists in the request
+            if (!empty($request['expiry_date'])) {
+                $updateData['expiry_date'] = $request['expiry_date'];
+            }
+            
+            $user->update($updateData);            
 
 
             if (!empty($request['school'])) {
