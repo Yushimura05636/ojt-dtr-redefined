@@ -1614,8 +1614,6 @@ class DtrSummaryController extends Controller
             }
         }
 
-        dd($allUsersData);
-
         return view('admin.dtr.index', [
             'allUsersData' => $allUsersData
         ]);

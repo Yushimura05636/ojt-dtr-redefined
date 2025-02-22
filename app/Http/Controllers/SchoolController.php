@@ -194,7 +194,6 @@ public function show($id): View
         return redirect()->route('admin.schools')->with('update', 'Updated Successfully! If you uploaded an image, the Admin will review it first.');
 
     } catch (\Exception $ex) {
-        @dd($ex->getMessage());
         DB::rollBack();
         return back()->with('invalid', $ex->getMessage());
     }
