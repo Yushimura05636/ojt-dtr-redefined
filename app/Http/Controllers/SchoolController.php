@@ -161,8 +161,6 @@ public function show($id): View
         if (!$school) {
             return back()->with('invalid', 'The input is invalid. Please try again!');
         }
-
-        
         
         // Handle file upload if present
         if ($request->hasFile('file')) {

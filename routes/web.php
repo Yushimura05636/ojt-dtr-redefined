@@ -164,6 +164,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 //admin history post method
 Route::post('/download-pdf', [PDFController::class, 'download'])->name('download.pdf');
+Route::post('/admin/download-pdf', [PDFController::class, 'admin_download'])->name('admin.download.pdf');
 
 //forgot-password page transition
 Route::get('/reset-password', [AuthController::class, 'showResetPassword'])->name('show.reset-password');
