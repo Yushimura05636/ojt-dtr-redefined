@@ -133,8 +133,6 @@
 
                     recordsBody.innerHTML = '';
 
-                    debugger;
-
                     for (let record of data.records) {
     let row = document.createElement('tr');
     row.classList.add('border', 'hover:bg-gray-100');
