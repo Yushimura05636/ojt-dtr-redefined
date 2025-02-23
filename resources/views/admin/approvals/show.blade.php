@@ -196,15 +196,21 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
+
     // Approve Button
-    document.querySelector(".approve-btn").addEventListener("click", function () {
-        handleAction("approve");
+    document.querySelectorAll(".approve-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+            handleAction("approve");
+        });
     });
 
     // Decline Button
-    document.querySelector(".decline-btn").addEventListener("click", function () {
-        handleAction("decline");
+    document.querySelectorAll(".decline-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+            handleAction("decline");
+        });
     });
+
 
     function handleAction(action) {
 
@@ -227,7 +233,7 @@
         .then(response => {
             if (response.status === 200) {
                 toastr.success(`Request successfully ${action}d`);
-                location.reload(); // Reload page to reflect changes
+                location.assign("{{ route('admin.approvals') }}");
             } else {
                 alert(`Failed to ${action} request.`);
             }

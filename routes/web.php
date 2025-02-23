@@ -91,6 +91,10 @@ Route::middleware(['auth', 'user_role:admin'])->group(function (){
     
     //admin history
     Route::get('/admin/history', [UserController::class, 'showAdminHistory'])->name('admin.histories');
+    Route::get('/admin/history/create', [UserController::class, 'showAdminCreateHistory'])->name('admin.histories.create');
+    Route::post('/admin/history/create', [UserController::class, 'createAdminHistory'])->name('admin.histories.create.post');
+    Route::get('/admin/history/{id}/edit', [UserController::class, 'showAdminHistoryEdit'])->name('admin.histories.edit');
+    Route::put('/admin/history/{id}/edit', [UserController::class, 'editAdminHistory'])->name('admin.histories.edit.post');
     
     //admin profile
     Route::get('/admin/profile', [UserController::class, 'showAdminProfile'])->name('admin.profile');

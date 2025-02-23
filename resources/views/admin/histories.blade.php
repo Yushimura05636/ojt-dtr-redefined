@@ -13,7 +13,20 @@
             </span>
 
             <input class="px-5 py-2 rounded-full cursor-pointer border border-gray-200" type="month" id="month">
+
+            <button class="px-8 px-16 py-3 my-3 mx-3 rounded-full relative overflow-hidden font-medium text-white flex items-end justify-end gap-2 animate-transition bg-gradient-to-r from-[#F57D11] via-[#F57D11]/70 to-[#F53C11] hover:bg-[#F53C11] disabled:opacity-50 lg:text-sm text-xs cursor-pointer " name="" type="button" 
+                onclick="window.location.href='{{ route('admin.histories.create') }}'">
+                <p>Add Histories</p>
+            </button>
         </section>
+
+        @if(session('success'))
+            <x-modal.flash-msg msg="success" />
+        @endif
+
+        @if(session('error'))
+            <x-modal.flash-msg msg="error" />
+        @endif
 
         <section class="h-auto w-full flex flex-col gap-5">
             <div class="overflow-x-auto bg-white rounded-lg shadow-md">
@@ -24,32 +37,44 @@
                             <th>Email</th>
                             <th>Description</th>
                             <th>Date & Time</th>
+                            <th>Action </th>
                         </tr>
                     </thead>
                     <tbody id="recordsBody">
                         @foreach ($records as $record)
                             <tr class="border hover:bg-gray-100 *:px-6 *:py-4 *:text-nowrap">
-                                <td class="capitalize">{{ $record['user']->firstname }} {{ substr($record['user']->middlename, 0, 1 )}}. {{$record['user']->lastname}}</td>
+                                <td class="capitalize">
+                                    {{ $record['user']->firstname }} {{ substr($record['user']->middlename, 0, 1) }}. {{ $record['user']->lastname }}
+                                </td>
                                 <td>{{ $record['user']->email }}</td>
                                 <td>
                                     <span class="text-sm font-semibold 
                                         {{ $record['history']->description === 'time in' ? 
                                             (isset($record['history']->extra_description) && $record['history']->extra_description === 'late' ? 'text-red-500 font-bold' : 'text-green-500') 
                                             : 'text-red-500' }}">
-                                            
+                                        
                                         {{ $record['history']->description }} 
                                         @if(isset($record['history']->extra_description)) 
                                             ({{ $record['history']->extra_description }}) 
                                         @endif
                                     </span>
                                 </td>
-                                
                                 <td>
                                     {{ \Carbon\Carbon::parse($record['history']->datetime)->format('F d - h:i A') }}
+                                </td>
+                                <td>
+                                    <button class="flex items-center px-4 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 013.182 3.183L8.476 18.238a4.5 4.5 0 01-1.751 1.13l-3.272 1.092a.375.375 0 01-.484-.485l1.092-3.271a4.5 4.5 0 011.13-1.752L16.862 3.487z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25L15.75 4.5" />
+                                        </svg>
+                                        Edit
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
+                    
                 </table>
             </div>
 
@@ -111,6 +136,7 @@ row.classList.add('border', 'hover:bg-gray-100');
 
 // Check if the user was late
 let isLate = record.history.extra_description && record.history.extra_description === 'late';
+let descriptionClass = '';
 
 // Determine the display text for the status
 let descriptionText = record.history.description;
@@ -118,10 +144,15 @@ if (isLate && record.history.description === 'time in') {
     descriptionText += ' | Late';
 }
 
-// Assign the appropriate class for styling
-let descriptionClass = record.history.description === 'time in'
-    ? (isLate ? 'text-red-500 font-bold' : 'text-green-500')
-    : 'text-red-500';
+if (record.history.description === 'time in') {
+    if (isLate) {
+        descriptionClass = 'text-red-600 font-bold'; // Darker red for visibility
+    } else {
+        descriptionClass = 'text-green-600'; // Slightly darker green for better contrast
+    }
+} else {
+    descriptionClass = 'text-red-600'; // Ensure all 'time out' values use the same color
+}
 
 // Format the date
 let formattedDate = new Date(record.history.datetime)
@@ -129,12 +160,24 @@ let formattedDate = new Date(record.history.datetime)
 
 // Generate row content
 row.innerHTML = `
-    <td class="px-6 py-4 capitalize text-nowrap">${record.user.firstname} ${(record.user.middlename).substring(0, 1)}. ${record.user.lastname}</td>
+    <td class="px-6 py-4 capitalize text-nowrap">
+    ${record.user.firstname} ${(record.user.middlename).substring(0, 1)}. ${record.user.lastname}</td>
     <td class="px-6 py-4 text-nowrap">${record.user.email}</td>
     <td class="px-6 py-4 text-nowrap font-semibold">
         <span class="${descriptionClass}">${descriptionText}</span>
     </td>
     <td class="px-6 py-4 text-nowrap">${formattedDate}</td>
+    <td>
+        <a href="{{ route('admin.histories.edit', $record['history']->id) }}" 
+            class="flex items-center text-center px-4 mx-5 my-5 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 013.182 3.183L8.476 18.238a4.5 4.5 0 01-1.751 1.13l-3.272 1.092a.375.375 0 01-.484-.485l1.092-3.271a4.5 4.5 0 011.13-1.752L16.862 3.487z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25L15.75 4.5" />
+            </svg>
+            Edit
+        </a>
+    </td>
+
 `;
 
 recordsBody.appendChild(row);
