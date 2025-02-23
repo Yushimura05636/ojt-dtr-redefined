@@ -121,6 +121,7 @@
         const APP_URL = document.querySelector('meta[name="app-url"]').getAttribute("content");
 
         document.addEventListener("DOMContentLoaded", function() {
+
             const selectAllCheckbox = document.getElementById("select-all");
             const checkboxes = document.querySelectorAll(".row-checkbox");
             const rows = document.querySelectorAll(".row-item");
@@ -226,11 +227,14 @@
 
                         axios.post(app_url + actionType, requestData)
                             .then(response => {
-                                alert("Request approved successfully!");
+                                toastr.success("Request approved successfully!");
+                                //reload the page
+                                setTimeout(() => {
+                                    window.location.reload(); 
+                                }, 1500);
                             })
                             .catch(error => {
-                                console.error("❌ Approval Failed:", error);
-                                alert("Error approving request.");
+                                toastr.error("❌ Approval Failed:", error);
                             });
 
                     } else if (this.classList.contains("decline-btn")) {
@@ -239,11 +243,14 @@
 
                         axios.post(app_url + actionType, requestData)
                             .then(response => {
-                                alert("Request declined successfully!");
+                                toastr.success("Request declined successfully!");
+                                //reload the page
+                                setTimeout(() => {
+                                    window.location.reload(); 
+                                }, 1500);
                             })
                             .catch(error => {
-                                console.error("❌ Decline Failed:", error);
-                                alert("Error declining request.");
+                                toastr.error("❌ Decline Failed:", error);
                             });
 
                     } else if (this.classList.contains("view-btn")) {
@@ -251,7 +258,6 @@
                         app_url = `{{ url('/admin/approvals/${requestId}?&type=${actionType}') }}`;
                         window.location.href = app_url; // Change the URL as needed
                     }
-
                 });
             });
 
@@ -284,6 +290,9 @@
                         .then(response => {
                             if (response.status === 200) {
                                 toastr.success(`DTR request ${action}d successfully.`);
+                                setTimeout(() => {
+                                    window.location.reload(); 
+                                }, 1500);
                             } else {
                                 toastr.error(`Failed to ${action} DTR request.`);
                             }
@@ -320,6 +329,9 @@
                         .then(response => {
                             if (response.status === 200) {
                                 toastr.success(`DTR request ${action}d successfully.`);
+                                setTimeout(() => {
+                                    window.location.reload(); 
+                                }, 1500);
                             } else {
                                 toastr.error(`Failed to ${action} DTR request.`);
                             }
