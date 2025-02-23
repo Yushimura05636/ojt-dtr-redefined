@@ -101,7 +101,7 @@
                             <div class="flex items-start gap-5 w-full">
                                 <x-image className="w-12 h-12 rounded-full border border-[#F57D11]"
                                     path="{{
-                                        \App\Models\File::where('id', $daily['profiles']['file_id'])->first()->path
+                                        \App\Models\File::where('id', $daily['profiles']['file_id'])->first()->path . '?t=' . time()
                                     }}" />
                                 <div class="flex items-center flex-wrap justify-between w-full gap-x-2">
                                     <div class="w-1/2 ">
@@ -165,7 +165,7 @@
                                                     </p>
                                                 </div>
                                                 <x-image path="{{
-                                                    \App\Models\File::where('id', $user['profiles']['file_id'])->first()->path
+                                                    \App\Models\File::where('id', $user['profiles']['file_id'])->first()->path . '?t=' . time()
                                                 }}"
                                                     className="absolute inset-0 mx-auto h-full scale-125 w-auto opacity-20 z-0" />
                                             </section>
@@ -186,7 +186,7 @@
                                                     </p>
                                                 </div>
                                                 <x-image path="{{
-                                                    optional(\App\Models\File::find(id: $user['profiles']['file_id']))->path
+                                                    optional(\App\Models\File::find(id: $user['profiles']['file_id']))->path . '?t=' . time()
                                                     ?? 'resources/img/default-male.png'
                                                 }}"
                                                     className="absolute inset-0 mx-auto h-full scale-125 w-auto opacity-20 z-0" />
@@ -243,7 +243,7 @@
                                 <div class="flex items-center gap-5 w-1/2">
                                     <x-image className="w-12 h-12 rounded-full border border-[#F57D11]"
                                         path="{{
-                                            \App\Models\File::where('id', $user['profiles']['file_id'])->first()->path
+                                            \App\Models\File::where('id', $user['profiles']['file_id'])->first()->path . '?t=' . time()
                                         }}" />
                                     <h1 class="font-semibold capitalize truncate">{{ $user['fullname'] }}</h1>
                                 </div>

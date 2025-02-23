@@ -34,7 +34,7 @@
                                     id="imagePreview"
                                     class="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 rounded-full border border-[#F57D11]"
                                     src="{{
-                                        optional(\App\Models\File::find(optional(\App\Models\Profile::find($user->profile_id))->file_id))->path
+                                        optional(\App\Models\File::find(optional(\App\Models\Profile::find($user->profile_id))->file_id))->path . '?t=' . time()
                                         ?? 'resources/img/default-male.png'
                                     }}" />
                             </div>
