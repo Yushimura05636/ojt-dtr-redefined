@@ -30,7 +30,7 @@
                     <x-image
                         className="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 rounded-full border border-[#F57D11] lg:!mx-0 mx-auto"
                         path="{{
-                            optional(\App\Models\File::find(optional(\App\Models\Profile::find($user->profile_id))->file_id))->path
+                            optional(\App\Models\File::find(optional(\App\Models\Profile::find($user->profile_id))->file_id))->path . '?t=' . time()
                             ?? 'resources/img/default-male.png'
                         }}" />
                     <h1 class="capitalize font-semibold text-lg">{{ $user->firstname }}

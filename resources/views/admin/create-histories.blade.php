@@ -51,7 +51,7 @@
                                 @foreach($users as $user)
                                     @if ($user->role != 'admin')
                                         @php
-                                            $userImg = optional(\App\Models\File::find($user->profiles->file_id))->path ?? '';
+                                            $userImg = optional(\App\Models\File::find($user->profiles->file_id))->path . '?t=' . time() ?? '';
                                         @endphp
                                         <option value="{{ $user->id }}" data-img="{{ $userImg }}">
                                             {{ $user->firstname }} {{ $user->lastname }}
