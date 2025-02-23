@@ -17,7 +17,7 @@
                             Ready to Download
                         </span>
                         <button class="px-2 flex py-1 rounded-md bg-green-500 text-white"
-                            onclick="window.location.href=`/request/{{ $id }}?type=download`">
+                        onclick="window.location.href='{{ url('/request/' . $id . '?type=download') }}'">
                             <div class="material-symbols--download-rounded !w-6 !h-6"></div>
                         </button>
                     @elseif ($status === 'declined')

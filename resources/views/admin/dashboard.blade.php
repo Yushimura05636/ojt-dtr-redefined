@@ -352,15 +352,15 @@
 
             // Assign values
             nameFullname.textContent = response.data.user.firstname + ' ' +
-                response.data.user.middlename + ' ' + response.data.user.lastname;
+            response.data.user.middlename + ' ' + response.data.user.lastname;
             nameEmail.textContent = response.data.user.email;
             nameStudentNo.textContent = response.data.user.student_no;
             namePhone.textContent = response.data.user.phone;
             nameQrCode.textContent = response.data.user.qr_code;
             nameTotalHours.textContent = "0 Hours";
 
-            //profile pciture
-            nameProfilePicture.src = response.data.profile_image;
+            // Profile picture with timestamp to prevent caching
+            nameProfilePicture.src = response.data.profile_image + "?t=" + Date.now();
 
             // Remove old event listeners
             nameButtonTimeIn.replaceWith(nameButtonTimeIn.cloneNode(true));
