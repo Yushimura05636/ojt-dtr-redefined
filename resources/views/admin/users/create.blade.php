@@ -126,8 +126,19 @@
                     <div class="grid grid-cols-2 w-full gap-5">
                         <x-form.input label="Address" type="text" name_id="address" placeholder="Davao City"
                             labelClass="text-lg font-medium" small />
-                        <x-form.input label="School" type="text" name_id="school" placeholder="School name"
-                            labelClass="text-lg font-medium" small />
+                            @php
+                            $schools = \App\Models\School::get();
+
+                            $school_options = [];
+                            foreach($schools as $school) {
+                                if (strpos(strtolower($school['description']), 'rweb') !== 0) {
+                                    // Add school description to the options if it doesn't start with "Rweb"
+                                    $school_options[] = $school['description'];
+                                }
+                            }
+                        @endphp
+                        <x-form.input label="School" name_id="school" placeholder="Select" small type="select"
+                            :options="$school_options" />
                     </div>
                 </section>
 
