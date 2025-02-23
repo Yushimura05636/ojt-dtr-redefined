@@ -387,7 +387,7 @@ class AuthController extends Controller
         return view('admin.users.create');
     }
 
-    public function showAdminUsersCreatePost(Request $request)
+    public function showAdminUsersCreatePost(Request $request, FileController $fileController)
     {
         $data = $request->validate([
             'firstname' => 'required|string|max:255',
@@ -407,6 +407,24 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
+        $profile_image = ($data['gender'] === 'male')
+            ? 'https://t3.ftcdn.net/jpg/04/43/94/64/360_F_443946404_7GUoIGZeyx7R7ymCicI3k0xPnrMoKDek.jpg'
+            : 'https://fuuastisb.edu.pk/Business%20Administration/Default-Profile-Female.jpg';
+
+        $request->merge([
+            'image_url' => $profile_image,
+        ]);
+
+        //send the image link to the controller
+        $file_records = $fileController->store($request);
+
+        $file_id = $file_records->original['file']->id;
+
+        $profile_record = Profile::create([
+            'description' => 'User ' . $data['lastname'] . ' ' . substr($data['firstname'], 0, 1) . '. \'s profile',
+            'file_id' => $file_id,
+        ]);
+
         //return response()->json(['message' => $request->all()],Response::HTTP_INTERNAL_SERVER_ERROR);
 
         //dd($data);
@@ -424,13 +442,15 @@ class AuthController extends Controller
                 'phone' => $data['phone'],
                 'gender' => $data['gender'],
                 'address' => $data['address'],
-                'school' => $data['school'],
+                'school' => \App\Models\School::where('id', $data['school'] + 1)->first()->description,
                 'student_no' => $data['student_no'],
                 'emergency_contact_fullname' => $data['emergency_contact_fullname'],
                 'emergency_contact_number' => $data['emergency_contact_number'],
                 'emergency_contact_address' => $data['emergency_contact_address'],
                 'qr_code' => $qr_code,
                 'expiry_date' => Carbon::now()->addMonths(3),
+                'school_id' => $request->school + 1,
+                'profile_id' => $profile_record->id, // Save external image URL or uploaded image URL
             ]
         );
 
