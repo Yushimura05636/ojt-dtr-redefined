@@ -42,36 +42,38 @@
                     </thead>
                     <tbody id="recordsBody">
                         @foreach ($records as $record)
-                            <tr class="border hover:bg-gray-100 *:px-6 *:py-4 *:text-nowrap">
-                                <td class="capitalize">
-                                    {{ $record['user']->firstname }} {{ substr($record['user']->middlename, 0, 1) }}. {{ $record['user']->lastname }}
-                                </td>
-                                <td>{{ $record['user']->email }}</td>
-                                <td>
-                                    <span class="text-sm font-semibold 
-                                        {{ $record['history']->description === 'time in' ? 
-                                            (isset($record['history']->extra_description) && $record['history']->extra_description === 'late' ? 'text-red-500 font-bold' : 'text-green-500') 
-                                            : 'text-red-500' }}">
-                                        
-                                        {{ $record['history']->description }} 
-                                        @if(isset($record['history']->extra_description)) 
-                                            ({{ $record['history']->extra_description }}) 
-                                        @endif
-                                    </span>
-                                </td>
-                                <td>
-                                    {{ \Carbon\Carbon::parse($record['history']->datetime)->format('F d - h:i A') }}
-                                </td>
-                                <td>
-                                    <button class="flex items-center px-4 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 013.182 3.183L8.476 18.238a4.5 4.5 0 01-1.751 1.13l-3.272 1.092a.375.375 0 01-.484-.485l1.092-3.271a4.5 4.5 0 011.13-1.752L16.862 3.487z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25L15.75 4.5" />
-                                        </svg>
-                                        Edit
-                                    </button>
-                                </td>
-                            </tr>
+                            @if ($record['history'] != null)
+                                <tr class="border hover:bg-gray-100 *:px-6 *:py-4 *:text-nowrap">
+                                    <td class="capitalize">
+                                        {{ $record['user']->firstname }} {{ substr($record['user']->middlename, 0, 1) }}. {{ $record['user']->lastname }}
+                                    </td>
+                                    <td>{{ $record['user']->email }}</td>
+                                    <td>
+                                        <span class="text-sm font-semibold 
+                                            {{ $record['history']->description === 'time in' ? 
+                                                (isset($record['history']->extra_description) && $record['history']->extra_description === 'late' ? 'text-red-500 font-bold' : 'text-green-500') 
+                                                : 'text-red-500' }}">
+                                            
+                                            {{ $record['history']->description }} 
+                                            @if(isset($record['history']->extra_description)) 
+                                                ({{ $record['history']->extra_description }}) 
+                                            @endif
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {{ \Carbon\Carbon::parse($record['history']->datetime)->format('F d - h:i A') }}
+                                    </td>
+                                    <td>
+                                        <button class="flex items-center px-4 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 013.182 3.183L8.476 18.238a4.5 4.5 0 01-1.751 1.13l-3.272 1.092a.375.375 0 01-.484-.485l1.092-3.271a4.5 4.5 0 011.13-1.752L16.862 3.487z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25L15.75 4.5" />
+                                            </svg>
+                                            Edit
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                     
@@ -101,6 +103,7 @@
     const APP_URL = document.querySelector('meta[name="app-url"]').getAttribute("content");
 
     document.addEventListener("DOMContentLoaded", function () {
+
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
         axios.defaults.headers.common["Content-Type"] = "application/json";
@@ -130,57 +133,56 @@
 
                     recordsBody.innerHTML = '';
 
+                    debugger;
+
                     for (let record of data.records) {
-let row = document.createElement('tr');
-row.classList.add('border', 'hover:bg-gray-100');
+    let row = document.createElement('tr');
+    row.classList.add('border', 'hover:bg-gray-100');
 
-// Check if the user was late
-let isLate = record.history.extra_description && record.history.extra_description === 'late';
-let descriptionClass = '';
+    let isLate = record.history.extra_description && record.history.extra_description === 'late';
+    let descriptionClass = '';
 
-// Determine the display text for the status
-let descriptionText = record.history.description;
-if (isLate && record.history.description === 'time in') {
-    descriptionText += ' | Late';
-}
-
-if (record.history.description === 'time in') {
-    if (isLate) {
-        descriptionClass = 'text-red-600 font-bold'; // Darker red for visibility
-    } else {
-        descriptionClass = 'text-green-600'; // Slightly darker green for better contrast
+    let descriptionText = record.history.description;
+    if (isLate && record.history.description === 'time in') {
+        descriptionText += ' | Late';
     }
-} else {
-    descriptionClass = 'text-red-600'; // Ensure all 'time out' values use the same color
-}
 
-// Format the date
-let formattedDate = new Date(record.history.datetime)
-    .toLocaleString('en-US', { month: 'long', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true });
+    if (record.history.description === 'time in') {
+        descriptionClass = isLate ? 'text-red-600 font-bold' : 'text-green-600';
+    } else {
+        descriptionClass = 'text-red-600';
+    }
 
-// Generate row content
-row.innerHTML = `
-    <td class="px-6 py-4 capitalize text-nowrap">
-    ${record.user.firstname} ${(record.user.middlename).substring(0, 1)}. ${record.user.lastname}</td>
-    <td class="px-6 py-4 text-nowrap">${record.user.email}</td>
-    <td class="px-6 py-4 text-nowrap font-semibold">
-        <span class="${descriptionClass}">${descriptionText}</span>
-    </td>
-    <td class="px-6 py-4 text-nowrap">${formattedDate}</td>
-    <td>
-        <a href="{{ route('admin.histories.edit', $record['history']->id) }}" 
-            class="flex items-center text-center px-4 mx-5 my-5 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 013.182 3.183L8.476 18.238a4.5 4.5 0 01-1.751 1.13l-3.272 1.092a.375.375 0 01-.484-.485l1.092-3.271a4.5 4.5 0 011.13-1.752L16.862 3.487z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25L15.75 4.5" />
-            </svg>
-            Edit
-        </a>
-    </td>
+    let formattedDate = new Date(record.history.datetime)
+        .toLocaleString('en-US', { month: 'long', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true });
 
-`;
+    // Generate edit link dynamically using APP_URL
+    const editRouteBase = "{{ route('admin.histories.edit', ':id') }}";
+    
+    let editUrl = editRouteBase.replace(':id', record.history.id);
 
-recordsBody.appendChild(row);
+    row.innerHTML = `
+        <td class="px-6 py-4 capitalize text-nowrap">
+            ${record.user.firstname} ${(record.user.middlename).substring(0, 1)}. ${record.user.lastname}
+        </td>
+        <td class="px-6 py-4 text-nowrap">${record.user.email}</td>
+        <td class="px-6 py-4 text-nowrap font-semibold">
+            <span class="${descriptionClass}">${descriptionText}</span>
+        </td>
+        <td class="px-6 py-4 text-nowrap">${formattedDate}</td>
+        <td>
+            <a href="${editUrl}" 
+                class="flex items-center text-center px-4 mx-5 my-5 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 013.182 3.183L8.476 18.238a4.5 4.5 0 01-1.751 1.13l-3.272 1.092a.375.375 0 01-.484-.485l1.092-3.271a4.5 4.5 0 011.13-1.752L16.862 3.487z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25L15.75 4.5" />
+                </svg>
+                Edit
+            </a>
+        </td>
+    `;
+
+    recordsBody.appendChild(row);
 }
 
 
