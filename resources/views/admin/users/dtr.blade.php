@@ -33,7 +33,7 @@
                             class="w-auto h-auto border bg-white border-gray-100 shadow-md resize-none p-8 space-y-5 select-none">
                             <section class="flex items-start justify-between">
                                 <x-logo width="lg:w-[200px] w-[150px]" />
-                                <x-image path="resources/img/school-logo/sti.png" className="lg:w-16 w-12 h-auto" />
+                                <x-image path="{{$image_url}}" className="lg:w-16 w-12 h-auto" />
                             </section>
                             <section class="my-7 text-center">
                                 <p class="text-[#F57D11] font-semibold sm:text-base text-sm">OJT Daily Time Record</p>

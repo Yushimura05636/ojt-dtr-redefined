@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\DtrDownloadRequest;
+use App\Models\File;
 use App\Models\Histories;
+use App\Models\Profile;
+use App\Models\School;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -950,6 +953,11 @@ class DtrSummaryController extends Controller
             'ranking' => $rankingController->getRankings(),
             'array_daily' => $historyController->AllUserDailyAttendance(),
             'user' => User::find($request->id),
+            'image_url' => File::where('id',
+                School::where('id', 
+                    User::where('id', $request->id)->first()->school_id
+                )->first()->file_id
+            )->first()->path,
             'records' => $records,
             'totalHoursPerMonth' => $totalHoursPerMonth,
             'selectedMonth' => $selectedMonth,
@@ -1089,6 +1097,11 @@ class DtrSummaryController extends Controller
             'user' => User::find($id),
             'ranking' => $rankingController->getRankings(),
             'array_daily' => $historyController->AllUserDailyAttendance(),
+            'image_url' => File::where('id',
+                School::where('id', 
+                    User::where('id', $request->id)->first()->school_id
+                )->first()->file_id
+            )->first()->path,
             'records' => $records,
             'totalHoursPerMonth' => $totalHoursPerMonth,
             'selectedMonth' => $selectedMonth,
