@@ -33,7 +33,7 @@
 
             <div class="user-history-card p-4 border rounded-lg shadow-md bg-white relative">
                 <div class="flex items-center gap-4">
-                    <img src="{{ \App\Models\File::where('id', $history->user->profile_id)->first()->path ?? 'https://via.placeholder.com/50' }}" class="w-12 h-12 rounded-full" alt="{{ $history->user->firstname }}">
+                    <img src="{{ \App\Models\File::where('id', \App\Models\Profile::where('id', $history->user->profile_id)->first()->file_id)->first()->path ?? 'https://via.placeholder.com/50' }}" class="w-12 h-12 rounded-full" alt="{{ $history->user->firstname }}">
                     <div>
                         <h3 class="text-lg font-semibold text-[#F57D11]">{{ $history->user->firstname }} {{ $history->user->lastname }}</h3>
                         <p class="text-sm text-gray-600">{{ $history->user->email }}</p>
