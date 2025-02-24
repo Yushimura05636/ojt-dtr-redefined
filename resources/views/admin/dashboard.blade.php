@@ -9,7 +9,7 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <link rel="stylesheet" href="../resources/css/app.css">
-    <script src="../resources/js/app.js"></script>
+<script src="../resources/js/app.js"></script>
 
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
 
@@ -99,10 +99,12 @@
                         <a href="{{ route('admin.users.details', ['id' => $daily['id']]) }}"
                             class="px-7 py-5 w-full flex flex-wrap justify-between border-b border-gray-200 bg-white hover:bg-gray-100 items-center cursor-pointer">
                             <div class="flex items-start gap-5 w-full">
-                                <x-image className="w-12 h-12 rounded-full border border-[#F57D11]"
-                                    path="{{
-                                        \App\Models\File::where('id', $daily['profiles']['file_id'])->first()->path
-                                    }}" />
+                                <div class="w-auto h-auto">
+                                    <div class="w-12 h-12 rounded-full border border-[#F57D11] overflow-hidden">
+                                        <x-image className="h-full w-full"
+                                            path="{{ \App\Models\File::where('id', $daily['profiles']['file_id'])->first()->path }}" />
+                                    </div>
+                                </div>
                                 <div class="flex items-center flex-wrap justify-between w-full gap-x-2">
                                     <div class="w-1/2 ">
                                         <section class="font-bold text-black text-lg truncate">
@@ -112,16 +114,18 @@
                                             {{ $daily['name'] }}</p>
                                     </div>
                                     @if ($daily['description'] === 'time in')
-    <div class="flex items-center gap-1 select-none text-sm font-semibold">
-        <p class="{{ $daily['extra_description'] === 'late' ? 'text-red-500 font-bold' : 'text-green-500' }}">
-            Time in{{ $daily['extra_description'] === 'late' ? ' | Late' : '' }}
-        </p>
-    </div>
-@else
-    <div class="text-red-500 flex items-center gap-1 select-none text-sm font-semibold">
-        <p>Time out</p>
-    </div>
-@endif
+                                        <div class="flex items-center gap-1 select-none text-sm font-semibold">
+                                            <p
+                                                class="{{ $daily['extra_description'] === 'late' ? 'text-red-500 font-bold' : 'text-green-500' }}">
+                                                Time in{{ $daily['extra_description'] === 'late' ? ' | Late' : '' }}
+                                            </p>
+                                        </div>
+                                    @else
+                                        <div
+                                            class="text-red-500 flex items-center gap-1 select-none text-sm font-semibold">
+                                            <p>Time out</p>
+                                        </div>
+                                    @endif
 
                                 </div>
                             </div>
@@ -154,7 +158,8 @@
                                     <div class="swiper-slide h-full flex">
                                         <div
                                             class="bg-[#F57D11]/5 h-full w-full overflow-hidden flex flex-col justify-center">
-                                            <section class="flex items-end text-center gap-2 w-full p-5 relative h-full">
+                                            <section
+                                                class="flex items-end text-center gap-2 w-full p-5 relative h-full">
                                                 <div class="w-full space-y-1 px-5">
                                                     <p class="text-sm font-semibold">TOP {{ $index + 1 }}</p>
                                                     <h1 class="text-sm truncate capitalize text-gray-500/80">
@@ -164,9 +169,8 @@
                                                         {{ $user['hours_worked'] }} hours
                                                     </p>
                                                 </div>
-                                                <x-image path="{{
-                                                    \App\Models\File::where('id', $user['profiles']['file_id'])->first()->path
-                                                }}"
+                                                <x-image
+                                                    path="{{ \App\Models\File::where('id', $user['profiles']['file_id'])->first()->path }}"
                                                     className="absolute inset-0 mx-auto h-full scale-125 w-auto opacity-20 z-0" />
                                             </section>
                                         </div>
@@ -175,7 +179,8 @@
                                     <div class="swiper-slide h-full flex">
                                         <div
                                             class="bg-[#F57D11]/5 h-full w-full overflow-hidden flex flex-col justify-center">
-                                            <section class="flex items-end text-center gap-2 w-full p-5 relative h-full">
+                                            <section
+                                                class="flex items-end text-center gap-2 w-full p-5 relative h-full">
                                                 <div class="w-full space-y-1 px-5">
                                                     <p class="text-sm font-semibold">TOP {{ $index + 2 }}</p>
                                                     <h1 class="text-sm truncate capitalize text-gray-500/80">
@@ -185,16 +190,15 @@
                                                         ???
                                                     </p>
                                                 </div>
-                                                <x-image path="{{
-                                                    optional(\App\Models\File::find(id: $user['profiles']['file_id']))->path
-                                                    ?? 'resources/img/default-male.png'
-                                                }}"
+                                                <x-image
+                                                    path="{{ optional(\App\Models\File::find(id: $user['profiles']['file_id']))->path ?? 'resources/img/default-male.png' }}"
                                                     className="absolute inset-0 mx-auto h-full scale-125 w-auto opacity-20 z-0" />
                                             </section>
                                         </div>
                                     </div>
                                 @elseif ($index <= 0)
-                                    <div class="flex w-full items-center justify-center h-full font-semibold text-gray-500">
+                                    <div
+                                        class="flex w-full items-center justify-center h-full font-semibold text-gray-500">
                                         No top performer yet.
                                     </div>
                                 @endif
@@ -241,10 +245,12 @@
                             <a href="{{ route('admin.users.details', ['id' => $user['id']]) }}"
                                 class="px-7 py-5 w-full flex justify-between items-center border-b border-gray-200 hover:bg-gray-100 cursor-pointer">
                                 <div class="flex items-center gap-5 w-1/2">
-                                    <x-image className="w-12 h-12 rounded-full border border-[#F57D11]"
-                                        path="{{
-                                            \App\Models\File::where('id', $user['profiles']['file_id'])->first()->path
-                                        }}" />
+                                    <div class="h-auto w-auto">
+                                        <div class="w-12 h-12 rounded-full overflow-hidden border border-[#F57D11]">
+                                            <x-image className="w-full h-full"
+                                                path="{{ \App\Models\File::where('id', $user['profiles']['file_id'])->first()->path }}" />
+                                        </div>
+                                    </div>
                                     <h1 class="font-semibold capitalize truncate">{{ $user['fullname'] }}</h1>
                                 </div>
                                 <p>{{ $user['ago'] }}</p>
@@ -384,8 +390,8 @@
                     nameLoadingButton.classList.add('block');
                     nameLoadingButton.innerHTML =
                         "<div class='flex justify-center items-center w-full'><span class='line-md--loading-loop'></span><span> Time In </span></div>";
-                    
-                        const res = await axios.post(app_url, {
+
+                    const res = await axios.post(app_url, {
                         qr_code: response.data.user.qr_code,
                         type: 'time_in',
                     });
@@ -450,7 +456,7 @@
     document.addEventListener('DOMContentLoaded', () => {
 
         if (window.history.replaceState) {
-        window.history.replaceState({}, document.title, window.location.pathname);
+            window.history.replaceState({}, document.title, window.location.pathname);
         }
 
         //initialize scanner
@@ -460,4 +466,3 @@
         document.getElementById("closeButton").addEventListener("click", closeCamera);
     });
 </script>
-

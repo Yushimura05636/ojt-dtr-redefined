@@ -572,18 +572,18 @@ class UserController extends Controller
                 'emergency_contact_address' => $request['emergency_contact_address'],
                 'status' => $request['status'] ?? 'active',
             ];
-            
+
             // Only update starting_date if it exists in the request
             if (!empty($request['starting_date'])) {
                 $updateData['starting_date'] = $request['starting_date'];
             }
-            
+
             // Only update expiry_date if it exists in the request
             if (!empty($request['expiry_date'])) {
                 $updateData['expiry_date'] = $request['expiry_date'];
             }
-            
-            $user->update($updateData);            
+
+            $user->update($updateData);
 
 
             if (!empty($request['school'])) {
@@ -602,7 +602,7 @@ class UserController extends Controller
             $user->save();
 
             DB::commit();
-            return redirect()->back()->with('update', 'Updated Successfully! If you uploaded an image, the Admin will review it first.');
+            return redirect()->back()->with('update', 'Updated Successfully! The uploaded image will take a minute to render.');
             //return back()->with('update', 'Updated Successfully!')->with(['image_url' => $image_url]);
         } catch (\Exception $ex) {
             // @dd($ex->getMessage());
@@ -680,12 +680,12 @@ class UserController extends Controller
                 'gender' => $request['gender'],
                 'address' => $request['address'],
             ];
-            
-            $user->update($updateData);            
+
+            $user->update($updateData);
             $user->save();
 
             DB::commit();
-            return redirect()->back()->with('update', 'Updated Successfully! If you uploaded an image, the Admin will review it first.');
+            return redirect()->back()->with('update', 'Updated Successfully! The uploaded image will take a minute to render.');
             //return back()->with('update', 'Updated Successfully!')->with(['image_url' => $image_url]);
         } catch (\Exception $ex) {
             // @dd($ex->getMessage());

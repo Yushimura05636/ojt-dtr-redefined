@@ -23,12 +23,16 @@
         <section class="space-y-5 w-full p-6 border border-gray-200 bg-white rounded-lg">
             <div class="flex items-center w-full justify-center flex-col gap-4">
                 <div class="w-auto h-auto">
-                    <img id="imagePreview" 
-                        src="{{\App\Models\File::where('id', Auth::user()->profiles->file_id)->first()->path . '?t=' . time()}}" alt="Profile Image"
-                        class="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 border border-[#F57D11] shadow rounded-full" />
+                    <div
+                        class="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 border border-[#F57D11] shadow rounded-full overflow-hidden">
+                        <img id="imagePreview"
+                            src="{{ \App\Models\File::where('id', Auth::user()->profiles->file_id)->first()->path . '?t=' . time() }}"
+                            alt="Profile Image" class="w-full h-full" />
+                    </div>
                 </div>
                 <input type="file" id="uploadButton" name="file" class="hidden" accept="image/*">
-                <label for="uploadButton" class="px-16 py-3 border rounded-full text-[#F57D11] hover:border-[#F57D11] animate-transition flex items-center justify-center gap-2 lg:text-sm text-xs cursor-pointer">Upload</label>
+                <label for="uploadButton"
+                    class="px-16 py-3 border rounded-full text-[#F57D11] hover:border-[#F57D11] animate-transition flex items-center justify-center gap-2 lg:text-sm text-xs cursor-pointer">Upload</label>
             </div>
             <x-form.section-title title="Personal Information" vectorClass="!h-3" />
             <div class="grid md:grid-cols-3 w-full gap-5">
@@ -55,7 +59,7 @@
                     value="{{ $user->school }}" labelClass="text-lg font-medium" small /> --}}
             </div>
         </section>
-        <input type="text" class="hidden" name="user_id" value="{{$user->id}}" />
+        <input type="text" class="hidden" name="user_id" value="{{ $user->id }}" />
 
         {{-- <section class="space-y-5 w-full p-6 border border-gray-200 bg-white rounded-lg">
             <x-form.section-title title="Account Information" vectorClass="!h-3" />
@@ -93,15 +97,15 @@
     </x-form.container>
 </x-main-layout>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         const uploadButton = document.querySelector("#uploadButton");
         const imagePreview = document.querySelector("#imagePreview");
 
-        uploadButton.addEventListener("change", function (event) {
+        uploadButton.addEventListener("change", function(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function (e) {
+                reader.onload = function(e) {
                     imagePreview.src = e.target.result;
                 };
                 reader.readAsDataURL(file);

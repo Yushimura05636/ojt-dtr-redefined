@@ -88,21 +88,25 @@
                         <div class="marquee">
                             <div class="marquee__group">
                                 @for ($i = 1; $i <= 3; $i++)
-                                @foreach ($schools as $school)
-                                    @if ($school['is_featured'] == 'on')
-                                        <x-image path="{{ \App\Models\File::where('id', $school['file_id'])->first()['path'] }}" />
-                                    @endif
-                                @endforeach
+                                    @foreach ($schools as $school)
+                                        @if ($school['is_featured'] == 'on')
+                                            <x-image
+                                                path="{{ \App\Models\File::where('id', $school['file_id'])->first()['path'] }}"
+                                                className="w-full h-full rounded-lg border" />
+                                        @endif
+                                    @endforeach
                                 @endfor
                             </div>
 
                             <div aria-hidden="true" class="marquee__group">
                                 @for ($i = 1; $i <= 3; $i++)
-                                @foreach ($schools as $school)
-                                    @if ($school['is_featured'] == 'on')
-                                        <x-image path="{{ \App\Models\File::where('id', $school['file_id'])->first()['path'] }}" />
-                                    @endif
-                                @endforeach
+                                    @foreach ($schools as $school)
+                                        @if ($school['is_featured'] == 'on')
+                                            <x-image
+                                                path="{{ \App\Models\File::where('id', $school['file_id'])->first()['path'] }}"
+                                                className="w-full h-full rounded-lg border" />
+                                        @endif
+                                    @endforeach
                                 @endfor
                             </div>
                         </div>
@@ -169,10 +173,9 @@
     </x-main-layout>
 @endif
 <script>
-
-if (window.history.replaceState) {
-window.history.replaceState({}, document.title, window.location.pathname);
-}
+    if (window.history.replaceState) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
 </script>
 
 {{-- <x-button tertiary label="Click here." className="modal-button" openModal="forgot-password-modal" button /> --}}

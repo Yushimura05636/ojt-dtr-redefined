@@ -5,7 +5,8 @@
     </div>
     <div class="max-w-lg mx-auto bg-white lg:!p-7 p-5 rounded-lg shadow-md space-y-7">
         <x-form.section-title title="Add a School" />
-        <form action="{{route('admin.schools.create.post')}}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-5">
+        <form action="{{ route('admin.schools.create.post') }}" method="POST" enctype="multipart/form-data"
+            class="flex flex-col gap-5">
             @csrf
 
             <div>
@@ -18,7 +19,7 @@
                 <label class="block text-sm font-medium text-gray-700">School Logo</label>
 
                 <div id="previewContainer" class="hidden w-full my-2">
-                    <img id="imagePreview" class="w-auto h-20 border border-gray-300">
+                    <img id="imagePreview" class="w-auto h-20">
                 </div>
 
                 <input type="file" name="file" accept="image/*" required
