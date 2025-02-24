@@ -11,11 +11,16 @@
 
     {{-- <link rel="stylesheet" href=" {{ asset('build/assets/app.css') }}">
     <script src="{{ asset('build/assets/app.js') }}"></script> --}}
-{{-- 
+    {{-- 
     <link rel="stylesheet" href=" {{ 'resources/css/app.css' }}">
     <script src="{{ 'resources/js/app.js' }}"></script> --}}
 
     <script src="https://cdn.tailwindcss.com"></script>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
 
     {{-- modal script --}}
     <link href="https://cdn.jsdelivr.net/npm/pagedone@1.2.2/src/css/pagedone.css" rel="stylesheet" />
@@ -654,236 +659,158 @@
 
     {{-- guest layout --}}
     @if (Request::routeIs('show.login*') || Request::routeIs('show.register*'))
-        <main class="container max-w-screen-xl mx-auto">
-            <div class="md:!grid md:!grid-cols-12 h-[calc(100vh)] w-full overflow-auto">
-                <section class="md:col-span-8 md:h-[calc(100vh)] w-full bg-white">
-                    {{ $slot }}
-                </section>
+        <div class="md:!grid md:!grid-cols-12 h-[calc(100vh)] w-full overflow-auto">
+            <section class="md:col-span-8 md:h-[calc(100vh)] w-full bg-white">
+                {{ $slot }}
+            </section>
 
-                <section class="md:col-span-4 md:h-[calc(100vh)] w-full h-[calc(100vh-50%)] md:sticky md:top-0">
-                    @if (Request::routeIs('show.register'))
-                        <x-form.option imgPath="register.png" title="Have an account?" routePath="show.login"
-                            desc="Stay on top of your schedule!" btnLabel="Login here." />
+            <section class="md:col-span-4 md:h-[calc(100vh)] w-full h-[calc(100vh-50%)] md:sticky md:top-0">
+                @if (Request::routeIs('show.register'))
+                    <x-form.option imgPath="register.png" title="Have an account?" routePath="show.login"
+                        desc="Stay on top of your schedule!" btnLabel="Login here." />
 
-                        {{-- register button --}}
-                    @elseif (Request::routeIs('show.login'))
-                        <x-form.option imgPath="login.png" title="New Intern?" routePath="show.register"
-                            desc="Sign up to keep track of your daily attendance." btnLabel="Register here." />
-                    @endif
-            </div>
-        </main>
+                    {{-- register button --}}
+                @elseif (Request::routeIs('show.login'))
+                    <x-form.option imgPath="login.png" title="New Intern?" routePath="show.register"
+                        desc="Sign up to keep track of your daily attendance." btnLabel="Register here." />
+                @endif
+        </div>
 
         {{-- users/intern layout --}}
     @elseif (Request::routeIs('users.dashboard*') ||
             Request::routeIs('users.settings*') ||
             Request::routeIs('users.dtr*') ||
             Request::routeIs('users.request*'))
-        {{-- <div class="w-full h-auto">
-            <nav class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
-                <div class="lg:hidden flex items-center justify-between gap-5 px-5 py-3">
-                    <x-logo width="w-[200px]" />
-                    <button id="intern-menu-toggle" class="p-2 border rounded-md">
-                        ☰
-                    </button>
-                </div>
-
-                <div class="hidden lg:grid grid-cols-3 text-nowrap h-auto px-10 border shadow-md">
-                    <section class="flex items-center justify-start">
-                        <x-logo />
-                    </section>
-                    <section class="flex items-center justify-center">
-                        <a href="{{ route('users.dashboard') }}"
-                            class="{{ Request::routeIs('users.dashboard*') ? 'border-[#F53C11] text-[#F53C11] py-10 px-7 border-b-4 flex items-center gap-2 font-semibold' : 'text-gray-600 border-white cursor-pointer font-semibold py-8 px-7 border-b-4 flex items-center gap-2' }}">
-                            <span class="akar-icons--dashboard"></span>
-                            <p>Dashboard</p>
-                        </a>
-                        <a href="{{ route('users.dtr') }}"
-                            class="{{ Request::routeIs('users.dtr*') ? 'border-[#F53C11] text-[#F53C11] py-10 px-7 border-b-4 flex items-center gap-2 font-semibold' : 'text-gray-600 border-white cursor-pointer font-semibold py-8 px-7 border-b-4 flex items-center gap-2' }}">
-                            <span class="mingcute--paper-line"></span>
-                            <p>DTR</p>
-                        </a>
-                        <a href="{{ route('users.settings') }}"
-                            class="{{ Request::routeIs('users.settings') ? 'border-[#F53C11] text-[#F53C11] py-10 px-7 border-b-4 flex items-center gap-2 font-semibold' : 'text-gray-600 border-white cursor-pointer font-semibold py-8 px-7 border-b-4 flex items-center gap-2' }}">
-                            <span class="solar--settings-linear"></span>
-                            <p>Settings</p>
-                        </a>
-                    </section>
-                    <x-form.container routeName="logout" className="flex items-center justify-end">
-                        @csrf
-                        <button
-                            class="flex items-center opacity-100 gap-1 w-fit px-8 py-3 rounded-lg font-semibold bg-[#F53C11] hover:bg-[#F53C11]/80 text-white animate-transition"><span
-                                class="material-symbols--logout-rounded"></span>Logout</button>
-                    </x-form.container>
-                </div>
-            </nav>
-
-            <aside id="mobile-menu"
-                class="fixed top-[69px] right-0 mt-1 w-64 h-[calc(100vh-3rem)] bg-white shadow-md transform translate-x-full transition-transform lg:hidden overflow-auto z-50 flex flex-col justify-between">
-                <nav>
-                    <a href="{{ route('users.dashboard') }}"
-                        class="{{ Request::routeIs('users.dashboard*') ? 'border-[#F53C11] text-[#F53C11] py-5 px-7 border-l-4 flex items-center gap-2 font-semibold' : 'text-gray-600 border-white cursor-pointer font-semibold py-5 px-7 border-l-4 flex items-center gap-2' }}">
-                        <span class="akar-icons--dashboard"></span>
-                        <p>Dashboard</p>
-                    </a>
-                    <a href="{{ route('users.dtr') }}"
-                        class="{{ Request::routeIs('users.dtr*') ? 'border-[#F53C11] text-[#F53C11] py-5 px-7 border-l-4 flex items-center gap-2 font-semibold' : 'text-gray-600 border-white cursor-pointer font-semibold py-5 px-7 border-l-4 flex items-center gap-2' }}">
-                        <span class="mingcute--paper-line"></span>
-                        <p>DTR</p>
-                    </a>
-                    <a href="{{ route('users.settings') }}"
-                        class="{{ Request::routeIs('users.settings*') ? 'border-[#F53C11] text-[#F53C11] py-5 px-7 border-l-4 flex items-center gap-2 font-semibold' : 'text-gray-600 border-white cursor-pointer font-semibold py-5 px-7 border-l-4 flex items-center gap-2' }}">
-                        <span class="solar--settings-linear"></span>
-                        <p>Settings</p>
-                    </a>
-                </nav>
-
-                <x-form.container routeName="logout" className="flex items-center justify-center">
-                    @csrf
-                    <button
-                        class="flex items-center opacity-100 gap-1 w-full px-8 py-5 font-semibold bg-[#F53C11] hover:bg-[#F53C11]/80 text-white animate-transition"><span
-                            class="material-symbols--logout-rounded"></span>Logout</button>
-                </x-form.container>
-            </aside>
-
-            <main class="lg:!mt-[110px] mt-[73px] bg-gray-100">
-                {{ $slot }}
-            </main>
-        </div> --}}
-
-        {{-- <main class="container max-w-screen-xl mx-auto"> --}}
-            <div class="h-full w-full lg:grid lg:grid-cols-12">
-                <section class="sticky lg:hidden top-0 w-full bg-white shadow-md h-auto py-4 z-50">
-                    <div class="flex items-center justify-between w-full lg:px-10 px-5 gap-5">
-                        <section class="grid grid-cols-3 w-full">
-                            <div class="col-span-1 flex items-center justify-start w-full">
-                                <button id="intern-menu-toggle" class="lg:hidden p-2 border rounded-md w-fit h-fit">
-                                    ☰
-                                </button>
-                            </div>
-                            <div class="col-span-1 w-full flex items-center justify-center">
-                                <x-logo />
-                            </div>
-                        </section>
-                    </div>
-                </section>
-
-                @php
-                    $profile = \App\Models\Profile::where('id', Auth::user()->profile_id)->first();
-                    $file = \App\Models\File::where('id', $profile->file_id)->first();
-                @endphp
-
-            <!-- Sidebar Menu (Hidden on Large Screens) -->
-                <aside id="mobile-menu"
-                    class="fixed top-22 left-0 mt-0 w-64 h-[calc(100vh-4rem)] bg-white shadow-md transform -translate-x-full transition-transform lg:hidden overflow-auto z-50 flex flex-col justify-between py-5">
-
-                    <nav class="w-full flex flex-col gap-10">
-                        <section class="w-full flex flex-col gap-2 justify-center items-center px-7">
-                            <div class="w-auto h-auto">
-                                {{-- <x-image path="resources/img/default-male.png"
-                                    className="h-24 w-24 shadow-md border border-[#F57D11] rounded-full" /> --}}
-                                    <div class="h-24 w-24 shadow-md border border-[#F57D11] rounded-full overflow-hidden">
-                                        <x-image path="{{$file->path . '?t=' . time()}}"
-                                            className="h-full w-full" />
-                                    </div>
-                            </div>
-                            <h1 class="font-bold text-lg capitalize text-center text-ellipsis">
-                                {{ Auth::user()->firstname }}
-                                {{ substr(Auth::user()->middlename, 0, 1) }}. {{ Auth::user()->lastname }}</h1>
-                            <p class="text-[#F53C11] text-center -mt-2">{{ Auth::user()->email }}</p>
-
-                        </section>
-
-                        <section class="w-full border-y border-gray-100 py-5">
-                            <x-sidebar-menu route="users.dashboard">
-                                <span class="akar-icons--dashboard"></span>
-                                <p>Dashboard</p>
-                            </x-sidebar-menu>
-                            <x-sidebar-menu route="users.dtr">
-                                <span class="mingcute--paper-line"></span>
-                                <p>DTR</p>
-                            </x-sidebar-menu>
-                            <x-sidebar-menu route="users.request">
-                                <span class="ph--hand-deposit"></span>
-                                <p>Request</p>
-                            </x-sidebar-menu>
-                            <x-sidebar-menu route="users.settings">
-                                <span class="solar--settings-linear"></span>
-                                <p>Settings</p>
-                            </x-sidebar-menu>
-                        </section>
-                    </nav>
-
-                    <section class="pt-5 w-full">
-                        <x-form.container routeName="logout" className="flex items-center justify-center">
-                            @csrf
-                            <button
-                                class="flex items-center opacity-100 gap-1 w-full px-8 py-5 font-semibold bg-[#F53C11] hover:bg-[#F53C11]/80 text-white animate-transition"><span
-                                    class="material-symbols--logout-rounded"></span>Logout</button>
-                        </x-form.container>
-                    </section>
-                </aside>
-
-                <!-- Left Sidebar (Sticky on Large Screens) -->
-                <aside
-                    class="hidden lg:flex flex-col justify-between items-center col-span-3 bg-white shadow-xl sticky top-0 h-[calc(100vh)] overflow-auto py-5">
-
-                    <nav class="w-full flex flex-col gap-10">
-
-                        <div class="px-7 pt-5 w-full flex justify-center">
+        <div class="h-full w-full lg:grid lg:grid-cols-12">
+            <section class="sticky lg:hidden top-0 w-full bg-white shadow-md h-auto py-4 z-50">
+                <div class="flex items-center justify-between w-full lg:px-10 px-5 gap-5">
+                    <section class="grid grid-cols-3 w-full">
+                        <div class="col-span-1 flex items-center justify-start w-full">
+                            <button id="intern-menu-toggle" class="lg:hidden p-2 border rounded-md w-fit h-fit">
+                                ☰
+                            </button>
+                        </div>
+                        <div class="col-span-1 w-full flex items-center justify-center">
                             <x-logo />
                         </div>
-                        
-                        <section class="w-full flex flex-col gap-2 justify-center items-center px-7">
-                            <div class="w-auto h-auto">
-                                <div class="h-32 w-32 shadow-md border border-[#F57D11] rounded-full overflow-hidden">
-                                    <x-image path="{{$file->path . '?t=' . time()}}"
-                                        className="w-full h-full" />
-                                </div>
-                            </div>
-                            <h1 class="font-bold text-lg capitalize text-center text-ellipsis">
-                                {{ Auth::user()->firstname }}
-                                {{ substr(Auth::user()->middlename, 0, 1) }}. {{ Auth::user()->lastname }}</h1>
-                            <p class="text-[#F53C11] text-center -mt-2">{{ Auth::user()->email }}</p>
-
-                        </section>
-
-                        <section class="w-full border-y border-gray-100 py-5">
-                            <x-sidebar-menu route="users.dashboard">
-                                <span class="akar-icons--dashboard"></span>
-                                <p>Dashboard</p>
-                            </x-sidebar-menu>
-                            <x-sidebar-menu route="users.dtr">
-                                <span class="mingcute--paper-line"></span>
-                                <p>DTR</p>
-                            </x-sidebar-menu>
-                            <x-sidebar-menu route="users.request">
-                                <span class="ph--hand-deposit"></span>
-                                <p>Request</p>
-                            </x-sidebar-menu>
-                            <x-sidebar-menu route="users.settings">
-                                <span class="solar--settings-linear"></span>
-                                <p>Settings</p>
-                            </x-sidebar-menu>
-                        </section>
-                    </nav>
-
-                    <section class="pt-5 w-full">
-                        <x-form.container routeName="logout" className="flex items-center justify-center">
-                            @csrf
-                            <button
-                                class="flex items-center opacity-100 gap-1 w-full px-8 py-5 font-semibold bg-[#F53C11] hover:bg-[#F53C11]/80 text-white animate-transition"><span
-                                    class="material-symbols--logout-rounded"></span>Logout</button>
-                        </x-form.container>
                     </section>
-                </aside>
+                </div>
+            </section>
 
-                <!-- Main Content (Auto Scroll) -->
-                <main
-                    class="col-span-9 overflow-auto w-full lg:!h-[calc(100vh)] h-[calc(100vh-4rem)] bg-gray-100 lg:!p-10 p-5">
-                    {{ $slot }}
-                </main>
-            </div>
-        </main>
+            @php
+                $profile = \App\Models\Profile::where('id', Auth::user()->profile_id)->first();
+                $file = \App\Models\File::where('id', $profile->file_id)->first();
+            @endphp
+
+            <!-- Sidebar Menu (Hidden on Large Screens) -->
+            <aside id="mobile-menu"
+                class="fixed top-22 left-0 mt-0 w-64 h-[calc(100vh-4rem)] bg-white shadow-md transform -translate-x-full transition-transform lg:hidden overflow-auto z-50 flex flex-col justify-between py-5">
+
+                <nav class="w-full flex flex-col gap-10">
+                    <section class="w-full flex flex-col gap-2 justify-center items-center px-7">
+                        <div class="w-auto h-auto">
+                            {{-- <x-image path="resources/img/default-male.png"
+                                    className="h-24 w-24 shadow-md border border-[#F57D11] rounded-full" /> --}}
+                            <div class="h-24 w-24 shadow-md border border-[#F57D11] rounded-full overflow-hidden">
+                                <x-image path="{{ $file->path . '?t=' . time() }}" className="h-full w-full" />
+                            </div>
+                        </div>
+                        <h1 class="font-bold text-lg capitalize text-center text-ellipsis">
+                            {{ Auth::user()->firstname }}
+                            {{ substr(Auth::user()->middlename, 0, 1) }}. {{ Auth::user()->lastname }}</h1>
+                        <p class="text-[#F53C11] text-center -mt-2">{{ Auth::user()->email }}</p>
+
+                    </section>
+
+                    <section class="w-full border-y border-gray-100 py-5">
+                        <x-sidebar-menu route="users.dashboard">
+                            <span class="akar-icons--dashboard"></span>
+                            <p>Dashboard</p>
+                        </x-sidebar-menu>
+                        <x-sidebar-menu route="users.dtr">
+                            <span class="mingcute--paper-line"></span>
+                            <p>DTR</p>
+                        </x-sidebar-menu>
+                        <x-sidebar-menu route="users.request">
+                            <span class="ph--hand-deposit"></span>
+                            <p>Request</p>
+                        </x-sidebar-menu>
+                        <x-sidebar-menu route="users.settings">
+                            <span class="solar--settings-linear"></span>
+                            <p>Settings</p>
+                        </x-sidebar-menu>
+                    </section>
+                </nav>
+
+                <section class="pt-5 w-full">
+                    <x-form.container routeName="logout" className="flex items-center justify-center">
+                        @csrf
+                        <button
+                            class="flex items-center opacity-100 gap-1 w-full px-8 py-5 font-semibold bg-[#F53C11] hover:bg-[#F53C11]/80 text-white animate-transition"><span
+                                class="material-symbols--logout-rounded"></span>Logout</button>
+                    </x-form.container>
+                </section>
+            </aside>
+
+            <!-- Left Sidebar (Sticky on Large Screens) -->
+            <aside
+                class="hidden lg:flex flex-col justify-between items-center col-span-3 bg-white shadow-xl sticky top-0 h-[calc(100vh)] overflow-auto py-5">
+
+                <nav class="w-full flex flex-col gap-10">
+
+                    <div class="px-7 pt-5 w-full flex justify-center">
+                        <x-logo />
+                    </div>
+
+                    <section class="w-full flex flex-col gap-2 justify-center items-center px-7">
+                        <div class="w-auto h-auto">
+                            <div class="h-32 w-32 shadow-md border border-[#F57D11] rounded-full overflow-hidden">
+                                <x-image path="{{ $file->path . '?t=' . time() }}" className="w-full h-full" />
+                            </div>
+                        </div>
+                        <h1 class="font-bold text-lg capitalize text-center text-ellipsis">
+                            {{ Auth::user()->firstname }}
+                            {{ substr(Auth::user()->middlename, 0, 1) }}. {{ Auth::user()->lastname }}</h1>
+                        <p class="text-[#F53C11] text-center -mt-2">{{ Auth::user()->email }}</p>
+
+                    </section>
+
+                    <section class="w-full border-y border-gray-100 py-5">
+                        <x-sidebar-menu route="users.dashboard">
+                            <span class="akar-icons--dashboard"></span>
+                            <p>Dashboard</p>
+                        </x-sidebar-menu>
+                        <x-sidebar-menu route="users.dtr">
+                            <span class="mingcute--paper-line"></span>
+                            <p>DTR</p>
+                        </x-sidebar-menu>
+                        <x-sidebar-menu route="users.request">
+                            <span class="ph--hand-deposit"></span>
+                            <p>Request</p>
+                        </x-sidebar-menu>
+                        <x-sidebar-menu route="users.settings">
+                            <span class="solar--settings-linear"></span>
+                            <p>Settings</p>
+                        </x-sidebar-menu>
+                    </section>
+                </nav>
+
+                <section class="pt-5 w-full">
+                    <x-form.container routeName="logout" className="flex items-center justify-center">
+                        @csrf
+                        <button
+                            class="flex items-center opacity-100 gap-1 w-full px-8 py-5 font-semibold bg-[#F53C11] hover:bg-[#F53C11]/80 text-white animate-transition"><span
+                                class="material-symbols--logout-rounded"></span>Logout</button>
+                    </x-form.container>
+                </section>
+            </aside>
+
+            <!-- Main Content (Auto Scroll) -->
+            <main
+                class="col-span-9 overflow-auto w-full lg:!h-[calc(100vh)] h-[calc(100vh-4rem)] bg-gray-100 lg:!p-10 p-5">
+                {{ $slot }}
+            </main>
+        </div>
 
         <script>
             const menuToggle = document.getElementById("intern-menu-toggle");
@@ -925,16 +852,15 @@
             });
         </script>
 
-         {{-- admin layout --}}
+        {{-- admin layout --}}
     @elseif (Request::routeIs('admin.dashboard*') ||
-        Request::routeIs('admin.users*') ||
-        Request::routeIs('admin.histories*') ||
-        Request::routeIs('admin.profile*') ||
-        Request::routeIs('admin.schools*') ||
-        Request::routeIs('admin.approvals*'))
+            Request::routeIs('admin.users*') ||
+            Request::routeIs('admin.histories*') ||
+            Request::routeIs('admin.profile*') ||
+            Request::routeIs('admin.schools*') ||
+            Request::routeIs('admin.approvals*'))
         @props(['array_daily' => '', 'ranking' => ''])
 
-    <main class="container max-w-screen-xl mx-auto">
         <div class="h-full w-full lg:grid lg:grid-cols-12">
 
             <!-- Sidebar Menu (Hidden on Large Screens) -->
@@ -1107,9 +1033,10 @@
 
                                                 <div class="flex items-center gap-3 w-2/3">
                                                     <div class="w-auto h-auto">
-                                                        <div class="w-10 h-10 rounded-full border border-[#F57D11] overflow-hidden">
+                                                        <div
+                                                            class="w-10 h-10 rounded-full border border-[#F57D11] overflow-hidden">
                                                             <x-image path="resources/img/default-male.png"
-                                                            className="w-full h-full" />
+                                                                className="w-full h-full" />
                                                         </div>
                                                     </div>
                                                     <div class="w-full truncate">
@@ -1166,8 +1093,8 @@
                                                     <div class="flex gap-3 items-center justify-end w-full mt-2">
                                                         <x-button onClick="showNotificationModal()" label="View"
                                                             className="!px-8" tertiary button />
-                                                        <x-button onClick="closeAllNotificationModal()"
-                                                            label="Close" className="!px-8" primary button />
+                                                        <x-button onClick="closeAllNotificationModal()" label="Close"
+                                                            className="!px-8" primary button />
                                                     </div>
                                                 </div>
                                             </div>
@@ -1183,11 +1110,12 @@
                                                 onclick="openUnreadNotificationModal({{ $notification->id }}, '{{ addslashes($notification->message) }}', {{ $notification->is_read ? 'true' : 'false' }}, 'tab-unread')">
                                                 <div class="flex items-center gap-3 w-2/3">
                                                     <div class="w-auto h-auto">
-                                                        <div class="w-10 h-10 rounded-full border border-[#F57D11] overflow-hidden">
+                                                        <div
+                                                            class="w-10 h-10 rounded-full border border-[#F57D11] overflow-hidden">
                                                             <x-image path="resources/img/default-male.png"
-                                                            className="h-full w-full" />
+                                                                className="h-full w-full" />
                                                         </div>
-                                                    </div>  
+                                                    </div>
                                                     <div class="w-full truncate">
                                                         <p class="text-sm font-semibold truncate">
                                                             {{ $notification->message }}
@@ -1259,9 +1187,10 @@
                                                 onclick="openArchiveNotificationModal({{ $notification->id }}, '{{ addslashes($notification->message) }}', {{ $notification->is_read ? 'true' : 'false' }}, 'tab-archive')">
                                                 <div class="flex items-center gap-3 w-2/3">
                                                     <div class="h-auto w-auto">
-                                                        <div class="w-10 h-10 rounded-full border border-gray-400 overflow-hidden">
+                                                        <div
+                                                            class="w-10 h-10 rounded-full border border-gray-400 overflow-hidden">
                                                             <x-image path="resources/img/default-male.png"
-                                                            className="w-full h-full" />
+                                                                className="w-full h-full" />
                                                         </div>
                                                     </div>
                                                     <div class="w-full truncate">
@@ -1305,8 +1234,8 @@
                                                 <div class="flex gap-3 items-center justify-end w-full mt-2">
                                                     <x-button onClick="showNotificationModal()" label="View"
                                                         className="!px-8" tertiary button />
-                                                    <x-button onClick="closeArchiveNotificationModal()"
-                                                        label="Close" className="!px-8" primary button />
+                                                    <x-button onClick="closeArchiveNotificationModal()" label="Close"
+                                                        className="!px-8" primary button />
                                                 </div>
                                             </div>
                                         </div>
@@ -1319,11 +1248,10 @@
                                 <button type="button" id="dropdown-profile" data-target="dropdown-show-profile"
                                     class="dropdown-profile items-center gap-2 hover:bg-gray-100 rounded-lg py-2 px-3 overflow-hidden inline-flex">
                                     <div class="w-auto h-auto">
-                                        <div class="w-10 h-10 rounded-full shadow border border-[#F53C11] overflow-hidden">
-                                            <x-image path="{{
-                                                optional(\App\Models\File::find(optional(\App\Models\Profile::find(Auth::user()->profile_id))->file_id))->path
-                                                ?? 'resources/img/default-male.png'
-                                            }}"
+                                        <div
+                                            class="w-10 h-10 rounded-full shadow border border-[#F53C11] overflow-hidden">
+                                            <x-image
+                                                path="{{ optional(\App\Models\File::find(optional(\App\Models\Profile::find(Auth::user()->profile_id))->file_id))->path ?? 'resources/img/default-male.png' }}"
                                                 className="w-full h-full" />
                                         </div>
                                     </div>
@@ -1357,110 +1285,109 @@
                 </section>
             </main>
         </div>
-    </main>
 
-    <script>
-        const menuToggle = document.getElementById("menu-toggle");
-        const mobileMenu = document.getElementById("mobile-menu");
+        <script>
+            const menuToggle = document.getElementById("menu-toggle");
+            const mobileMenu = document.getElementById("mobile-menu");
 
-        menuToggle.addEventListener("click", () => {
-            mobileMenu.classList.toggle("-translate-x-full");
-        });
+            menuToggle.addEventListener("click", () => {
+                mobileMenu.classList.toggle("-translate-x-full");
+            });
 
-        // notifications and profile
-        document.addEventListener("DOMContentLoaded", function() {
-            const dropdownProfile = document.getElementById("dropdown-profile");
-            const dropdownMenuProfile = document.getElementById("dropdown-show-profile");
+            // notifications and profile
+            document.addEventListener("DOMContentLoaded", function() {
+                const dropdownProfile = document.getElementById("dropdown-profile");
+                const dropdownMenuProfile = document.getElementById("dropdown-show-profile");
 
-            const dropdownNotification = document.getElementById("dropdown-notification");
-            const dropdownMenuNotification = document.getElementById("dropdown-show-notification");
+                const dropdownNotification = document.getElementById("dropdown-notification");
+                const dropdownMenuNotification = document.getElementById("dropdown-show-notification");
 
-            const closeDropdown = document.getElementById("close-dropdown");
+                const closeDropdown = document.getElementById("close-dropdown");
 
-            const tabs = {
-                all: document.getElementById("tab-all"),
-                unread: document.getElementById("tab-unread"),
-                archived: document.getElementById("tab-archived")
-            };
+                const tabs = {
+                    all: document.getElementById("tab-all"),
+                    unread: document.getElementById("tab-unread"),
+                    archived: document.getElementById("tab-archived")
+                };
 
-            const tabContents = {
-                all: document.getElementById("tab-content-all"),
-                unread: document.getElementById("tab-content-unread"),
-                archived: document.getElementById("tab-content-archived")
-            };
+                const tabContents = {
+                    all: document.getElementById("tab-content-all"),
+                    unread: document.getElementById("tab-content-unread"),
+                    archived: document.getElementById("tab-content-archived")
+                };
 
-            function closeAllDropdowns() {
-                dropdownMenuProfile?.classList.add("hidden");
-                dropdownMenuNotification?.classList.add("hidden");
-            }
-
-            function toggleDropdown(dropdownButton, dropdownMenu, otherDropdownMenu) {
-                if (dropdownMenu.classList.contains("hidden")) {
-                    closeAllDropdowns(); // Close any open dropdown first
-                    dropdownMenu.classList.remove("hidden"); // Open clicked dropdown
-                } else {
-                    dropdownMenu.classList.add("hidden"); // Close dropdown if already open
+                function closeAllDropdowns() {
+                    dropdownMenuProfile?.classList.add("hidden");
+                    dropdownMenuNotification?.classList.add("hidden");
                 }
-            }
 
-            // Toggle profile dropdown
-            dropdownProfile?.addEventListener("click", function(event) {
-                event.stopPropagation();
-                toggleDropdown(dropdownProfile, dropdownMenuProfile, dropdownMenuNotification);
-            });
+                function toggleDropdown(dropdownButton, dropdownMenu, otherDropdownMenu) {
+                    if (dropdownMenu.classList.contains("hidden")) {
+                        closeAllDropdowns(); // Close any open dropdown first
+                        dropdownMenu.classList.remove("hidden"); // Open clicked dropdown
+                    } else {
+                        dropdownMenu.classList.add("hidden"); // Close dropdown if already open
+                    }
+                }
 
-            // Toggle notification dropdown
-            dropdownNotification?.addEventListener("click", function(event) {
-                event.stopPropagation();
-                toggleDropdown(dropdownNotification, dropdownMenuNotification, dropdownMenuProfile);
-            });
+                // Toggle profile dropdown
+                dropdownProfile?.addEventListener("click", function(event) {
+                    event.stopPropagation();
+                    toggleDropdown(dropdownProfile, dropdownMenuProfile, dropdownMenuNotification);
+                });
 
-            closeDropdown?.addEventListener("click", function() {
-                closeAllDropdowns();
-            });
+                // Toggle notification dropdown
+                dropdownNotification?.addEventListener("click", function(event) {
+                    event.stopPropagation();
+                    toggleDropdown(dropdownNotification, dropdownMenuNotification, dropdownMenuProfile);
+                });
 
-            // Close dropdown when clicking outside
-            document.addEventListener("click", function(event) {
-                if (
-                    !dropdownProfile?.contains(event.target) &&
-                    !dropdownMenuProfile?.contains(event.target) &&
-                    !dropdownNotification?.contains(event.target) &&
-                    !dropdownMenuNotification?.contains(event.target)
-                ) {
+                closeDropdown?.addEventListener("click", function() {
                     closeAllDropdowns();
-                }
-            });
+                });
 
-            // Tab switching functionality
-            function switchTab(activeTab, activeContent) {
-                // Reset all tabs
-                Object.values(tabs).forEach(tab => {
-                    tab.classList.remove("text-[#F57D11]", "border-[#F57D11]", "font-semibold",
+                // Close dropdown when clicking outside
+                document.addEventListener("click", function(event) {
+                    if (
+                        !dropdownProfile?.contains(event.target) &&
+                        !dropdownMenuProfile?.contains(event.target) &&
+                        !dropdownNotification?.contains(event.target) &&
+                        !dropdownMenuNotification?.contains(event.target)
+                    ) {
+                        closeAllDropdowns();
+                    }
+                });
+
+                // Tab switching functionality
+                function switchTab(activeTab, activeContent) {
+                    // Reset all tabs
+                    Object.values(tabs).forEach(tab => {
+                        tab.classList.remove("text-[#F57D11]", "border-[#F57D11]", "font-semibold",
+                            "border-b-2");
+                        tab.classList.add("text-gray-500");
+                    });
+
+                    Object.values(tabContents).forEach(content => content.classList.add("hidden"));
+
+                    // Activate selected tab
+                    activeTab.classList.add("text-[#F57D11]", "border-[#F57D11]", "font-semibold",
                         "border-b-2");
-                    tab.classList.add("text-gray-500");
-                });
+                    activeTab.classList.remove("text-gray-500");
 
-                Object.values(tabContents).forEach(content => content.classList.add("hidden"));
+                    activeContent.classList.remove("hidden");
+                }
 
-                // Activate selected tab
-                activeTab.classList.add("text-[#F57D11]", "border-[#F57D11]", "font-semibold",
-                    "border-b-2");
-                activeTab.classList.remove("text-gray-500");
+                // Set initial active tab to 'All'
+                switchTab(tabs.all, tabContents.all);
 
-                activeContent.classList.remove("hidden");
-            }
-
-            // Set initial active tab to 'All'
-            switchTab(tabs.all, tabContents.all);
-
-            // Add event listeners for tab clicks
-            Object.keys(tabs).forEach(key => {
-                tabs[key].addEventListener("click", function() {
-                    switchTab(tabs[key], tabContents[key]);
+                // Add event listeners for tab clicks
+                Object.keys(tabs).forEach(key => {
+                    tabs[key].addEventListener("click", function() {
+                        switchTab(tabs[key], tabContents[key]);
+                    });
                 });
             });
-        });
-    </script>
+        </script>
     @else
         {{-- login / register form --}}
         <main class="h-full w-full bg-white">
@@ -1473,185 +1400,135 @@
 <script>
     let notification_id = 0;
 
-//     function openNotificationModal(id, message, isRead, tab) {
+    function openAllNotificationModal(notificationId, message, isRead, tab) {
 
-//     if (!tab) {
-//         console.error("Tab is undefined!");
-//         return;
-//     }
+        const modal = document.getElementById("AllNotificationModal");
+        const messageElement = document.getElementById("allNotificationMessage");
+        const dateElement = document.getElementById("DateNotificationMessage");
 
-//     let msgText = message;
-//     let dateText = "";
+        if (!modal || !messageElement || !dateElement) {
+            console.error("Modal elements not found!");
+            return;
+        }
 
-//     let lastIndex = message.lastIndexOf("DTR.");
-//     if (lastIndex !== -1) {
-//         msgText = message.substring(0, lastIndex + 4);
-//         dateText = message.substring(lastIndex + 5).trim();
-//     }
+        let text = message;
 
-//     console.log(`Tab: ${tab}`); // Debugging
+        let msgText;
+        let dateText;
 
-//     // Find the modal container
-//     const modal = document.getElementById(`${tab}NotificationModal`);
-//     if (!modal) {
-//         console.error(`Modal ${tab}NotificationModal not found!`);
-//         return;
-//     }
+        // Find the last occurrence of "DTR." and extract the message
+        let lastIndex = text.lastIndexOf("DTR.");
 
-//     // Find the <p> elements inside the nested divs
-//     const messageElement = modal.querySelector(`#${tab}NotificationMessage`);
-//     const dateElement = modal.querySelector(`#${tab}DateNotificationMessage`);
+        if (lastIndex !== -1) {
+            msgText = text.substring(0, lastIndex + 4); // Extracts from first word to "DTR."
+            dateText = text.substring(lastIndex + 5).trim(); // Extracts everything after "DTR."
+        }
 
-//     if (messageElement) {
-//         messageElement.innerText = msgText;
-//     } else {
-//         console.error(`Element ${tab}NotificationMessage not found!`);
-//     }
+        messageElement.innerText = msgText;
+        dateElement.innerText = dateText;
 
-//     if (dateElement) {
-//         dateElement.innerText = dateText;
-//     } else {
-//         console.error(`Element ${tab}DateNotificationMessage not found!`);
-//     }
 
-//     // Show the modal
-//     modal.classList.remove("hidden");
+        // Show modal
+        modal.classList.remove("hidden");
 
-//     // Mark as read if needed
-//     if (!isRead) {
-//         markAsRead(id);
-//     }
-// }
-
-function openAllNotificationModal(notificationId, message, isRead, tab) {
-    
-    const modal = document.getElementById("AllNotificationModal");
-    const messageElement = document.getElementById("allNotificationMessage");
-    const dateElement = document.getElementById("DateNotificationMessage");
-    
-    if (!modal || !messageElement || !dateElement) {
-        console.error("Modal elements not found!");
-        return;
+        if (!isRead) {
+            markAsRead(notificationId);
+        }
     }
 
-    let text = message;
+    function openUnreadNotificationModal(notificationId, message, isRead, tab) {
 
-    let msgText;
-    let dateText;
+        const modal = document.getElementById("UnreadNotificationModal");
+        const messageElement = document.getElementById("unreadNotificationMessage");
+        const dateElement = document.getElementById("UnreadDateNotificationMessage");
 
-    // Find the last occurrence of "DTR." and extract the message
-    let lastIndex = text.lastIndexOf("DTR.");
+        if (!modal || !messageElement || !dateElement) {
+            console.error("Modal elements not found!");
+            return;
+        }
 
-    if (lastIndex !== -1) {
-        msgText = text.substring(0, lastIndex + 4); // Extracts from first word to "DTR."
-        dateText = text.substring(lastIndex + 5).trim(); // Extracts everything after "DTR."
+        let text = message;
+
+        let msgText;
+        let dateText;
+
+        // Find the last occurrence of "DTR." and extract the message
+        let lastIndex = text.lastIndexOf("DTR.");
+
+
+        if (lastIndex !== -1) {
+            msgText = text.substring(0, lastIndex + 4); // Extracts from first word to "DTR."
+            dateText = text.substring(lastIndex + 5).trim(); // Extracts everything after "DTR."
+        }
+
+        messageElement.innerText = msgText;
+        dateElement.innerText = dateText;
+
+        // Show modal
+        modal.classList.remove("hidden");
+
+        if (!isRead) {
+            markAsRead(notificationId);
+        }
+
     }
 
-    messageElement.innerText = msgText;
-    dateElement.innerText = dateText;    
+    function openArchiveNotificationModal(notificationId, message, isRead, tab) {
 
-    
-    // Show modal
-    modal.classList.remove("hidden");
+        const modal = document.getElementById("ArchiveNotificationModal");
+        const messageElement = document.getElementById("archiveNotificationMessage");
+        const dateElement = document.getElementById("ArchiveDateNotificationMessage");
 
-    if (!isRead) {
-        markAsRead(notificationId);
-    }
-}
+        if (!modal || !messageElement || !dateElement) {
+            console.error("Modal elements not found!");
+            return;
+        }
 
-function openUnreadNotificationModal(notificationId, message, isRead, tab) {
-    
-    const modal = document.getElementById("UnreadNotificationModal");
-    const messageElement = document.getElementById("unreadNotificationMessage");
-    const dateElement = document.getElementById("UnreadDateNotificationMessage");
-    
-    if (!modal || !messageElement || !dateElement) {
-        console.error("Modal elements not found!");
-        return;
-    }
+        let text = message;
 
-    let text = message;
+        let msgText;
+        let dateText;
 
-    let msgText;
-    let dateText;
+        // Find the last occurrence of "DTR." and extract the message
+        let lastIndex = text.lastIndexOf("DTR.");
 
-    // Find the last occurrence of "DTR." and extract the message
-    let lastIndex = text.lastIndexOf("DTR.");
+        if (lastIndex !== -1) {
+            msgText = text.substring(0, lastIndex + 4); // Extracts from first word to "DTR."
+            dateText = text.substring(lastIndex + 5).trim(); // Extracts everything after "DTR."
+        }
 
-    
-    if (lastIndex !== -1) {
-        msgText = text.substring(0, lastIndex + 4); // Extracts from first word to "DTR."
-        dateText = text.substring(lastIndex + 5).trim(); // Extracts everything after "DTR."
-    }
+        messageElement.innerText = msgText;
+        dateElement.innerText = dateText;
 
-    messageElement.innerText = msgText;
-    dateElement.innerText = dateText;
+        // Show modal
+        modal.classList.remove("hidden");
 
-    // Show modal
-    modal.classList.remove("hidden");
+        if (!isRead) {
+            markAsRead(notificationId);
+        }
 
-    if (!isRead) {
-        markAsRead(notificationId);
     }
 
-}
-
-function openArchiveNotificationModal(notificationId, message, isRead, tab) {
-    
-    const modal = document.getElementById("ArchiveNotificationModal");
-    const messageElement = document.getElementById("archiveNotificationMessage");
-    const dateElement = document.getElementById("ArchiveDateNotificationMessage");
-    
-    if (!modal || !messageElement || !dateElement) {
-        console.error("Modal elements not found!");
-        return;
+    function closeAllNotificationModal() {
+        const modal = document.getElementById("AllNotificationModal");
+        if (modal) {
+            modal.classList.add("hidden");
+        }
     }
 
-    let text = message;
-
-    let msgText;
-    let dateText;
-
-    // Find the last occurrence of "DTR." and extract the message
-    let lastIndex = text.lastIndexOf("DTR.");
-
-    if (lastIndex !== -1) {
-        msgText = text.substring(0, lastIndex + 4); // Extracts from first word to "DTR."
-        dateText = text.substring(lastIndex + 5).trim(); // Extracts everything after "DTR."
+    function closeUnreadNotificationModal() {
+        const modal = document.getElementById("UnreadNotificationModal");
+        if (modal) {
+            modal.classList.add("hidden");
+        }
     }
 
-    messageElement.innerText = msgText;
-    dateElement.innerText = dateText;
-
-    // Show modal
-    modal.classList.remove("hidden");
-
-    if (!isRead) {
-        markAsRead(notificationId);
+    function closeArchiveNotificationModal() {
+        const modal = document.getElementById("ArchiveNotificationModal");
+        if (modal) {
+            modal.classList.add("hidden");
+        }
     }
-    
-}
-
-function closeAllNotificationModal() {
-    const modal = document.getElementById("AllNotificationModal");
-    if (modal) {
-        modal.classList.add("hidden");
-    }
-}
-
-function closeUnreadNotificationModal() {
-    const modal = document.getElementById("UnreadNotificationModal");
-    if (modal) {
-        modal.classList.add("hidden");
-    }
-}
-
-function closeArchiveNotificationModal() {
-    const modal = document.getElementById("ArchiveNotificationModal");
-    if (modal) {
-        modal.classList.add("hidden");
-    }
-}
 
 
 
@@ -1665,22 +1542,22 @@ function closeArchiveNotificationModal() {
     function markAsRead(notificationId) {
         app_url = `{{ url('/notifications/${notificationId}/mark-as-read') }}`;
         fetch(app_url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-            },
-            body: JSON.stringify({})
-        })
-        .then(response => {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => {
 
-            if (response.status === 200) {
-                const notificationCount = document.getElementById('notification-count');
-                if (notificationCount) {
-                    notificationCount.innerText = Math.max(0, parseInt(notificationCount.innerText) - 1);
+                if (response.status === 200) {
+                    const notificationCount = document.getElementById('notification-count');
+                    if (notificationCount) {
+                        notificationCount.innerText = Math.max(0, parseInt(notificationCount.innerText) - 1);
+                    }
                 }
-            }
-        }).catch(error => console.error('Error:', error));
+            }).catch(error => console.error('Error:', error));
     }
 
     let app_url = '';
@@ -1690,25 +1567,25 @@ function closeArchiveNotificationModal() {
         app_url = `{{ url('/notifications/${notificationId}/archive') }}`;
 
         fetch(app_url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-            },
-            body: JSON.stringify({})
-        })
-        .then(response => {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => {
 
-            if (response.status === 200) {
-                location.reload();
-            }
-        }).catch(error => console.error('Error:', error));
+                if (response.status === 200) {
+                    location.reload();
+                }
+            }).catch(error => console.error('Error:', error));
     }
 
     // Ensure modals work in each tab
     function attachClickHandlers() {
         document.querySelectorAll(".notification-item").forEach(item => {
-            item.addEventListener("click", function () {
+            item.addEventListener("click", function() {
                 const id = this.getAttribute("data-id");
                 const message = this.getAttribute("data-message");
                 const isRead = this.getAttribute("data-is-read") === "true";

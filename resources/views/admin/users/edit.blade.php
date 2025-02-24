@@ -1,9 +1,9 @@
-
 <x-main-layout>
     <x-modal.forgot-password id="forgot-password-modal" />
     <x-modal.confirmation-email id="confirmation-email-modal" />
     <div class="h-full w-full">
-        <x-form.container routeName="users.settings.update" method="POST" className="h-auto w-full flex flex-col gap-5" enctype="multipart/form-data">
+        <x-form.container routeName="users.settings.update" method="POST" className="h-auto w-full flex flex-col gap-5"
+            enctype="multipart/form-data">
             @method('PUT')
 
             @if (session('success'))
@@ -29,18 +29,18 @@
                     <div class="">
                         <div class="flex items-center w-full justify-center flex-col gap-4">
                             <div class="w-auto h-auto">
-                                <div class="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 rounded-full border border-[#F57D11] overflow-hidden">
-                                    <img 
-                                    id="imagePreview"
-                                    class="w-full h-full"
-                                    src="{{
-                                        optional(\App\Models\File::find(optional(\App\Models\Profile::find($user->profile_id))->file_id))->path . '?t=' . time()
-                                        ?? 'resources/img/default-male.png'
-                                    }}" />
+                                <div
+                                    class="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 rounded-full border border-[#F57D11] overflow-hidden">
+                                    <img id="imagePreview" class="w-full h-full"
+                                        src="{{ optional(\App\Models\File::find(optional(\App\Models\Profile::find($user->profile_id))->file_id))->path .
+                                            '?t=' .
+                                            time() ??
+                                            'resources/img/default-male.png' }}" />
                                 </div>
                             </div>
                             <input type="file" id="uploadButton" name="file" class="hidden" accept="image/*">
-                            <label for="uploadButton" class="px-16 py-3 border rounded-full text-[#F57D11] hover:border-[#F57D11] animate-transition flex items-center justify-center gap-2 lg:text-sm text-xs cursor-pointer">Upload</label>
+                            <label for="uploadButton"
+                                class="px-16 py-3 border rounded-full text-[#F57D11] hover:border-[#F57D11] animate-transition flex items-center justify-center gap-2 lg:text-sm text-xs cursor-pointer">Upload</label>
                         </div>
                     </div>
                     <x-form.section-title title="Personal Information" vectorClass="!h-3" />
@@ -57,17 +57,10 @@
                         <x-form.input label="Gender" name_id="gender" placeholder="Select a gender" small
                             value="{{ $user->gender }}" type="select" :options="['male' => 'Male', 'female' => 'Female']" />
 
-                        <x-form.input label="Phone" type="text" name_id="phone" placeholder="+63"
-                            value="{{ $user->phone }}" labelClass="text-lg font-medium" small />
-                    </div>
-                    <div class="grid grid-cols-2 w-full gap-5">
-                        <x-form.input label="Address" type="text" name_id="address" placeholder="Davao City"
-                            value="{{ $user->address }}" labelClass="text-lg font-medium" small />
-                            
-                            @php
+                        @php
                             $schools = \App\Models\School::get();
                             $user_school = \App\Models\School::where('id', $user->school_id)->first();
-                        
+
                             $school_options = [];
                             foreach ($schools as $school) {
                                 if (strpos(strtolower($school['description']), 'rweb') === 0) {
@@ -76,8 +69,15 @@
                                 $school_options[$school->id] = $school->description; // Store as key-value pair
                             }
                         @endphp
-                        <x-form.input label="School" name_id="school" placeholder="{{$user_school->description}}" small type="select"
-                            :options="$school_options" :selected="$user_school->school_id" />                                                
+                        <x-form.input label="School" name_id="school" placeholder="{{ $user_school->description }}"
+                            small type="select" :options="$school_options" :selected="$user_school->school_id" />
+                    </div>
+                    <div class="grid grid-cols-2 w-full gap-5">
+                        <x-form.input label="Address" type="text" name_id="address" placeholder="Davao City"
+                            value="{{ $user->address }}" labelClass="text-lg font-medium" small />
+
+                        <x-form.input label="School ID" type="text" name_id="student_no" placeholder="School ID"
+                            value="{{ $user->student_no }}" labelClass="text-lg font-medium" small />
                         {{-- <x-form.input label="School" type="text" name_id="school" placeholder="School name"
                             value="{{ \App\Models\School::where('id', $user->school)->first()->description ?? 'No school' }}" labelClass="text-lg font-medium" small /> --}}
                     </div>
@@ -89,8 +89,8 @@
                     <div class="grid grid-cols-2 w-full gap-5">
                         <x-form.input label="Email" type="email" name_id="email" value="{{ $user->email }}"
                             placeholder="example@gmail.com" labelClass="text-lg font-medium" small />
-                        <x-form.input label="School ID" type="text" name_id="student_no" placeholder="School ID"
-                            value="{{ $user->student_no }}" labelClass="text-lg font-medium" small />
+                        <x-form.input label="Phone" type="text" name_id="phone" placeholder="+63"
+                            value="{{ $user->phone }}" labelClass="text-lg font-medium" small />
                         <x-form.input label="Starting Date" type="date" name_id="starting_date"
                             value="{{ $user->starting_date }}" placeholder="MMM DD, YYY"
                             labelClass="text-lg font-medium" small />
@@ -125,24 +125,24 @@
     </div>
 </x-main-layout>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-            const uploadButton = document.querySelector("#uploadButton");
-            const imagePreview = document.querySelector("#imagePreview");
+    document.addEventListener("DOMContentLoaded", function() {
+        const uploadButton = document.querySelector("#uploadButton");
+        const imagePreview = document.querySelector("#imagePreview");
 
-            uploadButton.addEventListener("change", function (event) {
-                const file = event.target.files[0];
+        uploadButton.addEventListener("change", function(event) {
+            const file = event.target.files[0];
 
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        imagePreview.src = e.target.result;
-                        imagePreview.style.display = "block"; // Show the image when selected
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    imagePreview.src = "";
-                    imagePreview.style.display = "none"; // Hide preview if no file is selected
-                }
-            });
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = "block"; // Show the image when selected
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.src = "";
+                imagePreview.style.display = "none"; // Hide preview if no file is selected
+            }
         });
+    });
 </script>
