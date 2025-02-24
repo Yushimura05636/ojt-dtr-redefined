@@ -17,11 +17,13 @@
                     <input class="px-5 py-2 rounded-full cursor-pointer border border-gray-200" type="month" id="month">
                 </div>
 
+
                 <button class="px-8 px-16 py-3 my-3 mx-3 rounded-full relative overflow-hidden font-medium text-white flex items-end justify-end gap-2 animate-transition bg-gradient-to-r from-[#F57D11] via-[#F57D11]/70 to-[#F53C11] hover:bg-[#F53C11] disabled:opacity-50 lg:text-sm text-xs cursor-pointer " name="" type="button" 
                     onclick="window.location.href='{{ route('admin.histories.create') }}'">
                     <p>Add Histories</p>
                 </button>
             </div>
+
         </section>
 
         @if(session('success'))

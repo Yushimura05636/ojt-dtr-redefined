@@ -19,6 +19,7 @@
                         data-name="{{ strtolower($user->firstname) }}" data-student_no="{{ strtolower($user->school) }}">
 
                         <div class="w-auto h-auto">
+
                             <div class="w-24 h-24 rounded-full border border-[#F57D11] overflow-hidden">
                                 <x-image className=""
                                 path="{{
@@ -26,6 +27,7 @@
                                     ?? 'resources/img/default-male.png'
                                 }}" />
                             </div>
+
                         </div>
                         <div class="text-center mx-auto w-full">
                             <h1

@@ -342,6 +342,7 @@ class AuthController extends Controller
         ]);
 
         $profile_image = ($data['gender'] === 'male')
+
             ? 'https://lh3.googleusercontent.com/d/15xbsTPp-MWc48TbxAaZ20wisUWwtQioq' // Image in the public/images folder
             : 'https://lh3.googleusercontent.com/d/1FU9OpkgA-FTk3RrUnpoY_n5c9F6eQ4lA'; // Image in the public/images folder
 

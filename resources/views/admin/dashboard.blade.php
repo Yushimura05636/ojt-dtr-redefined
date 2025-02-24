@@ -99,6 +99,7 @@
                         <a href="{{ route('admin.users.details', ['id' => $daily['id']]) }}"
                             class="px-7 py-5 w-full flex flex-wrap justify-between border-b border-gray-200 bg-white hover:bg-gray-100 items-center cursor-pointer">
                             <div class="flex items-start gap-5 w-full">
+
                                 <div class="h-auto w-auto">
                                     <div class="w-12 h-12 rounded-full border border-[#F57D11] overflow-hidden">
                                         <x-image className="w-full h-full"
@@ -246,6 +247,7 @@
                             <a href="{{ route('admin.users.details', ['id' => $user['id']]) }}"
                                 class="px-7 py-5 w-full flex justify-between items-center border-b border-gray-200 hover:bg-gray-100 cursor-pointer">
                                 <div class="flex items-center gap-5 w-1/2">
+
                                     <div class="w-auto h-auto">
                                         <div class="w-12 h-12 rounded-full border border-[#F57D11] overflow-hidden">
                                             <x-image className="w-full h-full"
@@ -254,6 +256,7 @@
                                             }}" />
                                         </div>
                                     </div>
+
                                     <h1 class="font-semibold capitalize truncate">{{ $user['fullname'] }}</h1>
                                 </div>
                                 <p>{{ $user['ago'] }}</p>

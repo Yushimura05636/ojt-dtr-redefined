@@ -42,6 +42,7 @@
             <div id="userHistoriesContainer" class="flex gap-5 mt-4 overflow-x-auto">
                 <div id="historyContainer" class="flex flex-nowrap gap-5 mt-4 w-full">
                     <!-- Initial Card -->
+                    
                     <div class="history-card flex flex-col h-fit gap-3 p-4 border rounded-lg shadow-md bg-white relative min-w-[300px]">
                         <div class="flex flex-col gap-2 px-3 pt-3">
                             <label class="block text-sm font-medium text-gray-700">User Full Name</label>
@@ -89,6 +90,7 @@
 
             if (!existingContainer) {
                 let userContainer = document.createElement('div');
+
                 userContainer.className = "flex h-fit flex-col gap-5 p-4 border rounded-lg shadow-md bg-white relative";
                 userContainer.setAttribute("data-user-id", userId);
                 userContainer.innerHTML = `
@@ -99,6 +101,7 @@
                     <div class="history-container flex flex-col gap-5"></div>
                     <div class="flex justify-between mt-2">
                         <button type="button" class="add-card text-green-500 font-bold">+ Add</button>
+
                         <button type="button" class="remove-user text-red-500 font-bold">- Remove</button>
                     </div>
                 `;
@@ -115,6 +118,7 @@
 
         if (container) {
             let newCard = document.createElement('div');
+
             newCard.className = "history-card h-fit flex flex-col gap-3 p-4 border rounded-lg shadow-md bg-white relative";
             newCard.innerHTML = `
                 <button type="button" class="remove-card text-red-500 absolute top-2 right-2 font-bold">✖</button>
@@ -149,7 +153,9 @@
             let img = $(user.element).data('img');
             return $(
                 `<span class="flex items-center gap-2">
+
                     <img src="${img}" class="w-12 h-12 rounded-full" onerror="this.onerror=null;this.src='https://via.placeholder.com/40'" />
+
                     ${user.text}
                 </span>`
             );
