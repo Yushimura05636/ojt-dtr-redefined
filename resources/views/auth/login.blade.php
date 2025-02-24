@@ -44,7 +44,8 @@
         <x-modal.forgot-password id="forgot-password-modal" />
         <x-modal.confirmation-email id="confirmation-email-modal" />
 
-        <x-form.container routeName="login" method="POST" className="w-full h-auto bg-white">
+        <x-form.container routeName="login" method="POST"
+            className="w-full h-full flex items-center justify-center bg-white container mx-auto max-w-screen-2xl">
             <div class="w-full flex flex-col items-center justify-center gap-7 overflow-x-hidden md:!p-10 p-5">
                 @if (session('success'))
                     <x-modal.flash-msg msg="success" />
@@ -88,21 +89,23 @@
                         <div class="marquee">
                             <div class="marquee__group">
                                 @for ($i = 1; $i <= 3; $i++)
-                                @foreach ($schools as $school)
-                                    @if ($school['is_featured'] == 'on')
-                                        <x-image className="w-full h-full rounded-lg border" path="{{ \App\Models\File::where('id', $school['file_id'])->first()['path'] }}" />
-                                    @endif
-                                @endforeach
+                                    @foreach ($schools as $school)
+                                        @if ($school['is_featured'] == 'on')
+                                            <x-image className="w-full h-full rounded-lg border"
+                                                path="{{ \App\Models\File::where('id', $school['file_id'])->first()['path'] }}" />
+                                        @endif
+                                    @endforeach
                                 @endfor
                             </div>
 
                             <div aria-hidden="true" class="marquee__group">
                                 @for ($i = 1; $i <= 3; $i++)
-                                @foreach ($schools as $school)
-                                    @if ($school['is_featured'] == 'on')
-                                        <x-image className="w-full h-full rounded-lg border" path="{{ \App\Models\File::where('id', $school['file_id'])->first()['path'] }}" />
-                                    @endif
-                                @endforeach
+                                    @foreach ($schools as $school)
+                                        @if ($school['is_featured'] == 'on')
+                                            <x-image className="w-full h-full rounded-lg border"
+                                                path="{{ \App\Models\File::where('id', $school['file_id'])->first()['path'] }}" />
+                                        @endif
+                                    @endforeach
                                 @endfor
                             </div>
                         </div>
@@ -169,10 +172,9 @@
     </x-main-layout>
 @endif
 <script>
-
-if (window.history.replaceState) {
-window.history.replaceState({}, document.title, window.location.pathname);
-}
+    if (window.history.replaceState) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
 </script>
 
 {{-- <x-button tertiary label="Click here." className="modal-button" openModal="forgot-password-modal" button /> --}}

@@ -108,7 +108,7 @@
                 <div class="space-y-2">
                     <section class="flex md:flex-row flex-col items-start sm:gap-5 gap-x-2 text-wrap">
                         <h1 class="text-base font-semibold">Name</h1>
-                        <p class=" text-base ">{{ $user->emergency_contact_fullname }}</p>
+                        <p class=" text-base capitalize">{{ $user->emergency_contact_fullname }}</p>
                     </section>
                     <section class="flex md:flex-row flex-col items-start sm:gap-5 gap-x-2 text-wrap">
                         <h1 class="text-base font-semibold">Contact No.</h1>
@@ -159,14 +159,16 @@
                         @endif
                         @if ($request['status'] === 'pending')
                             <div class="w-1/2">
-                                <p class="lg:!text-sm text-xs font-semibold text-blue-500 truncate">Waiting for approval...
+                                <p class="lg:!text-sm text-xs font-semibold text-blue-500 truncate">Waiting for
+                                    approval...
                                 </p>
                                 {{-- <p class="lg:!text-sm text-xs font-semibold text-green-500 truncate">Ready to download</p>
                                 <p class="lg:!text-sm text-xs font-semibold text-red-500 truncate">Declined approval</p> --}}
                             </div>
                         @endif
                         <div>
-                            <p class="text-sm font-semibold text-gray-600">{{Carbon\Carbon::parse($request['created_at'])->format('M d, Y')}}</p>
+                            <p class="text-sm font-semibold text-gray-600">
+                                {{ Carbon\Carbon::parse($request['created_at'])->format('M d, Y') }}</p>
                         </div>
                     </a>
                 @empty
@@ -185,27 +187,29 @@
 
 <style>
     body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-            flex-direction: column;
-        }
-        #qr-container {
-            background-color: white;
-            padding: 20px;
-            border: 10px solid white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f4f4f4;
+        flex-direction: column;
+    }
+
+    #qr-container {
+        background-color: white;
+        padding: 20px;
+        border: 10px solid white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
 </style>
 
 <script>
@@ -257,11 +261,11 @@
                 const ctx = newCanvas.getContext("2d");
                 newCanvas.width = qrCanvas.width + 40; // Extra padding
                 newCanvas.height = qrCanvas.height + 40;
-                
+
                 // Fill white background
                 ctx.fillStyle = "white";
                 ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
-                
+
                 // Draw QR code in center
                 ctx.drawImage(qrCanvas, 20, 20);
 
