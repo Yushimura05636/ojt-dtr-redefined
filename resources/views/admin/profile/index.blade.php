@@ -23,9 +23,11 @@
         <section class="space-y-5 w-full p-6 border border-gray-200 bg-white rounded-lg">
             <div class="flex items-center w-full justify-center flex-col gap-4">
                 <div class="w-auto h-auto">
-                    <img id="imagePreview" 
+                    <div class="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 border border-[#F57D11] shadow rounded-full overflow-hidden">
+                        <img id="imagePreview" 
                         src="{{\App\Models\File::where('id', Auth::user()->profiles->file_id)->first()->path . '?t=' . time()}}" alt="Profile Image"
-                        class="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 border border-[#F57D11] shadow rounded-full" />
+                        class="w-full h-full" />
+                    </div>
                 </div>
                 <input type="file" id="uploadButton" name="file" class="hidden" accept="image/*">
                 <label for="uploadButton" class="px-16 py-3 border rounded-full text-[#F57D11] hover:border-[#F57D11] animate-transition flex items-center justify-center gap-2 lg:text-sm text-xs cursor-pointer">Upload</label>

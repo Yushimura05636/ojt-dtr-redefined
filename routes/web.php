@@ -23,9 +23,9 @@ use Illuminate\Support\Facades\Broadcast;
 //     return view('auth.register');
 // })->name('show.register');
 
-Route::get('/test', function () {
-    return view('test');
-})->name('test');
+Route::get('/', function () {
+    return view('welcome');
+})->name('landing.page');
 
 // Route::get('/dashboard', function () {
 //     return view('users.dashboard');

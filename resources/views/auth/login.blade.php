@@ -90,7 +90,7 @@
                                 @for ($i = 1; $i <= 3; $i++)
                                 @foreach ($schools as $school)
                                     @if ($school['is_featured'] == 'on')
-                                        <x-image path="{{ \App\Models\File::where('id', $school['file_id'])->first()['path'] }}" />
+                                        <x-image className="w-full h-full rounded-lg border" path="{{ \App\Models\File::where('id', $school['file_id'])->first()['path'] }}" />
                                     @endif
                                 @endforeach
                                 @endfor
@@ -100,7 +100,7 @@
                                 @for ($i = 1; $i <= 3; $i++)
                                 @foreach ($schools as $school)
                                     @if ($school['is_featured'] == 'on')
-                                        <x-image path="{{ \App\Models\File::where('id', $school['file_id'])->first()['path'] }}" />
+                                        <x-image className="w-full h-full rounded-lg border" path="{{ \App\Models\File::where('id', $school['file_id'])->first()['path'] }}" />
                                     @endif
                                 @endforeach
                                 @endfor

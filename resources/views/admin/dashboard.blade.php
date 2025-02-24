@@ -99,10 +99,16 @@
                         <a href="{{ route('admin.users.details', ['id' => $daily['id']]) }}"
                             class="px-7 py-5 w-full flex flex-wrap justify-between border-b border-gray-200 bg-white hover:bg-gray-100 items-center cursor-pointer">
                             <div class="flex items-start gap-5 w-full">
-                                <x-image className="w-12 h-12 rounded-full border border-[#F57D11]"
-                                    path="{{
-                                        \App\Models\File::where('id', $daily['profiles']['file_id'])->first()->path . '?t=' . time()
-                                    }}" />
+
+                                <div class="h-auto w-auto">
+                                    <div class="w-12 h-12 rounded-full border border-[#F57D11] overflow-hidden">
+                                        <x-image className="w-full h-full"
+                                        path="{{
+                                            \App\Models\File::where('id', $daily['profiles']['file_id'])->first()->path . '?t=' . time()
+                                        }}" />
+                                    </div>
+                                </div>
+                                
                                 <div class="flex items-center flex-wrap justify-between w-full gap-x-2">
                                     <div class="w-1/2 ">
                                         <section class="font-bold text-black text-lg truncate">
@@ -157,7 +163,7 @@
                                             <section class="flex items-end text-center gap-2 w-full p-5 relative h-full">
                                                 <div class="w-full space-y-1 px-5">
                                                     <p class="text-sm font-semibold">TOP {{ $index + 1 }}</p>
-                                                    <h1 class="text-sm truncate capitalize text-gray-500/80">
+                                                    <h1 class="text-sm truncate capitalize">
                                                         {{ $user['name'] }}
                                                     </h1>
                                                     <p class="text-xl font-semibold text-[#F57D11]">
@@ -167,7 +173,7 @@
                                                 <x-image path="{{
                                                     \App\Models\File::where('id', $user['profiles']['file_id'])->first()->path . '?t=' . time()
                                                 }}"
-                                                    className="absolute inset-0 mx-auto h-full scale-125 w-auto opacity-20 z-0" />
+                                                    className="absolute inset-0 mx-auto h-full scale-125 w-auto opacity-50 z-0" />
                                             </section>
                                         </div>
                                     </div>
@@ -241,10 +247,16 @@
                             <a href="{{ route('admin.users.details', ['id' => $user['id']]) }}"
                                 class="px-7 py-5 w-full flex justify-between items-center border-b border-gray-200 hover:bg-gray-100 cursor-pointer">
                                 <div class="flex items-center gap-5 w-1/2">
-                                    <x-image className="w-12 h-12 rounded-full border border-[#F57D11]"
-                                        path="{{
-                                            \App\Models\File::where('id', $user['profiles']['file_id'])->first()->path . '?t=' . time()
-                                        }}" />
+
+                                    <div class="w-auto h-auto">
+                                        <div class="w-12 h-12 rounded-full border border-[#F57D11] overflow-hidden">
+                                            <x-image className="w-full h-full"
+                                            path="{{
+                                                \App\Models\File::where('id', $user['profiles']['file_id'])->first()->path . '?t=' . time()
+                                            }}" />
+                                        </div>
+                                    </div>
+
                                     <h1 class="font-semibold capitalize truncate">{{ $user['fullname'] }}</h1>
                                 </div>
                                 <p>{{ $user['ago'] }}</p>

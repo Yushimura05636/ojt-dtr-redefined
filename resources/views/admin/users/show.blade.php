@@ -27,12 +27,14 @@
 
             <div class="w-full">
                 <div class="w-auto h-auto flex flex-col gap-3 items-center justify-center mb-5">
-                    <x-image
-                        className="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 rounded-full border border-[#F57D11] lg:!mx-0 mx-auto"
+                    <div class="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 rounded-full border border-[#F57D11] lg:!mx-0 mx-auto overflow-hidden">
+                        <x-image
+                        className="w-full h-full"
                         path="{{
                             optional(\App\Models\File::find(optional(\App\Models\Profile::find($user->profile_id))->file_id))->path . '?t=' . time()
                             ?? 'resources/img/default-male.png'
                         }}" />
+                    </div>
                     <h1 class="capitalize font-semibold text-lg">{{ $user->firstname }}
                         {{ substr($user->middlename, 0, 1) }}. {{ $user->lastname }}</h1>
                 </div>

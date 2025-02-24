@@ -21,65 +21,7 @@ class AuthController extends Controller
     {
         return view('auth.register');
     }
-
-    // public function register(Request $request)
-    // {
-    //     $data = $request->validate([
-    //         'firstname' => 'required|string|max:255',
-    //         'middlename' => 'required|string|max:255',
-    //         'lastname' => 'required|string|max:255',
-    //         'email' => 'required|string|email|max:255|unique:users',
-    //         'phone' => 'required|string|max:255',
-    //         'gender' => 'required|string|max:255',
-    //         'address' => 'required|string|max:255',
-    //         'school' => 'required|string|max:255',
-    //         'student_no' => 'required|string|max:255',
-
-    //         'emergency_contact_fullname' => 'required|string|max:255',
-    //         'emergency_contact_number' => 'required|string|max:255',
-    //         'emergency_contact_address' => 'required|string|max:255',
-
-    //         'password' => 'required|string|min:8|confirmed',
-    //     ]);
-
-    //     //return response()->json(['message' => $request->all()],Response::HTTP_INTERNAL_SERVER_ERROR);
-
-    //     //dd($data);
-    //     //Generate QR Code
-    //     $qr_code = 'QR' . '_' . Str::random(10) . '_' . Str::random(10);
-
-    //     //check the person gender
-    //     if($data['gender'] === 'male'){
-    //         $profile_description = 'https://t3.ftcdn.net/jpg/04/43/94/64/360_F_443946404_7GUoIGZeyx7R7ymCicI3k0xPnrMoKDek.jpg';
-    //     }
-    //     else {
-    //         $profile_description = 'https://fuuastisb.edu.pk/Business%20Administration/Default-Profile-Female.jpg';
-    //     }
-
-    //     //dd($qr_code);
-    //     $user = User::create(
-    //         [
-    //             'firstname' => $data['firstname'],
-    //             'middlename' => $data['middlename'],
-    //             'lastname' => $data['lastname'],
-    //             'email' => $data['email'],
-    //             'password' => Hash::make($data['password']),
-    //             'phone' => $data['phone'],
-    //             'gender' => $data['gender'],
-    //             'address' => $data['address'],
-    //             'school' => $data['school'],
-    //             'student_no' => $data['student_no'],
-    //             'emergency_contact_fullname' => $data['emergency_contact_fullname'],
-    //             'emergency_contact_number' => $data['emergency_contact_number'],
-    //             'emergency_contact_address' => $data['emergency_contact_address'],
-    //             'qr_code' => $qr_code,
-    //             'expiry_date' => Carbon::now()->addMonths(3),
-    //         ]
-    //     );
-
-    //     return redirect()->route('show.login')->with('success','Congratulations! You are now registered!');
-    // }
-
+    
     public function register(Request $request, FileController $fileController)
     {
         $data = $request->validate([
@@ -104,17 +46,9 @@ class AuthController extends Controller
         // Generate QR Code
         $qr_code = 'QR_' . Str::random(10) . '_' . Str::random(10);
 
-        // Check if a file is uploaded
-        if ($request->hasFile('profile_image')) {
-            $image = $request->file('profile_image');
-            $imagePath = $image->store('profile_images', 'public'); // Store in storage/app/public/profile_images
-            $profile_image = asset('storage/' . $imagePath); // Convert to accessible URL
-        } else {
-            // Use external image links based on gender
-            $profile_image = ($data['gender'] === 'male')
-                ? 'https://t3.ftcdn.net/jpg/04/43/94/64/360_F_443946404_7GUoIGZeyx7R7ymCicI3k0xPnrMoKDek.jpg'
-                : 'https://fuuastisb.edu.pk/Business%20Administration/Default-Profile-Female.jpg';
-        }
+        $profile_image = ($data['gender'] === 'male')
+            ? 'https://lh3.googleusercontent.com/d/15xbsTPp-MWc48TbxAaZ20wisUWwtQioq' // Image in the public/images folder
+            : 'https://lh3.googleusercontent.com/d/1FU9OpkgA-FTk3RrUnpoY_n5c9F6eQ4lA'; // Image in the public/images folder
 
         $request->merge([
             'image_url' => $profile_image,
@@ -186,8 +120,8 @@ class AuthController extends Controller
         } else {
             // Use external image links based on gender
             $profile_image = ($data['gender'] === 'male')
-                ? 'https://png.pngtree.com/png-vector/20240413/ourmid/pngtree-korean-boy-in-black-blazer-png-image_12283322.png'
-                : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqzYMdHwJiHq6iFDbvbPctwcS1j1bcLe16NQ&s';
+            ? 'https://lh3.googleusercontent.com/d/15xbsTPp-MWc48TbxAaZ20wisUWwtQioq' // Image in the public/images folder
+            : 'https://lh3.googleusercontent.com/d/1FU9OpkgA-FTk3RrUnpoY_n5c9F6eQ4lA'; // Image in the public/images folder
         }
 
         $request->merge([
@@ -408,8 +342,9 @@ class AuthController extends Controller
         ]);
 
         $profile_image = ($data['gender'] === 'male')
-            ? 'https://t3.ftcdn.net/jpg/04/43/94/64/360_F_443946404_7GUoIGZeyx7R7ymCicI3k0xPnrMoKDek.jpg'
-            : 'https://fuuastisb.edu.pk/Business%20Administration/Default-Profile-Female.jpg';
+
+            ? 'https://lh3.googleusercontent.com/d/15xbsTPp-MWc48TbxAaZ20wisUWwtQioq' // Image in the public/images folder
+            : 'https://lh3.googleusercontent.com/d/1FU9OpkgA-FTk3RrUnpoY_n5c9F6eQ4lA'; // Image in the public/images folder
 
         $request->merge([
             'image_url' => $profile_image,

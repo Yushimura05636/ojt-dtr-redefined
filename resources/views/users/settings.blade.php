@@ -26,9 +26,11 @@
                 <section class="flex flex-col gap-5 w-full p-7 border border-gray-200 rounded-lg bg-white">
                     <div class="flex flex-col items-center gap-5">
                         <div class="h-auto w-auto">
-                            <img id="imagePreview" 
+                            <div class="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 border border-[#F57D11] shadow rounded-full overflow-hidden">
+                                <img id="imagePreview" 
                                 src="{{$image_url . '?t=' . time()}}" alt="Profile Image"
-                                class="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 border border-[#F57D11] shadow rounded-full" />
+                                class="w-full h-full" />
+                            </div>
                         </div>
                         <input type="file" id="uploadButton" name="file" class="hidden" accept="image/*">
                         <label for="uploadButton" class="px-16 py-3 border rounded-full text-[#F57D11] hover:border-[#F57D11] animate-transition flex items-center justify-center gap-2 lg:text-sm text-xs cursor-pointer">Upload</label>

@@ -11,8 +11,6 @@
 
     {{-- <link rel="stylesheet" href=" {{ asset('build/assets/app.css') }}">
     <script src="{{ asset('build/assets/app.js') }}"></script> --}}
-
-    @vite(['resources/css/app.css', 'resources/js/app.js']);
 {{-- 
     <link rel="stylesheet" href=" {{ 'resources/css/app.css' }}">
     <script src="{{ 'resources/js/app.js' }}"></script> --}}
@@ -752,7 +750,7 @@
             </main>
         </div> --}}
 
-        <main class="container max-w-screen-xl mx-auto">
+        {{-- <main class="container max-w-screen-xl mx-auto"> --}}
             <div class="h-full w-full lg:grid lg:grid-cols-12">
                 <section class="sticky lg:hidden top-0 w-full bg-white shadow-md h-auto py-4 z-50">
                     <div class="flex items-center justify-between w-full lg:px-10 px-5 gap-5">
@@ -783,8 +781,10 @@
                             <div class="w-auto h-auto">
                                 {{-- <x-image path="resources/img/default-male.png"
                                     className="h-24 w-24 shadow-md border border-[#F57D11] rounded-full" /> --}}
-                                <x-image path="{{$file->path . '?t=' . time()}}"
-                                    className="h-24 w-24 shadow-md border border-[#F57D11] rounded-full" />
+                                    <div class="h-24 w-24 shadow-md border border-[#F57D11] rounded-full overflow-hidden">
+                                        <x-image path="{{$file->path . '?t=' . time()}}"
+                                            className="h-full w-full" />
+                                    </div>
                             </div>
                             <h1 class="font-bold text-lg capitalize text-center text-ellipsis">
                                 {{ Auth::user()->firstname }}
@@ -835,8 +835,10 @@
                         
                         <section class="w-full flex flex-col gap-2 justify-center items-center px-7">
                             <div class="w-auto h-auto">
-                                <x-image path="{{$file->path . '?t=' . time()}}"
-                                    className="h-32 w-32 shadow-md border border-[#F57D11] rounded-full" />
+                                <div class="h-32 w-32 shadow-md border border-[#F57D11] rounded-full overflow-hidden">
+                                    <x-image path="{{$file->path . '?t=' . time()}}"
+                                        className="w-full h-full" />
+                                </div>
                             </div>
                             <h1 class="font-bold text-lg capitalize text-center text-ellipsis">
                                 {{ Auth::user()->firstname }}
@@ -1104,8 +1106,12 @@
                                                 onclick="openAllNotificationModal({{ $notification->id }}, '{{ addslashes($notification->message) }}', {{ $notification->is_read ? 'true' : 'false' }}, 'tab-all')">
 
                                                 <div class="flex items-center gap-3 w-2/3">
-                                                    <x-image path="resources/img/default-male.png"
-                                                        className="w-10 h-10 rounded-full border border-[#F57D11]" />
+                                                    <div class="w-auto h-auto">
+                                                        <div class="w-10 h-10 rounded-full border border-[#F57D11] overflow-hidden">
+                                                            <x-image path="resources/img/default-male.png"
+                                                            className="w-full h-full" />
+                                                        </div>
+                                                    </div>
                                                     <div class="w-full truncate">
                                                         <p class="text-sm font-semibold truncate">
                                                             {{ $notification->message }}
@@ -1176,8 +1182,12 @@
     hover:bg-gray-50 {{ $notification->is_read ? 'bg-white' : 'bg-gray-100' }}"
                                                 onclick="openUnreadNotificationModal({{ $notification->id }}, '{{ addslashes($notification->message) }}', {{ $notification->is_read ? 'true' : 'false' }}, 'tab-unread')">
                                                 <div class="flex items-center gap-3 w-2/3">
-                                                    <x-image path="resources/img/default-male.png"
-                                                        className="w-10 h-10 rounded-full border border-[#F57D11]" />
+                                                    <div class="w-auto h-auto">
+                                                        <div class="w-10 h-10 rounded-full border border-[#F57D11] overflow-hidden">
+                                                            <x-image path="resources/img/default-male.png"
+                                                            className="h-full w-full" />
+                                                        </div>
+                                                    </div>  
                                                     <div class="w-full truncate">
                                                         <p class="text-sm font-semibold truncate">
                                                             {{ $notification->message }}
@@ -1248,8 +1258,12 @@
     hover:bg-gray-50 {{ $notification->is_read ? 'bg-white' : 'bg-gray-100' }}"
                                                 onclick="openArchiveNotificationModal({{ $notification->id }}, '{{ addslashes($notification->message) }}', {{ $notification->is_read ? 'true' : 'false' }}, 'tab-archive')">
                                                 <div class="flex items-center gap-3 w-2/3">
-                                                    <x-image path="resources/img/default-male.png"
-                                                        className="w-10 h-10 rounded-full border border-gray-400" />
+                                                    <div class="h-auto w-auto">
+                                                        <div class="w-10 h-10 rounded-full border border-gray-400 overflow-hidden">
+                                                            <x-image path="resources/img/default-male.png"
+                                                            className="w-full h-full" />
+                                                        </div>
+                                                    </div>
                                                     <div class="w-full truncate">
                                                         <p class="text-sm font-semibold truncate">
                                                             {{ $notification->message }}
@@ -1304,11 +1318,15 @@
                             <div class="dropdown relative inline-flex">
                                 <button type="button" id="dropdown-profile" data-target="dropdown-show-profile"
                                     class="dropdown-profile items-center gap-2 hover:bg-gray-100 rounded-lg py-2 px-3 overflow-hidden inline-flex">
-                                    <x-image path="{{
-                                        optional(\App\Models\File::find(optional(\App\Models\Profile::find(Auth::user()->profile_id))->file_id))->path
-                                        ?? 'resources/img/default-male.png'
-                                    }}"
-                                        className="w-10 h-auto rounded-full shadow border border-[#F53C11]" />
+                                    <div class="w-auto h-auto">
+                                        <div class="w-10 h-10 rounded-full shadow border border-[#F53C11] overflow-hidden">
+                                            <x-image path="{{
+                                                optional(\App\Models\File::find(optional(\App\Models\Profile::find(Auth::user()->profile_id))->file_id))->path
+                                                ?? 'resources/img/default-male.png'
+                                            }}"
+                                                className="w-full h-full" />
+                                        </div>
+                                    </div>
                                     <p class="lg:block hidden capitalize">{{ Auth::user()->firstname }}</p>
                                     <span class="iconamoon--arrow-down-2"></span>
                                 </button>

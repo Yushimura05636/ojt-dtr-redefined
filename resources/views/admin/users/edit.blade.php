@@ -1,8 +1,7 @@
-<x-modal.forgot-password id="forgot-password-modal" />
-<x-modal.confirmation-email id="confirmation-email-modal" />
 
 <x-main-layout>
-
+    <x-modal.forgot-password id="forgot-password-modal" />
+    <x-modal.confirmation-email id="confirmation-email-modal" />
     <div class="h-full w-full">
         <x-form.container routeName="users.settings.update" method="POST" className="h-auto w-full flex flex-col gap-5" enctype="multipart/form-data">
             @method('PUT')
@@ -30,13 +29,15 @@
                     <div class="">
                         <div class="flex items-center w-full justify-center flex-col gap-4">
                             <div class="w-auto h-auto">
-                                <img 
+                                <div class="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 rounded-full border border-[#F57D11] overflow-hidden">
+                                    <img 
                                     id="imagePreview"
-                                    class="lg:!w-80 md:!w-60 w-40 lg:!h-80 md:!h-60 h-40 rounded-full border border-[#F57D11]"
+                                    class="w-full h-full"
                                     src="{{
                                         optional(\App\Models\File::find(optional(\App\Models\Profile::find($user->profile_id))->file_id))->path . '?t=' . time()
                                         ?? 'resources/img/default-male.png'
                                     }}" />
+                                </div>
                             </div>
                             <input type="file" id="uploadButton" name="file" class="hidden" accept="image/*">
                             <label for="uploadButton" class="px-16 py-3 border rounded-full text-[#F57D11] hover:border-[#F57D11] animate-transition flex items-center justify-center gap-2 lg:text-sm text-xs cursor-pointer">Upload</label>
@@ -62,12 +63,16 @@
                     <div class="grid grid-cols-2 w-full gap-5">
                         <x-form.input label="Address" type="text" name_id="address" placeholder="Davao City"
                             value="{{ $user->address }}" labelClass="text-lg font-medium" small />
+                            
                             @php
                             $schools = \App\Models\School::get();
                             $user_school = \App\Models\School::where('id', $user->school_id)->first();
                         
                             $school_options = [];
                             foreach ($schools as $school) {
+                                if (strpos(strtolower($school['description']), 'rweb') === 0) {
+                                    continue;
+                                }
                                 $school_options[$school->id] = $school->description; // Store as key-value pair
                             }
                         @endphp

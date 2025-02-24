@@ -65,15 +65,29 @@ class FileController extends Controller
             // **Handle image URL**
             elseif ($request->image_url) {
                 $imageUrl = $request->image_url;
-                $imageContents = file_get_contents($imageUrl); // Download the image
-                if (!$imageContents) {
-                    throw new \Exception("Failed to download image from URL.");
-                }
-                
+
                 // Extract filename from URL
                 $fileName = basename(parse_url($imageUrl, PHP_URL_PATH));
                 $tempFilePath = storage_path('app/temp_' . $fileName);
-                file_put_contents($tempFilePath, $imageContents); // Save to temp file
+                
+                // Initialize cURL session
+                $ch = curl_init($imageUrl);
+                $fp = fopen($tempFilePath, 'wb'); // Open file to save the downloaded content
+                
+                curl_setopt($ch, CURLOPT_FILE, $fp);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Adjust based on your security needs
+                curl_setopt($ch, CURLOPT_FAILONERROR, true);
+                
+                $success = curl_exec($ch);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+                fclose($fp);
+                
+                if (!$success || $httpCode !== 200) {
+                    unlink($tempFilePath); // Remove the incomplete file
+                    throw new \Exception("Failed to download image from URL.");
+                }
                 
                 // Get MIME type
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -87,6 +101,7 @@ class FileController extends Controller
             }
 
             $folderId = config('services.google.folder_id');
+
             
             // Step 1: Create metadata
             $metadata = [
@@ -112,6 +127,7 @@ class FileController extends Controller
             // Convert response to JSON
             $data = $response->json();
 
+            
             if (!isset($data['id'])) {
                 throw new \Exception("Upload failed! Response: " . json_encode($data));
             }
@@ -122,7 +138,7 @@ class FileController extends Controller
             // $fileLink = "https://drive.google.com/uc?id=" . $fileId;
             // Generate the new Google Drive direct image link format
             $fileLink = "https://lh3.googleusercontent.com/d/{$fileId}";
-
+            
             // Store in database
             $fileRecord = File::create([
                 'description' => $fileId,
@@ -130,12 +146,12 @@ class FileController extends Controller
                 'type' => $mimeType,
                 'size' => $fileSize,
             ]);
-
+            
             // Clean up temp file
             if (isset($tempFilePath) && file_exists($tempFilePath)) {
                 unlink($tempFilePath);
             }
-
+            
             DB::commit();
 
             return response()->json(['success' => 'File uploaded successfully', 'file' => $fileRecord]);
