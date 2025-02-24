@@ -39,8 +39,10 @@
                     class="relative bg-white rounded-xl shadow-md lg:!p-7 p-4 flex flex-col items-center justify-between cursor-pointer border border-gray-200 group animate-transition hover:border-[#F57D11]">
 
                     <div class="flex flex-col gap-5 items-center w-full h-full">
-                        <div>
-                            <x-image path="{{ $school['image'] }}" className="w-auto h-20" />
+                        <div class="w-auto h-auto">
+                            <div class="w-auto h-20 overflow-hidden">
+                                <x-image path="{{ $school['image'] }}" className="w-full h-full" />
+                            </div>
                         </div>
                         <h2 class="text-lg font-semibold group-hover:text-[#F57D11] animate-transition text-center">
                             {{ $school['name'] }}

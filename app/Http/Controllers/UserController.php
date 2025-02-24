@@ -758,7 +758,7 @@ public function editAdminHistory($id, Request $request, RankingController $ranki
             $user->save();
 
             DB::commit();
-            return redirect()->back()->with('update', 'Updated Successfully! If you uploaded an image, the Admin will review it first.');
+            return redirect()->back()->with('update', 'Updated Successfully! The uploaded image will take a minute to render.');
             //return back()->with('update', 'Updated Successfully!')->with(['image_url' => $image_url]);
         } catch (\Exception $ex) {
             // @dd($ex->getMessage());
@@ -841,7 +841,7 @@ public function editAdminHistory($id, Request $request, RankingController $ranki
             $user->save();
 
             DB::commit();
-            return redirect()->back()->with('update', 'Updated Successfully! If you uploaded an image, the Admin will review it first.');
+            return redirect()->back()->with('update', 'Updated Successfully! The uploaded image will take a minute to render.');
             //return back()->with('update', 'Updated Successfully!')->with(['image_url' => $image_url]);
         } catch (\Exception $ex) {
             // @dd($ex->getMessage());

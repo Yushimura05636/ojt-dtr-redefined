@@ -18,7 +18,7 @@
                 <label class="block text-sm font-medium text-gray-700">School Logo</label>
 
                 <div id="previewContainer" class="hidden w-full my-2">
-                    <img id="imagePreview" class="w-auto h-20 border border-gray-300">
+                    <img id="imagePreview" class="w-auto h-20">
                 </div>
 
                 <input type="file" name="file" accept="image/*" required
